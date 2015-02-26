@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import pro.beam.api.BeamAPI;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class BeamHttpClient {
@@ -24,8 +25,9 @@ public class BeamHttpClient {
         });
     }
 
-    public <T> ListenableFuture<T> get(String path, Class<T> type) {
-        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.GET, path), type));
+    public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
+        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.GET,
+                                                                         this.buildFromRelativePath(path, args)), type));
     }
 
     public <T> ListenableFuture<T> post(String path, Class<T> type, Object... args) {
@@ -40,11 +42,8 @@ public class BeamHttpClient {
         return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.DELETE, path), type));
     }
 
-    /**
-     * Forwards the method call to #makeRequest without any content.
-     */
-    private HttpRequest makeRequest(RequestType requestType, String path) {
-        return this.makeRequest(requestType, path, null);
+    private HttpRequest makeRequest(RequestType requestType, String path, Object... args) {
+        return this.makeRequest(requestType, this.buildFromRelativePath(path, null), args);
     }
 
     /**
@@ -52,24 +51,28 @@ public class BeamHttpClient {
      *
      * @param requestType The type of HTTP/1.1 request to make (see {@link pro.beam.api.http.RequestType}
      *                    for more details.
-     * @param path The absolute path to direct the request at (see #buildFromRelativePath for more details)
+     * @param url The URL to request content from.
      * @param args The content of the request.  This parameter is optional and considered to be nullable.
      *
      * @return A request built from the specification above.
      */
-    private HttpRequest makeRequest(RequestType requestType, String path, Object... args) {
+    private HttpRequest makeRequest(RequestType requestType, GenericUrl url, Object... args) {
         try {
             return this.requestFactory.buildRequest(requestType.name(),
-                    this.buildFromRelativePath(path),
-                    this.makeRequestContent(args));
+                   url,
+                   this.makeRequestContent(args));
         } catch (IOException e) {
             return null;
         }
     }
 
     private HttpContent makeRequestContent(Object... args) {
-        byte[] contents = this.beam.gson.toJson(args.length == 1 ? args[0] : args).getBytes();
-        return new ByteArrayContent("application/json", contents);
+        if (args == null || args.length == 0) {
+            return null;
+        } else {
+            byte[] contents = this.beam.gson.toJson(args.length == 1 ? args[0] : args).getBytes();
+            return new ByteArrayContent("application/json", contents);
+        }
     }
 
     /**
@@ -100,8 +103,15 @@ public class BeamHttpClient {
      *
      * @return The absolute resolved path as a GenericUrl.
      */
-    private GenericUrl buildFromRelativePath(String path) {
-        return new GenericUrl(BeamAPI.BASE_PATH.resolve(path));
+    private GenericUrl buildFromRelativePath(String path, Map<String, Object> args) {
+        GenericUrl url = new GenericUrl(BeamAPI.BASE_PATH.resolve(path));
+        if (args != null) {
+            for (Map.Entry<String, Object> entry : args.entrySet()) {
+                url.put(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
+
+        return url;
     }
 
     private ListeningExecutorService executor() {
