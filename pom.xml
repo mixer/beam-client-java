@@ -15,9 +15,9 @@
             <version>17.0</version>
         </dependency>
         <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client-gson</artifactId>
-            <version>1.18.0-rc</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

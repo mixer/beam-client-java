@@ -1,28 +1,30 @@
 package pro.beam.api.http;
 
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import org.apache.http.*;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
 import pro.beam.api.BeamAPI;
 
-import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class BeamHttpClient {
     protected final BeamAPI beam;
-    protected final HttpRequestFactory requestFactory;
+    protected final HttpClient http;
 
     public BeamHttpClient(BeamAPI beam) {
         this.beam = beam;
-        this.requestFactory = new NetHttpTransport().createRequestFactory(new HttpRequestInitializer() {
-            @Override public void initialize(HttpRequest request) throws IOException {
-                request.setParser(new JsonObjectParser(new GsonFactory()));
-            }
-        });
+        this.http = HttpClientBuilder.create().build();
     }
 
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
@@ -42,56 +44,50 @@ public class BeamHttpClient {
         return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.DELETE, path), type));
     }
 
-    private HttpRequest makeRequest(RequestType requestType, String path, Object... args) {
+    private HttpUriRequest makeRequest(RequestType requestType, String path, Object... args) {
         return this.makeRequest(requestType, this.buildFromRelativePath(path, null), args);
     }
 
     /**
-     * Creates a {@link com.google.api.client.http.HttpRequest} given a type, path, and optional content.
+     * Creates a {@link org.apache.http.HttpRequest} given a type, path, and optional content.
      *
      * @param requestType The type of HTTP/1.1 request to make (see {@link pro.beam.api.http.RequestType}
      *                    for more details.
-     * @param url The URL to request content from.
+     * @param uri The URI to request content from.
      * @param args The content of the request.  This parameter is optional and considered to be nullable.
      *
      * @return A request built from the specification above.
      */
-    private HttpRequest makeRequest(RequestType requestType, GenericUrl url, Object... args) {
-        try {
-            return this.requestFactory.buildRequest(requestType.name(),
-                   url,
-                   this.makeRequestContent(args));
-        } catch (IOException e) {
-            return null;
-        }
+    private HttpUriRequest makeRequest(RequestType requestType, URI uri, Object... args) {
+        return RequestBuilder.create(requestType.name())
+                             .setUri(uri)
+                             .setEntity(this.makeEntity(args)).build();
     }
 
-    private HttpContent makeRequestContent(Object... args) {
-        if (args == null || args.length == 0) {
-            return null;
-        } else {
-            byte[] contents = this.beam.gson.toJson(args.length == 1 ? args[0] : args).getBytes();
-            return new ByteArrayContent("application/json", contents);
-        }
+    private HttpEntity makeEntity(Object... args) {
+        Object object = args.length == 1 ? args[0] : args;
+        return new ByteArrayEntity(this.beam.gson.toJson(object).getBytes(), ContentType.APPLICATION_JSON);
     }
 
     /**
-     * This public-facing method constructs a callable which has the responsibility of executing the request
+     * This private-facing method constructs a callable which has the responsibility of executing the request
      * given, and parsing it using an instance of a GSON parser into the desired class-type,  Typically this method
      * is used to submit a {@link java.util.concurrent.Callable} to the
      * {@link com.google.common.util.concurrent.ListeningExecutorService} such that a callback can be fired when the
      * request and parsing is complete.
      *
-     * @param request The {@link com.google.api.client.http.HttpRequest} to be executed.
+     * @param request The {@link org.apache.http.HttpRequest} to be executed.
      * @param type The class-type of the response body.  (See the "response" package for examples.)
      *
      * @return The callable as described above.
      */
-    private <T> Callable<T> makeCallable(final HttpRequest request, final Class<T> type) {
+    private <T> Callable<T> makeCallable(final HttpUriRequest request, final Class<T> type) {
         return new Callable<T>() {
             @Override public T call() throws Exception {
-                HttpResponse response = request.execute();
-                return BeamHttpClient.this.beam.gson.fromJson(response.parseAsString(), type);
+                BeamHttpClient self = BeamHttpClient.this;
+                String response = self.http.execute(request, new BasicResponseHandler());
+
+                return self.beam.gson.fromJson(response, type);
             }
         };
     }
@@ -103,15 +99,20 @@ public class BeamHttpClient {
      *
      * @return The absolute resolved path as a GenericUrl.
      */
-    private GenericUrl buildFromRelativePath(String path, Map<String, Object> args) {
-        GenericUrl url = new GenericUrl(BeamAPI.BASE_PATH.resolve(path));
+    private URI buildFromRelativePath(String path, Map<String, Object> args) {
+        URIBuilder builder = new URIBuilder(BeamAPI.BASE_PATH.resolve(path));
+
         if (args != null) {
             for (Map.Entry<String, Object> entry : args.entrySet()) {
-                url.put(entry.getKey(), String.valueOf(entry.getValue()));
+                builder.addParameter(entry.getKey(), String.valueOf(entry.getValue()));
             }
         }
 
-        return url;
+        try {
+            return builder.build();
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
 
     private ListeningExecutorService executor() {
