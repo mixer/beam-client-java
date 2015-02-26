@@ -14,25 +14,24 @@ Guava follows.  In this example, we'll construct the Beam API, and then get a
 list of all channel IDs.
 
 ```java
-// Construct the Beam API. There are no parameters.
+// Construct an instance of the Beam API such that we can query certain
+// endpoints for data.
 BeamAPI beam = new BeamAPI();
 
-// Call the #get method on a relative path, given a repsonse class.  Add a
-// callback to catch the response.
-
-Futures.addCallback(beam.get("channels", ShowChannelsResponse.class), new
-FutureCallback<ShowChannelsResponse>() {
-    // Define a method to be called on-success.
-    @Override public void onSuccess(ShowChannelsResponse response) {
-        // Here, we can handle the response that the callback provides.
-        for (BeamChannel channel : response) {
-            System.out.println(channel.id);
+// Invoke the `UsersService.class` in order to access the methods within
+// that service.  Then, assign a callback using Guava's FutureCallback
+// class so we can act on the response.
+Futures.addCallback(beam.use(UsersService.class).search("tta"), new
+FutureCallback<UserSearchResponse>() {
+    // Set up a handler for the response
+    @Override public void onSuccess(UserSearchResponse response) {
+        for (BeamUser user : response) {
+            System.out.println(user.username);
         }
     }
 
-    // Define a method to be called on-failure.
     @Override public void onFailure(Throwable throwable) {
-        throwable.printStackTrace();
+        // ...
     }
 });
 ```
