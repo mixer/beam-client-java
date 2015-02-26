@@ -15,25 +15,30 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 public class BeamAPI {
-    public static final ListeningExecutorService EXECUTOR_SERVICE = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-
     public static final URI BASE_PATH = URI.create("https://beam.pro/api/v1/");
+
+    protected final ListeningExecutorService executor;
     protected final HttpRequestFactory requestFactory;
     protected final Gson gson = new GsonBuilder().create();
 
     public BeamAPI() {
+        this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
         this.requestFactory = new NetHttpTransport().createRequestFactory();
     }
 
-    public <T> ListenableFuture<T> get(String path, final Class<T> type) throws IOException {
-        final HttpRequest request = this.requestFactory.buildGetRequest(this.buildFromRelativePath(path));
+    public <T> ListenableFuture<T> get(String path, Class<T> type) throws IOException {
+        return this.executor.submit(this.callRequest(
+                this.requestFactory.buildGetRequest(
+                    this.buildFromRelativePath(path)), type));
+    }
 
-        return EXECUTOR_SERVICE.submit(new Callable<T>() {
+    private <T> Callable<T> callRequest(final HttpRequest request, final Class<T> type) {
+        return new Callable<T>() {
             @Override public T call() throws Exception {
                 HttpResponse response = request.execute();
                 return BeamAPI.this.gson.fromJson(response.parseAsString(), type);
             }
-        });
+        };
     }
 
     private GenericUrl buildFromRelativePath(String path) {
