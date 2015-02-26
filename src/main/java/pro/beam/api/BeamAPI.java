@@ -28,7 +28,7 @@ public class BeamAPI {
         this.register(new UsersService(this));
     }
 
-    public <T extends AbstractBeamService> T get(Class<T> service) {
+    public <T extends AbstractBeamService> T use(Class<T> service) {
         return this.services.get(service);
     }
 
