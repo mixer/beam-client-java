@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.services.AbstractBeamService;
 import pro.beam.api.services.ServiceManager;
+import pro.beam.api.services.impl.*;
 import pro.beam.api.services.impl.UsersService;
 
 import java.net.URI;
@@ -26,6 +27,7 @@ public class BeamAPI {
         this.services = new ServiceManager();
 
         this.register(new UsersService(this));
+        this.register(new ChatService(this));
     }
 
     public <T extends AbstractBeamService> T use(Class<T> service) {

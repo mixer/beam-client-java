@@ -16,6 +16,10 @@ public abstract class AbstractHTTPService extends AbstractBeamService {
         this.path = path;
     }
 
+    protected <T> ListenableFuture<T> get(String path, Class<T> type) {
+        return this.get(path, type, null);
+    }
+
     protected <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> parameters) {
         return this.http.get(this.path(path), type, parameters);
     }
