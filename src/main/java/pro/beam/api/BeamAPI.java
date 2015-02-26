@@ -24,14 +24,26 @@ public class BeamAPI {
         this.requestFactory = new NetHttpTransport().createRequestFactory();
     }
 
-    public <T> ListenableFuture<T> get(String path, Class<T> type) throws IOException {
+    public <T> ListenableFuture<T> get(String path, Class<T> type) {
         return this.executor.submit(this.makeCallable(this.makeRequest(RequestType.GET, path), type));
+    }
+
+    public <T> ListenableFuture<T> post(String path, Class<T> type, Object... args) {
+        return this.executor.submit(this.makeCallable(this.makeRequest(RequestType.POST, path, args), type));
+    }
+
+    public <T> ListenableFuture<T> put(String path, Class<T> type, Object... args) {
+        return this.executor.submit(this.makeCallable(this.makeRequest(RequestType.PUT, path, args), type));
+    }
+
+    public <T> ListenableFuture<T> delete(String path, Class<T> type) {
+        return this.executor.submit(this.makeCallable(this.makeRequest(RequestType.DELETE, path), type));
     }
 
     /**
      * Forwards the method call to #makeRequest without any content.
      */
-    private HttpRequest makeRequest(RequestType requestType, String path) throws IOException {
+    private HttpRequest makeRequest(RequestType requestType, String path) {
         return this.makeRequest(requestType, path, null);
     }
 
@@ -41,14 +53,23 @@ public class BeamAPI {
      * @param requestType The type of HTTP/1.1 request to make (see {@link pro.beam.api.http.RequestType}
      *                    for more details.
      * @param path The absolute path to direct the request at (see #buildFromRelativePath for more details)
-     * @param content The content of the request.  This parameter is optional and considered to be @Nullable.
+     * @param args The content of the request.  This parameter is optional and considered to be nullable.
      *
      * @return A request built from the specification above.
      */
-    private HttpRequest makeRequest(RequestType requestType, String path, HttpContent content) throws IOException {
-        return this.requestFactory.buildRequest(requestType.name(),
-                                                this.buildFromRelativePath(path),
-                                                content);
+    private HttpRequest makeRequest(RequestType requestType, String path, Object... args) {
+        try {
+            return this.requestFactory.buildRequest(requestType.name(),
+                                                    this.buildFromRelativePath(path),
+                                                    this.makeRequestContent(args));
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private HttpContent makeRequestContent(Object... args) {
+        byte[] contents = this.gson.toJson(args.length == 1 ? args[0] : args).getBytes();
+        return new ByteArrayContent("application/json", contents);
     }
 
     /**
