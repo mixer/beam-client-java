@@ -65,12 +65,8 @@ public class BeamHttpClient {
     }
 
     private HttpEntity makeEntity(Object... args) {
-        if (args == null || args.length == 0) {
-            return null;
-        } else {
-            byte[] data = this.beam.gson.toJson(args.length == 1 ? args[0] : args).getBytes();
-            return new ByteArrayEntity(data, ContentType.APPLICATION_JSON);
-        }
+        Object object = args.length == 1 ? args[0] : args;
+        return new ByteArrayEntity(this.beam.gson.toJson(object).getBytes(), ContentType.APPLICATION_JSON);
     }
 
     /**
