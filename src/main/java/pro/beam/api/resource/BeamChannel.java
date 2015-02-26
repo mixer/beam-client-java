@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class BeamChannel {
+public class BeamChannel extends AbstractBeamResource {
     public CostreamPreference allow_costream;
     public AudienceRating audience;
     public String body;
