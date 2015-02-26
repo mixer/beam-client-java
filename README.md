@@ -21,17 +21,12 @@ BeamAPI beam = new BeamAPI();
 // Invoke the `UsersService.class` in order to access the methods within
 // that service.  Then, assign a callback using Guava's FutureCallback
 // class so we can act on the response.
-Futures.addCallback(beam.use(UsersService.class).search("tta"), new
-FutureCallback<UserSearchResponse>() {
+Futures.addCallback(beam.use(UsersService.class).search("tta"), new ResponseHandler<UserSearchResponse>() {
     // Set up a handler for the response
     @Override public void onSuccess(UserSearchResponse response) {
         for (BeamUser user : response) {
             System.out.println(user.username);
         }
-    }
-
-    @Override public void onFailure(Throwable throwable) {
-        // ...
     }
 });
 ```
