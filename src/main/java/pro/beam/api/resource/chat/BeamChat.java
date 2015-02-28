@@ -1,5 +1,6 @@
 package pro.beam.api.resource.chat;
 
+import pro.beam.api.BeamAPI;
 import pro.beam.api.resource.AbstractBeamConnectableResource;
 
 import java.util.Random;
@@ -13,8 +14,8 @@ public class BeamChat extends AbstractBeamConnectableResource<BeamChatConnectabl
     public double slowchat;
 
     @Override
-    public BeamChatConnectable makeConnectable() {
-        return this.useWSSProtocol(new BeamChatConnectable(this.selectEndpoint(), this));
+    public BeamChatConnectable makeConnectable(BeamAPI beam) {
+        return this.useWSSProtocol(new BeamChatConnectable(beam, this.selectEndpoint(), this));
     }
 
     private String selectEndpoint() {
