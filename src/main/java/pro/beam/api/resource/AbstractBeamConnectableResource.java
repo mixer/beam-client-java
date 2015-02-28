@@ -1,4 +1,4 @@
-package pro.beam.api.resource.ws;
+package pro.beam.api.resource;
 
 import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
 import org.java_websocket.client.WebSocketClient;
@@ -26,8 +26,8 @@ public abstract class AbstractBeamConnectableResource<T extends WebSocketClient>
         try {
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null,
-                            this.trustAllCertificates(),
-                            this.random());
+                    this.trustAllCertificates(),
+                    this.random());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             return null;
         }

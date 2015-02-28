@@ -1,7 +1,6 @@
-package pro.beam.api.resource;
+package pro.beam.api.resource.chat;
 
-import pro.beam.api.resource.ws.AbstractBeamConnectableResource;
-import pro.beam.api.resource.ws.BeamChatConnectable;
+import pro.beam.api.resource.AbstractBeamConnectableResource;
 
 import java.util.Random;
 

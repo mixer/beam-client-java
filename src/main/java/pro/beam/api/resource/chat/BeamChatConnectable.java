@@ -1,8 +1,7 @@
-package pro.beam.api.resource.ws;
+package pro.beam.api.resource.chat;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import pro.beam.api.resource.BeamChat;
 
 import java.net.URI;
 
