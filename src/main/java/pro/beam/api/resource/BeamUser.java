@@ -7,6 +7,7 @@ public class BeamUser extends AbstractBeamResource {
     public String display_name;
     public String email;
     public int id;
+    public BeamChannel channel;
     public int points;
     public Date reset_time;
     public String social_facebook;

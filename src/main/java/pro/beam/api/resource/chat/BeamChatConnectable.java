@@ -26,7 +26,9 @@ public class BeamChatConnectable extends BeamWebSocketResource {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-
+        System.out.println(i);
+        System.out.println(s);
+        System.out.println(b);
     }
 
     @Override
