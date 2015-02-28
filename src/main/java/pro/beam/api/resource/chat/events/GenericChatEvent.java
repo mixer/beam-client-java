@@ -16,5 +16,7 @@ public abstract class GenericChatEvent<T extends GenericChatEvent.EventData> ext
     public static abstract class EventData {}
     public static enum EventType {
         @SerializedName("ChatMessage") CHAT_MESSAGE,
+        @SerializedName("PollStart") POLL_START,
+        @SerializedName("PollEnd") POLL_END,
     }
 }
