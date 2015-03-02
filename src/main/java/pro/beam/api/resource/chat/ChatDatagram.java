@@ -6,7 +6,7 @@ public abstract class ChatDatagram {
     public Type type;
 
     public static enum Type {
-        @SerializedName("message") MESSAGE,
+        @SerializedName("method") METHOD,
         @SerializedName("event") EVENT
     }
 }

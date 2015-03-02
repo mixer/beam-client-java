@@ -20,7 +20,7 @@ public class BeamChatConnectable extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        System.out.println("handshake");
+        System.out.println(serverHandshake.getHttpStatus());
     }
 
     @Override
@@ -30,11 +30,16 @@ public class BeamChatConnectable extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        System.out.println("closed: "+s);
+        System.out.println("closed: ("+i+") "+s);
     }
 
     @Override
     public void onError(Exception e) {
         e.printStackTrace();
+    }
+
+    public void send(ChatDatagram datagram) {
+        byte[] data = this.beam.gson.toJson(datagram).getBytes();
+        this.send(this.beam.gson.toJson(datagram));
     }
 }
