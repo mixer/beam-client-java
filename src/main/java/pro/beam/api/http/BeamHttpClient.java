@@ -23,7 +23,7 @@ import java.util.concurrent.Callable;
 public class BeamHttpClient {
     public final CookieStore cookieStore;
     protected final BeamAPI beam;
-    protected final HttpClient http;
+    public final HttpClient http;
 
     public BeamHttpClient(BeamAPI beam) {
         this.beam = beam;

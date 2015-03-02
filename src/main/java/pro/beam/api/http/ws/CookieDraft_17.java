@@ -26,11 +26,11 @@ public class CookieDraft_17 extends Draft_17 {
 
         request.put("Cookie", Joiner.on("; ").join(cookies));
 
-        return request;
+        return super.postProcessHandshakeRequestAsClient(request);
     }
 
     @Override
     public Draft copyInstance() {
-        return new CookieDraft_17(httpClient);
+        return new CookieDraft_17(this.httpClient);
     }
 }
