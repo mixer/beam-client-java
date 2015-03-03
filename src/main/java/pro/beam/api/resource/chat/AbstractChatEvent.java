@@ -1,12 +1,11 @@
-package pro.beam.api.resource.chat.events;
+package pro.beam.api.resource.chat;
 
 import com.google.gson.annotations.SerializedName;
-import pro.beam.api.resource.chat.ChatDatagram;
 
 import java.util.List;
 
-public abstract class GenericChatEvent<T extends GenericChatEvent.EventData> extends ChatDatagram {
-    public GenericChatEvent() {
+public abstract class AbstractChatEvent<T extends AbstractChatEvent.EventData> extends AbstractChatDatagram {
+    public AbstractChatEvent() {
         this.type = Type.EVENT;
     }
 

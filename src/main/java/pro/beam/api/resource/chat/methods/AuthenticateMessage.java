@@ -2,13 +2,11 @@ package pro.beam.api.resource.chat.methods;
 
 import pro.beam.api.resource.BeamChannel;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.resource.chat.AbstractChatMethod;
 
-public class AuthenticateMessage extends ChatMessageDatagram {
-    private static final String METHOD_TOKEN = "auth";
-
+public class AuthenticateMessage extends AbstractChatMethod {
     public static AuthenticateMessage from(BeamChannel channel, BeamUser user, String authkey) {
         AuthenticateMessage am = new AuthenticateMessage();
-        am.method = METHOD_TOKEN;
         am.arguments = new Object[] {
             channel.id,
             user.id,
@@ -19,7 +17,7 @@ public class AuthenticateMessage extends ChatMessageDatagram {
     }
 
     public AuthenticateMessage() {
-        this.type = Type.METHOD;
+        super("auth");
     }
 
     public Object[] arguments;

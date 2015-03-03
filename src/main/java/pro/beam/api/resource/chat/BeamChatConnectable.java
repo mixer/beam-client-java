@@ -20,26 +20,17 @@ public class BeamChatConnectable extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        System.out.println(serverHandshake.getHttpStatus());
     }
 
     @Override
     public void onMessage(String s) {
-        System.out.println("message: "+s);
     }
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        System.out.println("closed: ("+i+") "+s);
     }
 
     @Override
     public void onError(Exception e) {
-        e.printStackTrace();
-    }
-
-    public void send(ChatDatagram datagram) {
-        byte[] data = this.beam.gson.toJson(datagram).getBytes();
-        this.send(this.beam.gson.toJson(datagram));
     }
 }

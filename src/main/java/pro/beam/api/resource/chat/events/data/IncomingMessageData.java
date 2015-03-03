@@ -1,11 +1,11 @@
 package pro.beam.api.resource.chat.events.data;
 
 import com.google.gson.annotations.SerializedName;
-import pro.beam.api.resource.chat.events.GenericChatEvent;
+import pro.beam.api.resource.chat.AbstractChatEvent;
 
 import java.util.List;
 
-public class IncomingMessageData extends GenericChatEvent.EventData {
+public class IncomingMessageData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
     public String user_name;
