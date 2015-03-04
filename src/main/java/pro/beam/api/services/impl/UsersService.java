@@ -14,6 +14,10 @@ public class UsersService extends AbstractHTTPService {
         super(beam, "users");
     }
 
+    public ListenableFuture<BeamUser> findOne(int id) {
+        return this.get(String.valueOf(id), BeamUser.class);
+    }
+
     public ListenableFuture<BeamUser> login(String username, String password) {
         return this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
                                                     .put("username", username)
