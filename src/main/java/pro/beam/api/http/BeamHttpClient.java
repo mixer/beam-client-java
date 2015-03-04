@@ -1,5 +1,6 @@
 package pro.beam.api.http;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import org.apache.http.*;
@@ -127,5 +128,9 @@ public class BeamHttpClient {
 
     private ListeningExecutorService executor() {
         return this.beam.executor;
+    }
+
+    public static ImmutableMap.Builder<String, Object> getArgumentsBuilder() {
+        return new ImmutableMap.Builder<>();
     }
 }
