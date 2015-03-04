@@ -1,6 +1,6 @@
 package pro.beam.api.resource.chat.methods;
 
-import pro.beam.api.resource.BeamChannel;
+import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.AbstractChatMethod;
 

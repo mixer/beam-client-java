@@ -3,13 +3,15 @@ package pro.beam.api.services.impl;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
-import pro.beam.api.resource.BeamChannel;
+import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.BeamChat;
 import pro.beam.api.response.channels.ShowChannelsResponse;
+import pro.beam.api.response.channels.ShowSlugsRepsonse;
 import pro.beam.api.services.AbstractHTTPService;
 import pro.beam.api.util.Enums;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 public class ChannelsService extends AbstractHTTPService {
@@ -48,6 +50,41 @@ public class ChannelsService extends AbstractHTTPService {
         arguments.put("user", follower.id);
 
         this.put(channel.id + "/follow", null, arguments.build());
+    }
+
+    public ListenableFuture<ShowChannelsResponse> search(ShowChannelsResponse.Scope scope,
+                                                         String query,
+                                                         int page, int limit) {
+        ImmutableMap.Builder<String, Object> options = new ImmutableMap.Builder<>();
+        options.put(Enums.serializedName(scope), query);
+
+        options.put("page", Math.min(0, page));
+        options.put("limit", Math.min(0, limit));
+
+        return this.get("search", ShowChannelsResponse.class, options.build());
+    }
+
+    public ListenableFuture<ShowSlugsRepsonse> showTypes() {
+        return this.get("types", ShowSlugsRepsonse.class);
+    }
+
+
+    public void unfollow(BeamChannel channel, BeamUser exFollower) {
+        ImmutableMap.Builder<String, Object> arguments = new ImmutableMap.Builder<>();
+        arguments.put("user", exFollower.id);
+
+        this.delete(channel.id + "/follow", null, arguments.build());
+    }
+
+    public ListenableFuture<BeamChannel> update(BeamChannel channel) {
+        ImmutableMap.Builder<String, Object> arguments = new ImmutableMap.Builder<>();
+        for (Field f : channel.getClass().getFields()) {
+            try {
+                arguments.put(f.getName(), f.get(channel));
+            } catch (IllegalAccessException ignored) { }
+        }
+
+        return this.put(channel.id, BeamChannel.class, arguments.build());
     }
 }
 

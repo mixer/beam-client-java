@@ -1,8 +1,10 @@
 package pro.beam.api.resource;
 
+import pro.beam.api.resource.channel.BeamChannel;
+
 import java.util.Date;
 
-public class BeamUser extends AbstractBeamResource {
+public class BeamUser {
     public Date created_at;
     public String display_name;
     public String email;

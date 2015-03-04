@@ -1,10 +1,10 @@
-package pro.beam.api.resource;
+package pro.beam.api.resource.channel;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class BeamChannel extends AbstractBeamResource {
+public class BeamChannel {
     public CostreamPreference allow_costream;
     public AudienceRating audience;
     public String body;

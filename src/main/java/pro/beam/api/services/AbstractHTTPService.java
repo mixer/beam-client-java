@@ -32,8 +32,8 @@ public abstract class AbstractHTTPService extends AbstractBeamService {
         return this.http.put(this.path(path), type, args);
     }
 
-    protected <T> ListenableFuture<T> delete(String path, Class<T> type) {
-        return this.http.delete(this.path(path), type);
+    protected <T> ListenableFuture<T> delete(String path, Class<T> type, Object... args) {
+        return this.http.delete(this.path(path), type, args);
     }
 
     public String path(String relative) {
