@@ -91,7 +91,13 @@ public class BeamHttpClient {
                 BeamHttpClient self = BeamHttpClient.this;
                 String response = self.http.execute(request, new BasicResponseHandler());
 
-                return self.beam.gson.fromJson(response, type);
+                // Allow a null response to be given back, such that we return a ListenableFuture
+                // with null.
+                if (type != null) {
+                    return self.beam.gson.fromJson(response, type);
+                } else {
+                    return null;
+                }
             }
         };
     }

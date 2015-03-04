@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.resource.BeamChannel;
+import pro.beam.api.resource.BeamUser;
+import pro.beam.api.resource.chat.BeamChat;
 import pro.beam.api.response.channels.ShowChannelsResponse;
 import pro.beam.api.services.AbstractHTTPService;
 import pro.beam.api.util.Enums;
@@ -39,6 +41,13 @@ public class ChannelsService extends AbstractHTTPService {
 
     public ListenableFuture<BeamChannel> findOne(String id) {
         return this.get(id, BeamChannel.class);
+    }
+
+    public void follow(BeamChannel channel, BeamUser follower) {
+        ImmutableMap.Builder<String, Object> arguments = new ImmutableMap.Builder<>();
+        arguments.put("user", follower.id);
+
+        this.put(channel.id + "/follow", null, arguments.build());
     }
 }
 
