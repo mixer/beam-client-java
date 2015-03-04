@@ -16,7 +16,9 @@ public abstract class AbstractChatEvent<T extends AbstractChatEvent.EventData> e
         @SerializedName("ChatMessage") CHAT_MESSAGE (IncomingMessageEvent.class),
         @SerializedName("PollStart") POLL_START (PollStartEvent.class),
         @SerializedName("PollEnd") POLL_END (PollEndEvent.class),
-        @SerializedName("Stats") STATS (StatusEvent.class);
+        @SerializedName("Stats") STATS (StatusEvent.class),
+        @SerializedName("UserJoin") USER_JOIN (UserJoinEvent.class),
+        @SerializedName("UserLeave") USER_LEAVE (UserLeaveEvent.class);
 
         private final Class<? extends AbstractChatEvent> correspondingClass;
 
