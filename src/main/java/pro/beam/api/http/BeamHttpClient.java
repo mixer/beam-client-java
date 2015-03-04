@@ -3,12 +3,14 @@ package pro.beam.api.http;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import org.apache.http.*;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import pro.beam.api.BeamAPI;
@@ -19,12 +21,14 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class BeamHttpClient {
+    public final CookieStore cookieStore;
     protected final BeamAPI beam;
-    protected final HttpClient http;
+    public final HttpClient http;
 
     public BeamHttpClient(BeamAPI beam) {
         this.beam = beam;
-        this.http = HttpClientBuilder.create().build();
+        this.cookieStore = new BasicCookieStore();
+        this.http = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
     }
 
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
