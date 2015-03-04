@@ -5,7 +5,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
-import pro.beam.api.resource.chat.BeamChat;
 import pro.beam.api.response.channels.ShowChannelsResponse;
 import pro.beam.api.response.channels.ShowSlugsRepsonse;
 import pro.beam.api.services.AbstractHTTPService;
@@ -84,7 +83,6 @@ public class ChannelsService extends AbstractHTTPService {
             } catch (IllegalAccessException ignored) { }
         }
 
-        return this.put(channel.id, BeamChannel.class, arguments.build());
+        return this.put(String.valueOf(channel.id), BeamChannel.class, arguments.build());
     }
 }
-
