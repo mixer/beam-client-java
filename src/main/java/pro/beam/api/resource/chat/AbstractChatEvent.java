@@ -1,8 +1,7 @@
 package pro.beam.api.resource.chat;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
+import pro.beam.api.resource.chat.events.*;
 
 public abstract class AbstractChatEvent<T extends AbstractChatEvent.EventData> extends AbstractChatDatagram {
     public AbstractChatEvent() {
@@ -10,12 +9,41 @@ public abstract class AbstractChatEvent<T extends AbstractChatEvent.EventData> e
     }
 
     public EventType event;
-    public List<T> data;
+    public T data;
 
     public static abstract class EventData {}
     public static enum EventType {
-        @SerializedName("ChatMessage") CHAT_MESSAGE,
-        @SerializedName("PollStart") POLL_START,
-        @SerializedName("PollEnd") POLL_END,
+        @SerializedName("ChatMessage") CHAT_MESSAGE (IncomingMessageEvent.class),
+        @SerializedName("PollStart") POLL_START (PollStartEvent.class),
+        @SerializedName("PollEnd") POLL_END (PollEndEvent.class),
+        @SerializedName("Stats") STATS (StatusEvent.class);
+
+        private final Class<? extends AbstractChatEvent> correspondingClass;
+
+        private EventType(Class<? extends AbstractChatEvent> correspondingClass) {
+            this.correspondingClass = correspondingClass;
+        }
+
+        public static EventType fromSerializedName(String name) {
+            if (name == null) return null;
+
+            for (EventType type : EventType.values()) {
+                try {
+                    String serializedName = type.getClass().getField(type.name())
+                                                           .getAnnotation(SerializedName.class).value();
+                    if (name.equals(serializedName)) {
+                        return type;
+                    }
+                } catch (NoSuchFieldException e) {
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
+        public Class<? extends AbstractChatEvent> getCorrespondingClass() {
+            return this.correspondingClass;
+        }
     }
 }

@@ -16,12 +16,14 @@ import java.util.concurrent.Executors;
 public class BeamAPI {
     public static final URI BASE_PATH = URI.create("https://beam.pro/api/v1/");
 
-    public final Gson gson = new GsonBuilder().create();
+    public final Gson gson;
     public final BeamHttpClient http;
     public final ListeningExecutorService executor;
     protected final ServiceManager services;
 
     public BeamAPI() {
+        this.gson = new GsonBuilder().create();
+
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
         this.http = new BeamHttpClient(this);
         this.services = new ServiceManager();
