@@ -3,7 +3,7 @@ package pro.beam.api.resource.chat;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
-import com.oracle.javafx.jmx.json.JSONException;
+import com.google.gson.JsonSyntaxException;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import pro.beam.api.BeamAPI;
@@ -106,7 +106,7 @@ public class BeamChatConnectable extends WebSocketClient {
 
                 this.dispatchEvent(this.beam.gson.fromJson(e, type));
             }
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
             // If an exception was called and we do have a reply handler to catch it,
             // call the #onFailure method with the throwable.
             if (replyPair != null) {
