@@ -12,6 +12,7 @@ import pro.beam.api.http.ws.CookieDraft_17;
 import java.net.URI;
 
 import pro.beam.api.resource.chat.events.EventHandler;
+import pro.beam.api.resource.chat.events.data.IncomingMessageData;
 import pro.beam.api.resource.chat.replies.ReplyHandler;
 
 import java.lang.reflect.ParameterizedType;
@@ -60,6 +61,11 @@ public class BeamChatConnectable extends WebSocketClient {
                 return null;
             }
         });
+    }
+
+    public void delete(IncomingMessageData message) {
+        String path = BeamAPI.BASE_PATH.resolve("chats/" + message.channel + "/message/" + message.id).toString();
+        this.beam.http.delete(path, null);
     }
 
     private <T extends AbstractChatEvent> void dispatchEvent(T event) {
