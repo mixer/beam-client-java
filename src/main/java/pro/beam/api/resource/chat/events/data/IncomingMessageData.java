@@ -19,19 +19,21 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     public String getMessage() {
         return Joiner.on(' ').join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
             @Override public String apply(MessagePart part) {
-                return part.type == MessagePart.Type.TEXT ? part.data : part.path;
+                return part.type == MessagePart.Type.TEXT ? part.data: part.url;
             }
         }));
     }
 
     public static class MessagePart {
         public Type type;
+        public String url;
         public String data;
         public String path;
 
         public static enum Type {
             @SerializedName("text") TEXT,
-            @SerializedName("emoticon") EMOTICON;
+            @SerializedName("emoticon") EMOTICON,
+            @SerializedName("link") LINK;
         }
     }
 }
