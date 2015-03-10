@@ -29,8 +29,8 @@ public class BeamChatConnectable extends WebSocketClient {
     protected final Map<Integer, ReplyPair> replyHandlers;
     protected final Multimap<Class<? extends AbstractChatEvent>, EventHandler> eventHandlers;
 
-    public BeamChatConnectable(BeamAPI beam, String endpoint, BeamChat chat) {
-        super(URI.create(endpoint), new CookieDraft_17(beam.http));
+    public BeamChatConnectable(BeamAPI beam, URI endpoint, BeamChat chat) {
+        super(endpoint, new CookieDraft_17(beam.http));
 
         this.beam = beam;
         this.chat = chat;
@@ -119,6 +119,12 @@ public class BeamChatConnectable extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
+        while (this.isClosed() && !this.isConnecting()) {
+            try {
+                this.uri = this.chat.selectEndpoint();
+                this.connectBlocking();
+            } catch (InterruptedException ignored) { }
+        }
     }
 
     @Override

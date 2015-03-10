@@ -5,6 +5,7 @@ import pro.beam.api.http.ws.ConnectionProducer;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Random;
 
 public class BeamChat implements ConnectionProducer<BeamChatConnectable> {
@@ -29,7 +30,7 @@ public class BeamChat implements ConnectionProducer<BeamChatConnectable> {
         return connectable;
     }
 
-    private String selectEndpoint() {
-        return this.endpoints[new Random().nextInt(this.endpoints.length)];
+    public URI selectEndpoint() {
+        return URI.create(this.endpoints[new Random().nextInt(this.endpoints.length)]);
     }
 }
