@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.response.users.UserFollowsResponse;
 import pro.beam.api.response.users.UserSearchResponse;
 import pro.beam.api.services.AbstractHTTPService;
 
@@ -21,8 +22,8 @@ public class UsersService extends AbstractHTTPService {
 
     public ListenableFuture<BeamUser> login(String username, String password) {
         return this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
-                                                    .put("username", username)
-                                                    .put("password", password).build());
+                .put("username", username)
+                .put("password", password).build());
     }
 
     public ListenableFuture<UserSearchResponse> search(String query) {
@@ -33,5 +34,13 @@ public class UsersService extends AbstractHTTPService {
 
             return this.get("search", UserSearchResponse.class, args);
         }
+    }
+
+    public ListenableFuture<UserFollowsResponse> following(BeamUser user, int page, int limit) {
+        return this.post(user.id + "/follows",
+                         UserFollowsResponse.class,
+                         BeamHttpClient.getArgumentsBuilder()
+                                 .put("page", Math.max(0, page))
+                                 .put("limit", Math.min(limit, 50)).build());
     }
 }
