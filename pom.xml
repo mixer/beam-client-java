@@ -55,4 +55,18 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <reportOutputDirectory>${project.basedir}/src/main</reportOutputDirectory>
+                    <destDir>docs</destDir>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
