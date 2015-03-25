@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterators;
 import com.google.gson.annotations.SerializedName;
+import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.AbstractChatEvent;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     public String id;
     public String user_name;
     public String user_id;
-    public String user_role;
+    public List<BeamUser.Role> user_roles;
     public List<MessagePart> message;
 
     public String getMessage() {
