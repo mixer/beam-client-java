@@ -20,10 +20,31 @@ public class UsersService extends AbstractHTTPService {
         return this.get(String.valueOf(id), BeamUser.class);
     }
 
+    /**
+     * Login without two factor authentication
+     * @param username The user's username
+     * @param password The user's password
+     * @return
+     */
     public ListenableFuture<BeamUser> login(String username, String password) {
         return this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
                 .put("username", username)
                 .put("password", password).build());
+    }
+
+    /**
+     * Login with two factor authentication.
+     *
+     * @param username The user's username
+     * @param password The user's password
+     * @param authCode The user's two factor authentication code
+     * @return
+     */
+    public ListenableFuture<BeamUser> login(String username, String password, String authCode) {
+        return this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
+                .put("username", username)
+                .put("password", password)
+                .put("code", authCode).build());
     }
 
     public ListenableFuture<UserSearchResponse> search(String query) {
