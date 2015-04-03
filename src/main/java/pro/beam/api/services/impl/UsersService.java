@@ -41,10 +41,14 @@ public class UsersService extends AbstractHTTPService {
      * @return
      */
     public ListenableFuture<BeamUser> login(String username, String password, String authCode) {
-        return this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
-                .put("username", username)
-                .put("password", password)
-                .put("code", authCode).build());
+        if (authCode.length() != 6) {
+            throw new IllegalArgumentException("two factor authentication code have to be 6 digits (was " + authCode.length() + ")");
+        } else {
+            return this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
+                    .put("username", username)
+                    .put("password", password)
+                    .put("code", authCode).build());
+        }
     }
 
     public ListenableFuture<UserSearchResponse> search(String query) {
