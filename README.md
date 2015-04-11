@@ -1,4 +1,4 @@
-# beam-java
+# beam-java [![](https://badges.gitter.im/MCProHosting/beam.png)](https://gitter.im/MCProHosting/beam-dev)
 
 This is the official Java client for the [beam.pro](https://beam.pro) API.  It
 currently supports `v1` and is a work in progress.
