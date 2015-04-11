@@ -45,6 +45,10 @@ public class BeamHttpClient {
         return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.PUT, path, args), type));
     }
 
+    public <T> ListenableFuture<T> patch(String path, Class<T> type, Object... args) {
+        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.PATCH, path, args), type));
+    }
+
     public <T> ListenableFuture<T> delete(String path, Class<T> type, Object... args) {
         return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.DELETE, path, args), type));
     }
