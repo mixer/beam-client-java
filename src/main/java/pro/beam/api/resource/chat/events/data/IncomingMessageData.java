@@ -21,6 +21,8 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
         return Joiner.on(' ').join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
             @Override public String apply(MessagePart part) {
                 switch(part.type) {
+                    case ME:
+                        return part.text;
                     case EMOTICON:
                         return part.path;
                     case LINK:
@@ -38,8 +40,10 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
         public String url;
         public String data;
         public String path;
+        public String text;
 
         public static enum Type {
+            @SerializedName("me") ME,
             @SerializedName("text") TEXT,
             @SerializedName("emoticon") EMOTICON,
             @SerializedName("link") LINK,
