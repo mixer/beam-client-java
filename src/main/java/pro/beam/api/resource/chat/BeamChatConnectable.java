@@ -13,6 +13,7 @@ import java.net.URI;
 
 import pro.beam.api.resource.chat.events.EventHandler;
 import pro.beam.api.resource.chat.events.data.IncomingMessageData;
+import pro.beam.api.resource.chat.events.data.IncomingWidgetData;
 import pro.beam.api.resource.chat.replies.ReplyHandler;
 
 import java.lang.reflect.ParameterizedType;
@@ -101,10 +102,16 @@ public class BeamChatConnectable extends WebSocketClient {
                     replyPair.handler.onSuccess(type.cast(datagram));
                 }
             } else if (e.has("event")) {
-                String eventName = e.get("event").getAsString();
-                Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
-
-                this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                //handles cases of beam widgets (GiveawayBot) sending ChatMessage events
+                if(e.getAsJsonObject("data").has("user_id") && e.getAsJsonObject("data").get("user_id").getAsInt() == -1) {
+                        Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
+                        this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                } else {
+                    //default ChatMessage event handling
+                   String eventName = e.get("event").getAsString();
+                   Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
+                   this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                }
             }
         } catch (JsonSyntaxException e) {
             // If an exception was called and we do have a reply handler to catch it,
