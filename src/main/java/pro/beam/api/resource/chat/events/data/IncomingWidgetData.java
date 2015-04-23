@@ -1,9 +1,5 @@
 package pro.beam.api.resource.chat.events.data;
 
-import ca.ifdev.utils.Emotes;
-import ca.ifdev.utils.Prefixes;
-import ca.ifdev.utils.Self;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterators;
