@@ -1,22 +1,22 @@
 package pro.beam.api.resource;
 
-import com.google.gson.annotations.SerializedName;
-import pro.beam.api.resource.channel.BeamChannel;
-
 import java.util.Date;
 
+import pro.beam.api.resource.channel.BeamChannel;
+
+import com.google.gson.annotations.SerializedName;
+
 public class BeamUser {
-    public Date created_at;
-    public String display_name;
+    public Date createdAt;
     public String email;
     public int id;
     public BeamChannel channel;
     public int points;
-    public Date reset_time;
+    public Date resetTime;
     public String social_facebook;
     public String social_twitter;
     public String social_youtube;
-    public Date updated_at;
+    public Date updatedAt;
     public String username;
     public boolean verified;
 
