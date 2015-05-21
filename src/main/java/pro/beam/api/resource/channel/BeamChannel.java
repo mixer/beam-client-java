@@ -1,27 +1,28 @@
 package pro.beam.api.resource.channel;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 
+import com.google.gson.annotations.SerializedName;
+
 public class BeamChannel {
-    public CostreamPreference allow_costream;
+    public CostreamPreference allowCostream;
     public AudienceRating audience;
-    public String body;
-    public Date created_at;
+    public String description;
+    public Date createdAt;
     public boolean featured;
-    public int followers;
+    public int numFollowers;
     public boolean hidden;
     public int id;
     public String name;
     public boolean online;
     public boolean partnered;
-    public int subscribers;
+    public int numSubscribers;
     public String token;
     public String type;
-    public Date updated_at;
-    public int user;
-    public int viewers_total;
+    public Date updatedAt;
+    public int userId;
+    public int viewersCurrent;
+    public int viewersTotal;
 
     public static enum CostreamPreference {
         @SerializedName("all") ALL,
