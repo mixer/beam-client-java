@@ -7,7 +7,7 @@ public class BeamResource {
     public int id;
     public Map<String, Object> meta;
     public int relid;
-    public String remote_path;
+    public String remotePath;
     public String store;
     public String type;
     public String url;
