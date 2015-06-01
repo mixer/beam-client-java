@@ -10,14 +10,16 @@ public class BeamChannel {
     public String description;
     public Date createdAt;
     public boolean featured;
-    public int numFollowers;
     public boolean hidden;
     public int id;
     public String name;
     public boolean online;
     public boolean partnered;
     public int numSubscribers;
+    public int numFollowers;
+    public boolean suspended;
     public String token;
+    public boolean transcodingEnabled;
     public String type;
     public Date updatedAt;
     public int userId;

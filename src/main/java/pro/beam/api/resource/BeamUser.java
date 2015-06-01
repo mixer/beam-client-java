@@ -13,9 +13,7 @@ public class BeamUser {
     public BeamChannel channel;
     public int points;
     public Date resetTime;
-    public String social_facebook;
-    public String social_twitter;
-    public String social_youtube;
+    public Social social;
     public Date updatedAt;
     public String username;
     public boolean verified;
@@ -30,5 +28,11 @@ public class BeamUser {
         @SerializedName("Admin") ADMIN,
         @SerializedName("Developer") DEVELOPER,
         @SerializedName("Owner") OWNER
+    }
+
+    public class Social {
+        public String facebook;
+        public String twitter;
+        public String youtube;
     }
 }

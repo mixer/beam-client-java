@@ -22,7 +22,9 @@ public class BeamAPI {
     protected final ServiceManager services;
 
     public BeamAPI() {
-        this.gson = new GsonBuilder().create();
+        this.gson = new GsonBuilder()
+                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                        .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
         this.http = new BeamHttpClient(this);
