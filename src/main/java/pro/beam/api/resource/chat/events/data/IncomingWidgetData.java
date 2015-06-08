@@ -8,9 +8,9 @@ import pro.beam.api.resource.chat.AbstractChatEvent;
 public class IncomingWidgetData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
-    public String userName;
-    public String userId;
-    public List<BeamUser.Role> userRoles;
+    public String user_name;
+    public String user_id;
+    public List<BeamUser.Role> user_roles;
     public String message;
 
     public String getMessage() {

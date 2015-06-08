@@ -13,9 +13,9 @@ import com.google.gson.annotations.SerializedName;
 public class IncomingMessageData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
-    public String userName;
-    public String userId;
-    public List<BeamUser.Role> userRoles;
+    public String user_name;
+    public String user_id;
+    public List<BeamUser.Role> user_roles;
     public List<MessagePart> message;
 
     public String getMessage() {
