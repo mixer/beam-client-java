@@ -7,7 +7,6 @@ import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.response.channels.ShowChannelsResponse;
-import pro.beam.api.response.channels.ShowSlugsRepsonse;
 import pro.beam.api.services.AbstractHTTPService;
 import pro.beam.api.util.Enums;
 
@@ -38,7 +37,7 @@ public class ChannelsService extends AbstractHTTPService {
         options.put("page", Math.min(0, page));
         options.put("limit", Math.min(0, limit));
 
-        return this.get("/", ShowChannelsResponse.class, options.build());
+        return this.get("", ShowChannelsResponse.class, options.build());
     }
 
     public ListenableFuture<BeamChannel> findOne(String id) {
@@ -63,11 +62,6 @@ public class ChannelsService extends AbstractHTTPService {
 
         return this.get("search", ShowChannelsResponse.class, options.build());
     }
-
-    public ListenableFuture<ShowSlugsRepsonse> showTypes() {
-        return this.get("types", ShowSlugsRepsonse.class);
-    }
-
 
     public void unfollow(BeamChannel channel, BeamUser exFollower) {
         ImmutableMap.Builder<String, Object> arguments = BeamHttpClient.getArgumentsBuilder();

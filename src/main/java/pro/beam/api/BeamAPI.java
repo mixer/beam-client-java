@@ -33,6 +33,7 @@ public class BeamAPI {
         this.register(new UsersService(this));
         this.register(new ChatService(this));
         this.register(new ChannelsService(this));
+        this.register(new TypesService(this));
     }
 
     public <T extends AbstractBeamService> T use(Class<T> service) {

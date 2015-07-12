@@ -37,6 +37,10 @@ public abstract class AbstractHTTPService extends AbstractBeamService {
     }
 
     public String path(String relative) {
-        return BeamAPI.BASE_PATH.resolve(this.path + "/" + relative).toString();
+        if (relative.length() > 0) {
+            relative = "/" + relative;
+        }
+
+        return BeamAPI.BASE_PATH.resolve(this.path + relative).toString();
     }
 }
