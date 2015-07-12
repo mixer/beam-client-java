@@ -20,11 +20,21 @@ public class BeamChannel {
     public boolean suspended;
     public String token;
     public boolean transcodingEnabled;
-    public String type;
+    public Type type;
     public Date updatedAt;
     public int userId;
     public int viewersCurrent;
     public int viewersTotal;
+
+    public static class Type {
+        public int id;
+        public String name;
+        public String parent;
+        public String description;
+        public String source;
+        public int viewersCurrent;
+        public int online;
+    }
 
     public static enum CostreamPreference {
         @SerializedName("all") ALL,
