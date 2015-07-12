@@ -3,6 +3,7 @@ package pro.beam.api.http;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.gson.Gson;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -11,11 +12,13 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import pro.beam.api.BeamAPI;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -75,7 +78,15 @@ public class BeamHttpClient {
 
     private HttpEntity makeEntity(Object... args) {
         Object object = args.length == 1 ? args[0] : args;
-        return new ByteArrayEntity(this.beam.gson.toJson(object).getBytes(), ContentType.APPLICATION_JSON);
+        String serialized = this.beam.gson.toJson(object);
+
+        try {
+            return new StringEntity(serialized);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
