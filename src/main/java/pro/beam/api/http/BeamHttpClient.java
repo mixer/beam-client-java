@@ -16,6 +16,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import pro.beam.api.BeamAPI;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -77,7 +78,17 @@ public class BeamHttpClient {
         Object object = args.length == 1 ? args[0] : args;
         String serialized = this.beam.gson.toJson(object);
 
-        return new StringEntity(serialized, ContentType.APPLICATION_JSON);
+        try {
+            StringEntity e = new StringEntity(serialized);
+            e.setContentEncoding("UTF-8");
+            e.setContentType("application/json");
+
+            return e;
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
