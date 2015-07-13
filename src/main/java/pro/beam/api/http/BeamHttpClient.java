@@ -6,10 +6,11 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -69,8 +70,12 @@ public class BeamHttpClient {
      * @return A request built from the specification above.
      */
     private HttpUriRequest makeRequest(RequestType requestType, URI uri, Object... args) {
+        RequestConfig.Builder config = RequestConfig.copy(RequestConfig.DEFAULT);
+        config.setCookieSpec(CookieSpecs.STANDARD_STRICT);
+
         return RequestBuilder.create(requestType.name())
                              .setUri(uri)
+                             .setConfig(config.build())
                              .setEntity(this.makeEntity(args)).build();
     }
 
