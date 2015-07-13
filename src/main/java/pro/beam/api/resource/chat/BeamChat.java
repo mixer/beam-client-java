@@ -30,7 +30,12 @@ public class BeamChat implements ConnectionProducer<BeamChatConnectable> {
         return connectable;
     }
 
-    public URI selectEndpoint() {
-        return URI.create(this.endpoints[new Random().nextInt(this.endpoints.length)]);
+    protected URI selectEndpoint() {
+        if (this.endpoints == null) {
+            return null;
+        } else {
+            int index = new Random().nextInt(this.endpoints.length);
+            return URI.create(this.endpoints[index]);
+        }
     }
 }

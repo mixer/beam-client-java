@@ -9,7 +9,7 @@ public class AuthenticateMessage extends AbstractChatMethod {
         AuthenticateMessage am = new AuthenticateMessage();
         am.arguments = new Object[] {
             channel.id,
-            user.id,
+            user != null ? user.id : null,
             authkey
         };
 

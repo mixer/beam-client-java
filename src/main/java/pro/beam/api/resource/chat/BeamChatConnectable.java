@@ -83,6 +83,7 @@ public class BeamChatConnectable extends WebSocketClient {
 
     @Override
     public void onMessage(String s) {
+        // XXX: terrible
         ReplyPair replyPair = null;
         try {
             // Parse out the generic JsonObject so we can pull out the ID element from it,
@@ -102,12 +103,12 @@ public class BeamChatConnectable extends WebSocketClient {
                     replyPair.handler.onSuccess(type.cast(datagram));
                 }
             } else if (e.has("event")) {
-                //handles cases of beam widgets (GiveawayBot) sending ChatMessage events
+                // Handles cases of beam widgets (GiveawayBot) sending ChatMessage events
                 if(e.getAsJsonObject("data").has("user_id") && e.getAsJsonObject("data").get("user_id").getAsInt() == -1) {
-                        Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
-                        this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                    Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
+                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
                 } else {
-                    //default ChatMessage event handling
+                   // Default ChatMessage event handling
                    String eventName = e.get("event").getAsString();
                    Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
