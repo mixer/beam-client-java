@@ -71,7 +71,7 @@ public class BeamHttpClient {
      */
     private HttpUriRequest makeRequest(RequestType requestType, URI uri, Object... args) {
         RequestConfig.Builder config = RequestConfig.copy(RequestConfig.DEFAULT);
-        config.setCookieSpec(CookieSpecs.STANDARD_STRICT);
+        config.setCookieSpec(CookieSpecs.BEST_MATCH);
 
         return RequestBuilder.create(requestType.name())
                              .setUri(uri)
