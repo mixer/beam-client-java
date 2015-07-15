@@ -2,6 +2,7 @@ package pro.beam.api.resource.chat;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.java_websocket.client.WebSocketClient;
@@ -60,6 +61,17 @@ public class BeamChatConnectable extends WebSocketClient {
                 BeamChatConnectable.this.send(data);
 
                 return null;
+            }
+        });
+    }
+
+    public ListenableFuture<BeamChatConnectable> connectFuture() {
+        return this.beam.executor.submit(new Callable<BeamChatConnectable>() {
+            @Override public BeamChatConnectable call() throws Exception {
+                BeamChatConnectable self = BeamChatConnectable.this;
+
+                self.connectBlocking();
+                return self;
             }
         });
     }
