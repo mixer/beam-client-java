@@ -6,7 +6,7 @@
 
     <groupId>pro.beam</groupId>
     <artifactId>api</artifactId>
-    <version>1.3.13-SNAPSHOT</version>
+    <version>1.3.14-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

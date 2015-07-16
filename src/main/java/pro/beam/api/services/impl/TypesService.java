@@ -8,8 +8,6 @@ import pro.beam.api.response.channels.ShowSlugsRepsonse;
 import pro.beam.api.services.AbstractHTTPService;
 import pro.beam.api.util.Enums;
 
-import java.util.Map;
-
 public class TypesService extends AbstractHTTPService {
     public TypesService(BeamAPI beam) {
         super(beam, "types");
@@ -25,7 +23,7 @@ public class TypesService extends AbstractHTTPService {
         ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
         switch (onlineRestriction) {
             case ONLINE:
-                params.put("where", "online.eq.1");
+                params.put("where", "online.neq.0");
                 break;
             case OFFLINE:
                 params.put("where", "online.eq.0");
