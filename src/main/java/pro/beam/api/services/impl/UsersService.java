@@ -55,6 +55,10 @@ public class UsersService extends AbstractHTTPService {
         }
     }
 
+    public ListenableFuture<String> logout() {
+        return this.delete("current", null);
+    }
+
     public ListenableFuture<UserSearchResponse> search(String query) {
         if (query != null && query.length() < 3) {
             throw new IllegalArgumentException("unable to preform search with query less than 3 characters (was "+query.length()+")");
