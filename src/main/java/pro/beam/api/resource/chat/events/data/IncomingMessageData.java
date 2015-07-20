@@ -23,9 +23,8 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
             @Override public String apply(MessagePart part) {
                 switch(part.type) {
                     case ME:
-                        return part.text;
                     case EMOTICON:
-                        return part.path;
+                        return part.text;
                     case LINK:
                         return part.url;
                     case TEXT:
@@ -42,6 +41,16 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
         public String data;
         public String path;
         public String text;
+
+        // Emoticon-related
+        public String source;
+        public String pack;
+        public Coords coords;
+
+        public static class Coords {
+            public int x;
+            public int y;
+        }
 
         public static enum Type {
             @SerializedName("me") ME,
