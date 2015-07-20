@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 public class ChannelsService extends AbstractHTTPService {
+    private static final String CHANNEL_ROOT = "";
     public ChannelsService(BeamAPI beam) {
         super(beam, "channels");
     }
@@ -67,7 +68,7 @@ public class ChannelsService extends AbstractHTTPService {
         options.put("page", Math.min(0, page));
         options.put("limit", Math.min(0, limit));
 
-        return this.get("search", ShowChannelsResponse.class, options.build());
+        return this.get(CHANNEL_ROOT, ShowChannelsResponse.class, options.build());
     }
 
     public ListenableFuture<BeamChannel> update(BeamChannel channel) {
