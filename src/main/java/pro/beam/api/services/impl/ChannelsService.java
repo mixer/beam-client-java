@@ -44,11 +44,18 @@ public class ChannelsService extends AbstractHTTPService {
         return this.get(id, BeamChannel.class);
     }
 
-    public void follow(BeamChannel channel, BeamUser follower) {
+    public ListenableFuture<?> follow(BeamChannel channel, BeamUser follower) {
         ImmutableMap.Builder<String, Object> arguments = BeamHttpClient.getArgumentsBuilder();
         arguments.put("user", follower.id);
 
-        this.put(channel.id + "/follow", null, arguments.build());
+        return this.put(channel.id + "/follow", null, arguments.build());
+    }
+
+    public ListenableFuture<?> unfollow(BeamChannel channel, BeamUser exFollower) {
+        ImmutableMap.Builder<String, Object> arguments = BeamHttpClient.getArgumentsBuilder();
+        arguments.put("user", exFollower.id);
+
+        return this.delete(channel.id + "/follow", null, arguments.build());
     }
 
     public ListenableFuture<ShowChannelsResponse> search(ShowChannelsResponse.Scope scope,
@@ -61,13 +68,6 @@ public class ChannelsService extends AbstractHTTPService {
         options.put("limit", Math.min(0, limit));
 
         return this.get("search", ShowChannelsResponse.class, options.build());
-    }
-
-    public void unfollow(BeamChannel channel, BeamUser exFollower) {
-        ImmutableMap.Builder<String, Object> arguments = BeamHttpClient.getArgumentsBuilder();
-        arguments.put("user", exFollower.id);
-
-        this.delete(channel.id + "/follow", null, arguments.build());
     }
 
     public ListenableFuture<BeamChannel> update(BeamChannel channel) {
