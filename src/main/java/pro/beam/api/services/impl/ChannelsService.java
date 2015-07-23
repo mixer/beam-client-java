@@ -59,12 +59,11 @@ public class ChannelsService extends AbstractHTTPService {
         return this.delete(channel.id + "/follow", null, arguments.build());
     }
 
-    public ListenableFuture<ShowChannelsResponse> search(ShowChannelsResponse.Scope scope,
-                                                         String query,
+    public ListenableFuture<ShowChannelsResponse> search(String query,
                                                          int page, int limit) {
         ImmutableMap.Builder<String, Object> options = BeamHttpClient.getArgumentsBuilder();
-        options.put(Enums.serializedName(scope), query);
 
+        options.put("q", query);
         options.put("page", Math.min(0, page));
         options.put("limit", Math.min(0, limit));
 
