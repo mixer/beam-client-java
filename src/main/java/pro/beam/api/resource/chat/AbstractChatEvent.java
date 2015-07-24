@@ -15,6 +15,7 @@ public abstract class AbstractChatEvent<T extends AbstractChatEvent.EventData> e
     public static enum EventType {
         @SerializedName("WidgetMessage") WIDGET_MESSAGE (IncomingWidgetEvent.class),
         @SerializedName("ChatMessage") CHAT_MESSAGE (IncomingMessageEvent.class),
+        @SerializedName("DeleteMessage") DELETE_MESSAGE (DeleteMessageEvent.class),
         @SerializedName("PollStart") POLL_START (PollStartEvent.class),
         @SerializedName("PollEnd") POLL_END (PollEndEvent.class),
         @SerializedName("Stats") STATS (StatusEvent.class),
