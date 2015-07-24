@@ -1,30 +1,42 @@
 package pro.beam.api.resource.channel;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
+import pro.beam.api.resource.BeamUser;
 
 public class BeamChannel {
-    public CostreamPreference allowCostream;
-    public AudienceRating audience;
-    public String description;
-    public Date createdAt;
-    public boolean featured;
-    public boolean hidden;
     public int id;
-    public String name;
-    public boolean online;
-    public boolean partnered;
-    public int numSubscribers;
-    public int numFollowers;
-    public boolean suspended;
     public String token;
+    public boolean online;
+    public boolean featured;
+    public boolean partnered;
     public boolean transcodingEnabled;
-    public Type type;
+    public boolean suspended;
+    public String name;
+    public AudienceRating audience;
+    public String streamKey;
+    public int viewersTotal;
+    public int viewersCurrent;
+    public int numFollowers;
+    public int numSubscribers;
+    public String description;
+    public int typeId;
+    public Date createdAt;
     public Date updatedAt;
     public int userId;
-    public int viewersCurrent;
-    public int viewersTotal;
+    public int coverId;
+    public int thumbnailId;
+    public int badgeId;
+    public BeamResource thumbnail;
+    public BeamResource cover;
+    public BeamResource badge;
+    public Type type;
+    public Map<String, Object> preferences;
+    public Status status;
+    public BeamUser user;
 
     public static class Type {
         public int id;
@@ -34,6 +46,11 @@ public class BeamChannel {
         public String source;
         public int viewersCurrent;
         public int online;
+    }
+
+    public static class Status {
+        public List<String> roles;
+        public boolean follows;
     }
 
     public static enum CostreamPreference {
