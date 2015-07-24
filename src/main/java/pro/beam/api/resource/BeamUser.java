@@ -24,7 +24,7 @@ public class BeamUser {
     public enum Role {
         @SerializedName("Banned") BANNED,
         @SerializedName("User") USER,
-        @SerializedName("Premium") PREMIUM,
+        @SerializedName("Pro") PRO,
         @SerializedName("Subscriber") SUBSCRIBER,
         @SerializedName("Mod") MOD,
         @SerializedName("Global Mod") GLOBAL_MOD,
