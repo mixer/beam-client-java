@@ -60,10 +60,12 @@ public class ChannelsService extends AbstractHTTPService {
     }
 
     public ListenableFuture<ShowChannelsResponse> search(String query,
+                                                         ShowChannelsResponse.Scope scope,
                                                          int page, int limit) {
         ImmutableMap.Builder<String, Object> options = BeamHttpClient.getArgumentsBuilder();
 
         options.put("q", query);
+        options.put("scope", Enums.serializedName(scope));
         options.put("page", Math.min(0, page));
         options.put("limit", Math.min(0, limit));
 
