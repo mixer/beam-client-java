@@ -1,6 +1,7 @@
 package pro.beam.api.resource.channel;
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -23,6 +24,7 @@ public class BeamChannel {
     public Type type;
     public Date updatedAt;
     public int userId;
+    public Status status;
     public int viewersCurrent;
     public int viewersTotal;
 
@@ -34,6 +36,11 @@ public class BeamChannel {
         public String source;
         public int viewersCurrent;
         public int online;
+    }
+
+    public static class Status {
+        public List<String> roles;
+        public boolean follows;
     }
 
     public static enum CostreamPreference {
