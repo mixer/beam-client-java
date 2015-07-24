@@ -37,7 +37,7 @@ public class BeamChannel {
     public Type type;
     public Map<String, Object> preferences;
     public Status status;
-    public List<CachedMessage> cache;
+    @SerializedName("cache") public List<CachedMessage> messageCache;
     public BeamUser user;
 
     public static class Type {
