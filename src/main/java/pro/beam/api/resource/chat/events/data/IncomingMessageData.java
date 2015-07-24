@@ -18,7 +18,12 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     public List<BeamUser.Role> user_roles;
     public List<MessagePart> message;
 
+    @Deprecated()
     public String getMessage() {
+        return this.asString();
+    }
+
+    public String asString() {
         return Joiner.on(' ').join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
             @Override public String apply(MessagePart part) {
                 switch(part.type) {

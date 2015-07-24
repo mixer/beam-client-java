@@ -37,6 +37,7 @@ public class BeamChannel {
     public Type type;
     public Map<String, Object> preferences;
     public Status status;
+    public List<CachedMessage> cache;
     public BeamUser user;
 
     public static class Type {
