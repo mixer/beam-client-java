@@ -1,10 +1,12 @@
 package pro.beam.api.resource;
 
 import java.util.Date;
+import java.util.List;
 
 import pro.beam.api.resource.channel.BeamChannel;
 
 import com.google.gson.annotations.SerializedName;
+import pro.beam.api.resource.channel.BeamResource;
 
 public class BeamUser {
     public Date createdAt;
@@ -17,6 +19,7 @@ public class BeamUser {
     public Date updatedAt;
     public String username;
     public boolean verified;
+    public List<BeamResource> avatars;
 
     public enum Role {
         @SerializedName("Banned") BANNED,
