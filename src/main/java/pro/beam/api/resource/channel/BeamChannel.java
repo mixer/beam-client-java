@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.resource.Timeable;
 
 public class BeamChannel {
     public int id;
@@ -50,7 +51,12 @@ public class BeamChannel {
 
     public static class Status {
         public List<String> roles;
-        public boolean follows;
+        public FollowsRecord follows;
+
+        public static class FollowsRecord extends Timeable {
+            public int user;
+            public int channel;
+        }
     }
 
     public static enum CostreamPreference {
