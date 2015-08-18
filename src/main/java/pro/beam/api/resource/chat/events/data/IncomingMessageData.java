@@ -24,7 +24,7 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public String asString() {
-        return Joiner.on(' ').join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
+        return Joiner.on("").join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
             @Override public String apply(MessagePart part) {
                 switch(part.type) {
                     case ME:
