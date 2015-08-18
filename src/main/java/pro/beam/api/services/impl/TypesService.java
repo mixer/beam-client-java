@@ -21,29 +21,19 @@ public class TypesService extends AbstractHTTPService {
         if (onlineRestriction == null) onlineRestriction = ShowSlugsRepsonse.OnlineRestriction.NONE;
 
         ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
-        switch (onlineRestriction) {
-            case ONLINE:
-                params.put("where", "online.neq.0");
-                break;
-            case OFFLINE:
-                params.put("where", "online.eq.0");
-                break;
-            case NONE:
-                break;
-        }
+        onlineRestriction.putParams(params);
 
         return this.get("", ShowSlugsRepsonse.class, params.build());
     }
 
-
-
     public ListenableFuture<ShowChannelsResponse> channels(int id) {
-        return this.channels(id, 0, 50, null, null, null);
+        return this.channels(id, 0, 50, null, null, ShowSlugsRepsonse.OnlineRestriction.NONE, null);
     }
 
     public ListenableFuture<ShowChannelsResponse> channels(int id,
                                                            int page, int limit,
                                                            ShowChannelsResponse.Attributes orderAttribute, ShowChannelsResponse.Ordering ordering,
+                                                           ShowSlugsRepsonse.OnlineRestriction onlineRestriction,
                                                            ShowChannelsResponse.Attributes only) {
 
         ImmutableMap.Builder<String, Object> arguments = ImmutableMap.builder();
@@ -52,6 +42,7 @@ public class TypesService extends AbstractHTTPService {
         if (only != null) arguments.put("only", Enums.serializedName(only));
         arguments.put("page", Math.max(0, page));
         arguments.put("limit", Math.min(50, limit));
+        onlineRestriction.putParams(arguments);
 
         return this.get(id+"/channels", ShowChannelsResponse.class, arguments.build());
     }
