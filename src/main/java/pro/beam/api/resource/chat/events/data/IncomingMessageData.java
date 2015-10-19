@@ -13,10 +13,10 @@ import com.google.gson.annotations.SerializedName;
 public class IncomingMessageData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
-    public String user_name;
-    public int user_id;
-    public List<BeamUser.Role> user_roles;
-    public MessagePart message;
+    @SerializedName("user_name") public String userName;
+    @SerializedName("user_id") public int userId;
+    @SerializedName("user_roles") public List<BeamUser.Role> userRoles;
+    public MessageComponent message;
 
     @Deprecated()
     public String getMessage() {
@@ -24,8 +24,8 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public String asString() {
-        return Joiner.on("").join(Iterators.transform(this.message.message.iterator(), new Function<MessagePart.MessageMessagePart, String>() {
-            @Override public String apply(MessagePart.MessageMessagePart part) {
+        return Joiner.on("").join(Iterators.transform(this.message.message.iterator(), new Function<MessageComponent.MessageTextComponent, String>() {
+            @Override public String apply(MessageComponent.MessageTextComponent part) {
                 switch(part.type) {
                     case EMOTICON:
                         return part.text;
@@ -37,39 +37,5 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
                 }
             }
         }));
-    }
-
-    public static class MessagePart {
-        public MessageMetaPart meta;
-        public List<MessageMessagePart> message;
-
-        public static class MessageMetaPart {
-            public boolean me;
-        }
-
-        public static class MessageMessagePart {
-            public Type type;
-            public String data;
-            public String text;
-
-            // Emoticon-related
-            public String source;
-            public String pack;
-            public Coords coords;
-
-            // Link-related
-            public String url;
-
-            public static class Coords {
-                public int x;
-                public int y;
-            }
-
-            public enum Type {
-                @SerializedName("text")TEXT,
-                @SerializedName("emoticon")EMOTICON,
-                @SerializedName("link")LINK,
-            }
-        }
     }
 }

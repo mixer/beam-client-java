@@ -1,25 +1,27 @@
 package pro.beam.api.resource.channel;
 
+import com.google.gson.annotations.SerializedName;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.events.data.IncomingMessageData;
+import pro.beam.api.resource.chat.events.data.MessageComponent;
 
 import java.util.List;
 import java.util.UUID;
 
 public class CachedMessage {
-    public IncomingMessageData.MessagePart message;
+    public MessageComponent message;
     public int channel;
     public UUID id;
-    public int user_id;
-    public String user_name;
-    public List<BeamUser.Role> roles;
+    @SerializedName("user_id") public int userId;
+    @SerializedName("user_name") public String userName;
+    @SerializedName("user_roles") public List<BeamUser.Role> userRoles;
 
     public IncomingMessageData getMessage() {
         IncomingMessageData d = new IncomingMessageData();
         d.channel = this.channel;
         d.id = this.id.toString();
-        d.user_id = this.user_id;
-        d.user_name = this.user_name;
+        d.userId = this.userId;
+        d.userName = this.userName;
         d.message = this.message;
 
         return d;
