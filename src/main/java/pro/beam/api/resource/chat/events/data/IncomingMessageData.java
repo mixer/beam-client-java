@@ -14,9 +14,9 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
     public String user_name;
-    public String user_id;
+    public int user_id;
     public List<BeamUser.Role> user_roles;
-    public List<MessagePart> message;
+    public MessagePart message;
 
     @Deprecated()
     public String getMessage() {
@@ -24,10 +24,9 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public String asString() {
-        return Joiner.on("").join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
-            @Override public String apply(MessagePart part) {
+        return Joiner.on("").join(Iterators.transform(this.message.message.iterator(), new Function<MessagePart.MessageMessagePart, String>() {
+            @Override public String apply(MessagePart.MessageMessagePart part) {
                 switch(part.type) {
-                    case ME:
                     case EMOTICON:
                         return part.text;
                     case LINK:
@@ -41,27 +40,36 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public static class MessagePart {
-        public Type type;
-        public String url;
-        public String data;
-        public String path;
-        public String text;
+        public MessageMetaPart meta;
+        public List<MessageMessagePart> message;
 
-        // Emoticon-related
-        public String source;
-        public String pack;
-        public Coords coords;
-
-        public static class Coords {
-            public int x;
-            public int y;
+        public static class MessageMetaPart {
+            public boolean me;
         }
 
-        public static enum Type {
-            @SerializedName("me") ME,
-            @SerializedName("text") TEXT,
-            @SerializedName("emoticon") EMOTICON,
-            @SerializedName("link") LINK,
+        public static class MessageMessagePart {
+            public Type type;
+            public String data;
+            public String text;
+
+            // Emoticon-related
+            public String source;
+            public String pack;
+            public Coords coords;
+
+            // Link-related
+            public String url;
+
+            public static class Coords {
+                public int x;
+                public int y;
+            }
+
+            public enum Type {
+                @SerializedName("text")TEXT,
+                @SerializedName("emoticon")EMOTICON,
+                @SerializedName("link")LINK,
+            }
         }
     }
 }

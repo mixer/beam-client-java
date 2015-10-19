@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CachedMessage {
-    public List<IncomingMessageData.MessagePart> message;
+    public IncomingMessageData.MessagePart message;
     public int channel;
     public UUID id;
     public int user_id;
@@ -18,7 +18,7 @@ public class CachedMessage {
         IncomingMessageData d = new IncomingMessageData();
         d.channel = this.channel;
         d.id = this.id.toString();
-        d.user_id = String.valueOf(this.user_id);
+        d.user_id = this.user_id;
         d.user_name = this.user_name;
         d.message = this.message;
 

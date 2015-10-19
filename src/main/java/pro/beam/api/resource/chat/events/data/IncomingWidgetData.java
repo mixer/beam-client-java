@@ -9,7 +9,7 @@ public class IncomingWidgetData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
     public String user_name;
-    public String user_id;
+    public int user_id;
     public List<BeamUser.Role> user_roles;
     public String message;
 
