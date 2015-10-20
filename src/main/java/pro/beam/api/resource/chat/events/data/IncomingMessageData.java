@@ -13,10 +13,10 @@ import com.google.gson.annotations.SerializedName;
 public class IncomingMessageData extends AbstractChatEvent.EventData {
     public int channel;
     public String id;
-    public String user_name;
-    public String user_id;
-    public List<BeamUser.Role> user_roles;
-    public List<MessagePart> message;
+    @SerializedName("user_name") public String userName;
+    @SerializedName("user_id") public int userId;
+    @SerializedName("user_roles") public List<BeamUser.Role> userRoles;
+    public MessageComponent message;
 
     @Deprecated()
     public String getMessage() {
@@ -24,10 +24,9 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public String asString() {
-        return Joiner.on("").join(Iterators.transform(this.message.iterator(), new Function<MessagePart, String>() {
-            @Override public String apply(MessagePart part) {
+        return Joiner.on("").join(Iterators.transform(this.message.message.iterator(), new Function<MessageComponent.MessageTextComponent, String>() {
+            @Override public String apply(MessageComponent.MessageTextComponent part) {
                 switch(part.type) {
-                    case ME:
                     case EMOTICON:
                         return part.text;
                     case LINK:
@@ -38,30 +37,5 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
                 }
             }
         }));
-    }
-
-    public static class MessagePart {
-        public Type type;
-        public String url;
-        public String data;
-        public String path;
-        public String text;
-
-        // Emoticon-related
-        public String source;
-        public String pack;
-        public Coords coords;
-
-        public static class Coords {
-            public int x;
-            public int y;
-        }
-
-        public static enum Type {
-            @SerializedName("me") ME,
-            @SerializedName("text") TEXT,
-            @SerializedName("emoticon") EMOTICON,
-            @SerializedName("link") LINK,
-        }
     }
 }

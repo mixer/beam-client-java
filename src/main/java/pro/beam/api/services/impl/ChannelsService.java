@@ -41,8 +41,13 @@ public class ChannelsService extends AbstractHTTPService {
         return this.get("", ShowChannelsResponse.class, options.build());
     }
 
+    @Deprecated
     public ListenableFuture<BeamChannel> findOne(String id) {
         return this.get(id, BeamChannel.class);
+    }
+
+    public ListenableFuture<BeamChannel> findOne(int id) {
+        return this.get(String.valueOf(id), BeamChannel.class);
     }
 
     public ListenableFuture<?> follow(BeamChannel channel, BeamUser follower) {
