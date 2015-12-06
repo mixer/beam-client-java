@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.concurrent.Executors;
 
 public class BeamAPI {
-    public static final URI BASE_PATH = URI.create("https://beam.pro/api/v1/");
+    public final URI basePath;
 
     public final Gson gson;
     public final BeamHttpClient http;
@@ -22,12 +22,18 @@ public class BeamAPI {
     protected final ServiceManager services;
 
     public BeamAPI() {
+        this(URI.create("https://beam.pro/api/v1/"), null, null);
+    }
+
+    public BeamAPI(URI basePath, String httpUsername, String httpPassword) {
+        this.basePath = basePath;
+
         this.gson = new GsonBuilder()
-                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                        .create();
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-        this.http = new BeamHttpClient(this);
+        this.http = new BeamHttpClient(this, httpUsername, httpPassword);
         this.services = new ServiceManager();
 
         this.register(new UsersService(this));

@@ -4,17 +4,21 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import org.apache.http.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.*;
 import pro.beam.api.BeamAPI;
 
 import java.io.UnsupportedEncodingException;
@@ -25,12 +29,36 @@ import java.util.concurrent.Callable;
 
 public class BeamHttpClient {
     public final CookieStore cookieStore;
-    protected final BeamAPI beam;
     public final HttpClient http;
 
+    protected final BeamAPI beam;
+    protected final HttpClientContext context;
+
     public BeamHttpClient(BeamAPI beam) {
+        this(beam, null, null);
+    }
+
+    public BeamHttpClient(BeamAPI beam, String httpUsername, String httpPassword) {
         this.beam = beam;
         this.cookieStore = new BasicCookieStore();
+
+        if (httpUsername != null && httpPassword != null) {
+            this.context = HttpClientContext.create();
+
+            AuthCache ac = new BasicAuthCache();
+            ac.put(new HttpHost(this.beam.basePath.getHost()), new BasicScheme());
+            this.context.setAuthCache(ac);
+
+            CredentialsProvider cp = new BasicCredentialsProvider();
+            cp.setCredentials(
+                    AuthScope.ANY,
+                    new UsernamePasswordCredentials(httpUsername, httpPassword)
+            );
+            this.context.setCredentialsProvider(cp);
+        } else {
+            this.context = null;
+        }
+
         this.http = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
     }
 
@@ -112,7 +140,12 @@ public class BeamHttpClient {
         return new Callable<T>() {
             @Override public T call() throws Exception {
                 BeamHttpClient self = BeamHttpClient.this;
-                String response = self.http.execute(request, new BasicResponseHandler());
+                String response;
+                if (self.context != null) {
+                    response = self.http.execute(request, new BasicResponseHandler(), self.context);
+                } else {
+                    response = self.http.execute(request, new BasicResponseHandler());
+                }
 
                 // Allow a null response to be given back, such that we return a ListenableFuture
                 // with null.
@@ -133,7 +166,7 @@ public class BeamHttpClient {
      * @return The absolute resolved path as a GenericUrl.
      */
     private URI buildFromRelativePath(String path, Map<String, Object> args) {
-        URIBuilder builder = new URIBuilder(BeamAPI.BASE_PATH.resolve(path));
+        URIBuilder builder = new URIBuilder(this.beam.basePath.resolve(path));
 
         if (args != null) {
             for (Map.Entry<String, Object> entry : args.entrySet()) {

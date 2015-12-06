@@ -77,7 +77,7 @@ public class BeamChatConnectable extends WebSocketClient {
     }
 
     public void delete(IncomingMessageData message) {
-        String path = BeamAPI.BASE_PATH.resolve("chats/" + message.channel + "/message/" + message.id).toString();
+        String path = this.beam.basePath.resolve("chats/" + message.channel + "/message/" + message.id).toString();
         this.beam.http.delete(path, null);
     }
 
