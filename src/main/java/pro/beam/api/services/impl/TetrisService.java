@@ -1,24 +1,26 @@
 package pro.beam.api.services.impl;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.CheckedFuture;
 import pro.beam.api.BeamAPI;
+import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.tetris.RobotInfo;
 import pro.beam.api.services.AbstractHTTPService;
+import pro.beam.api.util.Tetris;
 
 public class TetrisService extends AbstractHTTPService {
     public TetrisService(BeamAPI beam) {
         super(beam, "tetris");
     }
 
-    public ListenableFuture<RobotInfo> getRobotCredentials(int channelId) {
+    public CheckedFuture<RobotInfo, BeamException> getRobotCredentials(int channelId) {
         BeamChannel channel = new BeamChannel();
         channel.id = channelId;
 
         return this.getRobotCredentials(channel);
     }
 
-    public ListenableFuture<RobotInfo> getRobotCredentials(BeamChannel channel) {
-        return this.get(String.format("%d/robot", channel.id), RobotInfo.class);
+    public CheckedFuture<RobotInfo, BeamException> getRobotCredentials(BeamChannel channel) {
+        return Tetris.checkFutureRobotInfo(this.get(String.format("%d/robot", channel.id), RobotInfo.class));
     }
 }
