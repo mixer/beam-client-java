@@ -10,7 +10,7 @@ import pro.beam.api.exceptions.tetris.MissingGameException;
 import pro.beam.api.resource.tetris.RobotInfo;
 
 public class Tetris {
-    private static final int GAME_UNSET_CODE = 404;
+    private static final int GAME_UNSET_CODE = 403;
 
     public static CheckedFuture<RobotInfo, BeamException> checkFutureRobotInfo(ListenableFuture<RobotInfo> future) {
         return Futures.makeChecked(future, TETRIS_EXCEPTION_TRANSFORMER);
