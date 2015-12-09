@@ -140,7 +140,7 @@ public class BeamHttpClient {
         return new Callable<T>() {
             @Override public T call() throws Exception {
                 BeamHttpClient self = BeamHttpClient.this;
-                System.out.println(request.getURI());
+
                 String response;
                 if (self.context != null) {
                     response = self.http.execute(request, new BasicResponseHandler(), self.context);
