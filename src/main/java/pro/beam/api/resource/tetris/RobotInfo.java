@@ -4,5 +4,5 @@ import java.net.InetSocketAddress;
 
 public class RobotInfo {
     public InetSocketAddress address;
-    public String authkey;
+    public String key;
 }
