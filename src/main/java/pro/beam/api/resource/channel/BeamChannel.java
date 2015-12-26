@@ -1,5 +1,6 @@
 package pro.beam.api.resource.channel;
 
+import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class BeamChannel {
     public Type type;
     public Map<String, Object> preferences;
     public Status status;
-    @SerializedName("cache") public List<CachedMessage> messageCache;
+    @SerializedName("cache") public ArrayDeque<CachedMessage> messageCache;
     public BeamUser user;
 
     public static class Type {
