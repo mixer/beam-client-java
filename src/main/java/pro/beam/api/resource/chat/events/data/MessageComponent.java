@@ -1,6 +1,5 @@
 package pro.beam.api.resource.chat.events.data;
 
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -9,8 +8,13 @@ public class MessageComponent {
     public MessageMeta meta;
     public List<MessageTextComponent> message;
 
+    public boolean isWhisper() {
+        return this.meta.whisper;
+    }
+
     public static class MessageMeta {
         public boolean me;
+        public boolean whisper;
     }
 
     public static class MessageTextComponent {

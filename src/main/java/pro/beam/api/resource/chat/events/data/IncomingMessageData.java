@@ -2,12 +2,12 @@ package pro.beam.api.resource.chat.events.data;
 
 import java.util.List;
 
+import com.google.common.collect.Collections2;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.AbstractChatEvent;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterators;
 import com.google.gson.annotations.SerializedName;
 
 public class IncomingMessageData extends AbstractChatEvent.EventData {
@@ -24,16 +24,12 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public String asString() {
-        return Joiner.on("").join(Iterators.transform(this.message.message.iterator(), new Function<MessageComponent.MessageTextComponent, String>() {
-            @Override public String apply(MessageComponent.MessageTextComponent part) {
-                switch(part.type) {
-                    case EMOTICON:
-                        return part.text;
-                    case LINK:
-                        return part.url;
-                    case TEXT:
-                    default:
-                        return part.data;
+        return Joiner.on("").join(Collections2.transform(this.message.message, new Function<MessageComponent.MessageTextComponent, String>() {
+            @Override public String apply(MessageComponent.MessageTextComponent component) {
+                switch (component.type) {
+                    case EMOTICON: return component.text;
+                    case LINK: return component.url;
+                    case TEXT: default: return component.data;
                 }
             }
         }));
