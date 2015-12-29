@@ -10,7 +10,7 @@ import pro.beam.api.resource.BeamUser;
 import pro.beam.api.response.users.UserFollowsResponse;
 import pro.beam.api.response.users.UserSearchResponse;
 import pro.beam.api.services.AbstractHTTPService;
-import pro.beam.api.util.Users;
+import pro.beam.api.futures.checkers.Users;
 
 import java.util.Map;
 
@@ -34,11 +34,11 @@ public class UsersService extends AbstractHTTPService {
      * @return
      */
     public CheckedFuture<BeamUser, BeamException> login(String username, String password) {
-        ListenableFuture<BeamUser> result = this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
-                                                .put("username", username)
-                                                .put("password", password).build());
-
-        return Users.checkFutureUser(result);
+        return new Users.TwoFactorFutureChecker().check(
+            this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
+                    .put("username", username)
+                    .put("password", password).build())
+        );
     }
 
     /**
@@ -53,12 +53,12 @@ public class UsersService extends AbstractHTTPService {
         if (authCode.length() != 6) {
             throw new IllegalArgumentException("two factor authentication code have to be 6 digits (was " + authCode.length() + ")");
         } else {
-            ListenableFuture<BeamUser> result = this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
-                                                        .put("username", username)
-                                                        .put("password", password)
-                                                        .put("code", authCode).build());
-
-            return Users.checkFutureUser(result);
+            return new Users.TwoFactorFutureChecker().check(
+                this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
+                        .put("username", username)
+                        .put("password", password)
+                        .put("code", authCode).build())
+            );
         }
     }
 
