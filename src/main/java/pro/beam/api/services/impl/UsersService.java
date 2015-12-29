@@ -83,4 +83,25 @@ public class UsersService extends AbstractHTTPService {
                                  .put("page", Math.max(0, page))
                                  .put("limit", Math.min(limit, 50)).build());
     }
+
+    public CheckedFuture<String, BeamException> forgotPassword(BeamUser user) {
+        return new Users.ForgotPasswordChecker().check(
+            this.post(
+                "reset",
+                String.class,
+                BeamHttpClient.getArgumentsBuilder().put("email", user.email).build()
+            )
+        );
+    }
+
+    public CheckedFuture<String, BeamException> resetPassword(String token, String password) {
+        Map<String, Object> args = BeamHttpClient.getArgumentsBuilder()
+                .put("token", token)
+                .put("password", password)
+            .build();
+
+        return new Users.ResetPasswordChecker().check(
+            this.patch("reset", String.class, args)
+        );
+    }
 }
