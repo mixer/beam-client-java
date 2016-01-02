@@ -5,7 +5,6 @@ import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.AbstractChatMethod;
 
 import java.util.List;
-import java.util.Random;
 
 public class WhisperMethod extends AbstractChatMethod {
     public static Builder builder() {
@@ -27,20 +26,19 @@ public class WhisperMethod extends AbstractChatMethod {
         }
 
         public WhisperMethod build(int id) {
-            WhisperMethod method = new WhisperMethod();
+            WhisperMethod method = new WhisperMethod(id);
             method.arguments = ImmutableList.of(this.to.username, this.message);
-            method.id = id;
 
             return method;
         }
 
         public WhisperMethod build() {
-            return this.build(new Random().nextInt());
+            return this.build(AbstractChatMethod.nextId());
         }
     }
 
     public List<String> arguments;
-    private WhisperMethod() {
-        super("whisper");
+    private WhisperMethod(int id) {
+        super(id, "whisper");
     }
 }
