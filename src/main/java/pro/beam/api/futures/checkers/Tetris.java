@@ -7,12 +7,12 @@ import pro.beam.api.futures.SimpleFutureChecker;
 import pro.beam.api.resource.tetris.RobotInfo;
 
 public class Tetris {
-    private static final int GAME_UNSET_CODE = 403;
+    private static final int GAME_NOT_SET_RESPONSE = 403;
 
     public static class UnsetGameChecker extends SimpleFutureChecker<RobotInfo, BeamException> {
         public UnsetGameChecker() {
             super(ImmutableMap.<Integer, Class<? extends BeamException>>of(
-                    GAME_UNSET_CODE, MissingGameException.class
+                    GAME_NOT_SET_RESPONSE, MissingGameException.class
                 )
             );
         }
