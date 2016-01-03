@@ -7,6 +7,7 @@ import pro.beam.api.BeamAPI;
 import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.resource.user.validation.UserValidationException;
 import pro.beam.api.response.users.UserFollowsResponse;
 import pro.beam.api.response.users.UserSearchResponse;
 import pro.beam.api.services.AbstractHTTPService;
@@ -98,10 +99,35 @@ public class UsersService extends AbstractHTTPService {
         Map<String, Object> args = BeamHttpClient.getArgumentsBuilder()
                 .put("token", token)
                 .put("password", password)
-            .build();
+                .build();
 
         return new Users.ResetPasswordChecker().check(
-            this.patch("reset", String.class, args)
+                this.patch("reset", String.class, args)
+        );
+    }
+
+    public CheckedFuture<BeamUser, UserValidationException> register(String username, String password, String email) {
+        return new Users.RegistrationChecker().check(
+            this.post(
+                "",
+                BeamUser.class,
+                BeamHttpClient.getArgumentsBuilder()
+                    .put("username", username)
+                    .put("password", password)
+                    .put("email", email)
+                    .build()
+            )
+        );
+    }
+
+    public ListenableFuture<BeamUser> confirm(BeamUser user, String confirmationToken) {
+        return this.patch(
+                String.format("%d/confirm", user.id),
+                BeamUser.class,
+                BeamHttpClient.getArgumentsBuilder()
+                        .put("id", user.id)
+                        .put("code", confirmationToken)
+                        .build()
         );
     }
 }

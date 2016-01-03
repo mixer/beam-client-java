@@ -5,6 +5,7 @@ import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.exceptions.user.*;
 import pro.beam.api.futures.SimpleFutureChecker;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.resource.user.validation.UserValidationException;
 
 public class Users {
     private static final int WRONG_PASSWORD_RESPONSE = 401;
@@ -42,6 +43,13 @@ public class Users {
                     BAD_REQUEST_CODE, InvalidResetException.class
                 )
             );
+        }
+    }
+
+    // TODO(taylor): expand to support custom validation errors when the API is standardized
+    public static class RegistrationChecker extends SimpleFutureChecker<BeamUser, UserValidationException> {
+        public RegistrationChecker() {
+            super(ImmutableMap.<Integer, Class<? extends UserValidationException>>of());
         }
     }
 }
