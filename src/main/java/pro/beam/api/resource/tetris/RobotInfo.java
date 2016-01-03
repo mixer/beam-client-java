@@ -1,8 +1,8 @@
 package pro.beam.api.resource.tetris;
 
-import java.net.InetSocketAddress;
+import java.net.URI;
 
 public class RobotInfo {
-    public InetSocketAddress address;
+    public URI address;
     public String key;
 }
