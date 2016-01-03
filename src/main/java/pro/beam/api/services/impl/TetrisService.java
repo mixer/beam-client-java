@@ -3,10 +3,10 @@ package pro.beam.api.services.impl;
 import com.google.common.util.concurrent.CheckedFuture;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.exceptions.BeamException;
+import pro.beam.api.futures.checkers.Tetris;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.tetris.RobotInfo;
 import pro.beam.api.services.AbstractHTTPService;
-import pro.beam.api.util.Tetris;
 
 public class TetrisService extends AbstractHTTPService {
     public TetrisService(BeamAPI beam) {
@@ -21,6 +21,8 @@ public class TetrisService extends AbstractHTTPService {
     }
 
     public CheckedFuture<RobotInfo, BeamException> getRobotCredentials(BeamChannel channel) {
-        return Tetris.checkFutureRobotInfo(this.get(String.format("%d/robot", channel.id), RobotInfo.class));
+        return new Tetris.UnsetGameChecker().check(
+            this.get(String.format("%d/robot", channel.id), RobotInfo.class)
+        );
     }
 }
