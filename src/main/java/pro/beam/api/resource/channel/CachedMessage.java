@@ -23,6 +23,7 @@ public class CachedMessage {
         d.userId = this.userId;
         d.userName = this.userName;
         d.message = this.message;
+        d.userRoles = this.userRoles;
 
         return d;
     }
