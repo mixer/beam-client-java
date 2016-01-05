@@ -2,13 +2,16 @@ package pro.beam.api.resource.chat.events.data;
 
 import java.util.List;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.chat.AbstractChatEvent;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.gson.annotations.SerializedName;
+import pro.beam.api.resource.chat.events.data.MessageComponent.MessageTextComponent;
 
 public class IncomingMessageData extends AbstractChatEvent.EventData {
     public int channel;
@@ -24,8 +27,11 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     }
 
     public String asString() {
-        return Joiner.on("").join(Collections2.transform(this.message.message, new Function<MessageComponent.MessageTextComponent, String>() {
-            @Override public String apply(MessageComponent.MessageTextComponent component) {
+        Joiner j = Joiner.on("");
+        Iterable<MessageTextComponent> components = Collections2.filter(this.message.message, Predicates.notNull());
+
+        return j.join(Iterables.transform(components, new Function<MessageTextComponent, String>() {
+            @Override public String apply(MessageTextComponent component) {
                 switch (component.type) {
                     case EMOTICON: return component.text;
                     case LINK: return component.url;
