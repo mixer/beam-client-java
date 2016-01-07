@@ -7,6 +7,7 @@ import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.response.channels.ShowChannelsResponse;
+import pro.beam.api.response.emotes.ChannelEmotesResponse;
 import pro.beam.api.services.AbstractHTTPService;
 import pro.beam.api.util.Enums;
 
@@ -86,5 +87,9 @@ public class ChannelsService extends AbstractHTTPService {
         }
 
         return this.put(String.valueOf(channel.id), BeamChannel.class, arguments.build());
+    }
+
+    public ListenableFuture<ChannelEmotesResponse> emotes(BeamChannel channel) {
+        return this.get(String.format("%d/emoticons", channel.id), ChannelEmotesResponse.class);
     }
 }
