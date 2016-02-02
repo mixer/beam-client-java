@@ -4,32 +4,31 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class ServiceManager {
-    protected final Set<AbstractBeamService> services = new HashSet<>();
+public class ServiceManager<T extends AbstractService> {
+    protected final Set<T> services = new HashSet<>();
 
     @SuppressWarnings("unchecked")
-    public <T extends AbstractBeamService> T get(Class<T> type) {
-        for (AbstractBeamService service : this.services) {
+    public <V extends T> V get(Class<V> type) {
+        for (T service : this.services) {
             if (service.getClass() == type) {
-                return (T) service;
+                return (V) service;
             }
         }
 
         return null;
     }
 
-    public boolean register(AbstractBeamService service) {
+    public boolean register(T service) {
         return this.services.add(service);
     }
 
-    public boolean unregister(AbstractBeamService service) {
+    public boolean unregister(T service) {
         return this.services.remove(service);
     }
 
     public void unregisterAll() {
-        for (Iterator<AbstractBeamService> it = this.services.iterator(); it.hasNext(); ) {
-            AbstractBeamService service = it.next();
-            this.unregister(service);
+        for (Iterator<T> it = this.services.iterator(); it.hasNext(); ) {
+            this.unregister(it.next());
         }
     }
 }
