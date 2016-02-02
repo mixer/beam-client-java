@@ -1,4 +1,4 @@
-package pro.beam.api.test.util;
+package pro.beam.api.test.unit.util;
 
 import com.google.gson.annotations.SerializedName;
 import org.junit.Assert;

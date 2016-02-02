@@ -1,4 +1,4 @@
-package pro.beam.api.test.services;
+package pro.beam.api.test.unit.services;
 
 import org.junit.Assert;
 import org.junit.Test;
