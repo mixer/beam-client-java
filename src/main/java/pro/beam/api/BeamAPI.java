@@ -22,7 +22,7 @@ public class BeamAPI {
     public final Gson gson;
     public final BeamHttpClient http;
     public final ListeningExecutorService executor;
-    protected final ServiceManager services;
+    protected final ServiceManager<AbstractBeamService> services;
 
     public BeamAPI() {
         this(URI.create("https://beam.pro/api/v1/"), null, null);
@@ -39,7 +39,7 @@ public class BeamAPI {
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
         this.http = new BeamHttpClient(this, httpUsername, httpPassword);
-        this.services = new ServiceManager();
+        this.services = new ServiceManager<>();
 
         this.register(new UsersService(this));
         this.register(new ChatService(this));
