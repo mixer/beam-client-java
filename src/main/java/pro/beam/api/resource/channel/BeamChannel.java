@@ -17,6 +17,7 @@ public class BeamChannel {
     public boolean partnered;
     public boolean transcodingEnabled;
     public boolean suspended;
+    public boolean interactive;
     public String name;
     public AudienceRating audience;
     public String streamKey;
