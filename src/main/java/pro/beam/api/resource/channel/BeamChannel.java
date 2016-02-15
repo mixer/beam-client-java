@@ -1,5 +1,6 @@
 package pro.beam.api.resource.channel;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.Timeable;
 
-public class BeamChannel {
+public class BeamChannel implements Serializable {
     public int id;
     public String token;
     public boolean online;
