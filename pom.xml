@@ -6,7 +6,7 @@
 
     <groupId>pro.beam</groupId>
     <artifactId>api</artifactId>
-    <version>1.6.16-SNAPSHOT</version>
+    <version>1.6.17-SNAPSHOT</version>
 
     <properties>
         <powermock.version>1.6.4</powermock.version>
@@ -61,6 +61,18 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>pro.beam.api.BeamAPI</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

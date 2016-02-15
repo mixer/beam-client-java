@@ -1,5 +1,7 @@
 package pro.beam.api.http;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -33,6 +35,8 @@ public class BeamHttpClient {
 
     protected final BeamAPI beam;
     protected final HttpClientContext context;
+
+    private String userAgent;
 
     public BeamHttpClient(BeamAPI beam) {
         this(beam, null, null);
@@ -104,7 +108,8 @@ public class BeamHttpClient {
         return RequestBuilder.create(requestType.name())
                              .setUri(uri)
                              .setConfig(config.build())
-                             .setEntity(this.makeEntity(args)).build();
+                             .setEntity(this.makeEntity(args))
+                             .setHeader("User-Agent", this.getUserAgent()).build();
     }
 
     private HttpEntity makeEntity(Object... args) {
@@ -184,6 +189,20 @@ public class BeamHttpClient {
 
     private ListeningExecutorService executor() {
         return this.beam.executor;
+    }
+
+    protected String getUserAgent() {
+        if (this.userAgent == null) {
+            String version = Optional.fromNullable(BeamAPI.class.getPackage().getImplementationVersion()).or("unknown");
+            String jdk = "Java: " + System.getProperty("java.version");
+            String os = "OS: " + System.getProperty("os.name");
+
+            this.userAgent = new StringBuilder("BeamClient/").append(version)
+                    .append(" (").append(Joiner.on(", ").join(jdk,os)).append(")")
+                    .toString();
+        }
+
+        return this.userAgent;
     }
 
     public static ImmutableMap.Builder<String, Object> getArgumentsBuilder() {
