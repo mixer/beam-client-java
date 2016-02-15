@@ -1,14 +1,15 @@
 package pro.beam.api.resource;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import pro.beam.api.resource.channel.BeamChannel;
 
 import com.google.gson.annotations.SerializedName;
 import pro.beam.api.resource.channel.BeamResource;
 
-public class BeamUser {
+public class BeamUser implements Serializable {
     public Date createdAt;
     public String email;
     public int id;
@@ -19,7 +20,7 @@ public class BeamUser {
     public Date updatedAt;
     public String username;
     public boolean verified;
-    public List<BeamResource> avatars;
+    public ArrayList<BeamResource> avatars;
 
     public enum Role {
         @SerializedName("Banned") BANNED,
@@ -33,7 +34,7 @@ public class BeamUser {
         @SerializedName("Owner") OWNER
     }
 
-    public class Social {
+    public class Social implements Serializable {
         public String facebook;
         public String twitter;
         public String youtube;

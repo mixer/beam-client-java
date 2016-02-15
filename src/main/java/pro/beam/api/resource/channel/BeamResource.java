@@ -1,11 +1,12 @@
 package pro.beam.api.resource.channel;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
+import java.util.HashMap;
 
-public class BeamResource {
+public class BeamResource implements Serializable {
     public int id;
-    public Map<String, Object> meta;
+    public HashMap<String, Object> meta;
     public int relid;
     public String remotePath;
     public String store;

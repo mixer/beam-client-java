@@ -43,7 +43,7 @@ public class BeamChannel implements Serializable {
     @SerializedName("cache") public ArrayDeque<CachedMessage> messageCache;
     public BeamUser user;
 
-    public static class Type {
+    public static class Type implements Serializable {
         public int id;
         public String name;
         public String parent;
