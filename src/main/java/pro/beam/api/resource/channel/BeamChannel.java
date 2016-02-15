@@ -1,10 +1,7 @@
 package pro.beam.api.resource.channel;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.gson.annotations.SerializedName;
 import pro.beam.api.resource.BeamUser;
@@ -54,7 +51,7 @@ public class BeamChannel implements Serializable {
     }
 
     public static class Status {
-        public List<String> roles;
+        public ArrayList<String> roles;
         public FollowsRecord follows;
 
         public static class FollowsRecord extends Timeable {
