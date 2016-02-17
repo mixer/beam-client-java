@@ -1,54 +1,68 @@
-package pro.beam.api.resource.chat;
+package pro.beam.api.resource.chat.ws;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 import pro.beam.api.BeamAPI;
-import pro.beam.api.http.ws.CookieDraft_17;
-
-import java.net.URI;
-
+import pro.beam.api.http.ws.BeamWebsocketClient;
+import pro.beam.api.resource.chat.*;
 import pro.beam.api.resource.chat.events.EventHandler;
 import pro.beam.api.resource.chat.events.data.IncomingMessageData;
-import pro.beam.api.resource.chat.events.data.IncomingWidgetData;
 import pro.beam.api.resource.chat.replies.ReplyHandler;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
-@SuppressWarnings("unchecked")
-public class BeamChatConnectable extends WebSocketClient {
-    protected final BeamAPI beam;
+public class BeamChatConnection extends BeamWebsocketClient {
+    protected final BeamChatConnectable producer;
     protected final BeamChat chat;
 
     protected final Map<Integer, ReplyPair> replyHandlers;
     protected final Multimap<Class<? extends AbstractChatEvent>, EventHandler> eventHandlers;
 
-    public BeamChatConnectable(BeamAPI beam, URI endpoint, BeamChat chat) {
-        super(endpoint, new CookieDraft_17(beam.http));
+    public BeamChatConnection(BeamChatConnectable producer, BeamAPI beam, BeamChat chat) {
+        super(beam, chat.endpoint());
+        this.producer = producer;
 
-        this.beam = beam;
         this.chat = chat;
 
-        this.replyHandlers = new ConcurrentHashMap<>(new HashMap<Integer, ReplyPair>());
+        this.replyHandlers = Maps.newConcurrentMap();
         this.eventHandlers = HashMultimap.create();
+    }
+
+    public void inherit(BeamChatConnection other) {
+        for (Map.Entry<Class<? extends AbstractChatEvent>, EventHandler> entry : other.eventHandlers.entries()) {
+            this.eventHandlers.put(entry.getKey(), entry.getValue());
+        }
+
+        for (Map.Entry<Integer, ReplyPair> entry : other.replyHandlers.entrySet()) {
+            this.replyHandlers.put(entry.getKey(), entry.getValue());
+        }
     }
 
     public <T extends AbstractChatEvent> boolean on(Class<T> eventType, EventHandler<T> handler) {
         return this.eventHandlers.put(eventType, handler);
     }
 
+    /**
+     * Send sends a chat method with no given response handler.
+     * @param method The method to send.
+     */
     public void send(AbstractChatMethod method) {
         this.send(method, null);
     }
 
+    /**
+     * Send sends a chat method with a response handler that will be invoked when a response
+     * is received from the chat server.
+     *
+     * @param method The method to send.
+     * @param handler The reply handler.
+     * @param <T> The type on which to bind the method and reply handler together with.
+     */
     public <T extends AbstractChatReply> void send(final AbstractChatMethod method, ReplyHandler<T> handler) {
         if (handler != null) {
             this.replyHandlers.put(method.id, ReplyPair.from(handler));
@@ -57,40 +71,22 @@ public class BeamChatConnectable extends WebSocketClient {
         this.beam.executor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                byte[] data = BeamChatConnectable.this.beam.gson.toJson(method).getBytes();
-                BeamChatConnectable.this.send(data);
+                byte[] data = BeamChatConnection.this.beam.gson.toJson(method).getBytes();
+                BeamChatConnection.this.send(data);
 
                 return null;
             }
         });
     }
 
-    public ListenableFuture<BeamChatConnectable> connectFuture() {
-        return this.beam.executor.submit(new Callable<BeamChatConnectable>() {
-            @Override public BeamChatConnectable call() throws Exception {
-                BeamChatConnectable self = BeamChatConnectable.this;
-
-                self.connectBlocking();
-                return self;
-            }
-        });
-    }
-
+    /**
+     * Delete deletes a message by making an API call.
+     *
+     * @param message The message to delete.
+     */
     public void delete(IncomingMessageData message) {
         String path = this.beam.basePath.resolve("chats/" + message.channel + "/message/" + message.id).toString();
         this.beam.http.delete(path, null);
-    }
-
-    private <T extends AbstractChatEvent> void dispatchEvent(T event) {
-        Class<? extends AbstractChatEvent> eventType = event.getClass();
-
-        for (EventHandler handler : this.eventHandlers.get(eventType)) {
-            handler.onEvent(event);
-        }
-    }
-
-    @Override
-    public void onOpen(ServerHandshake serverHandshake) {
     }
 
     @Override
@@ -120,10 +116,10 @@ public class BeamChatConnectable extends WebSocketClient {
                     Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
                     this.dispatchEvent(this.beam.gson.fromJson(e, type));
                 } else {
-                   // Default ChatMessage event handling
-                   String eventName = e.get("event").getAsString();
-                   Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
-                   this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                    // Default ChatMessage event handling
+                    String eventName = e.get("event").getAsString();
+                    Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
+                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
                 }
             }
         } catch (JsonSyntaxException e) {
@@ -137,18 +133,16 @@ public class BeamChatConnectable extends WebSocketClient {
         }
     }
 
-    @Override
-    public void onClose(int i, String s, boolean b) {
-        while (this.isClosed() && !this.isConnecting()) {
-            try {
-                this.uri = this.chat.selectEndpoint();
-                this.connectBlocking();
-            } catch (InterruptedException ignored) { }
-        }
+    @Override public void onClose(int i, String s, boolean b) {
+        this.producer.notifyClose(i, s, b);
     }
 
-    @Override
-    public void onError(Exception e) {
+    private <T extends AbstractChatEvent> void dispatchEvent(T event) {
+        Class<? extends AbstractChatEvent> eventType = event.getClass();
+
+        for (EventHandler handler : this.eventHandlers.get(eventType)) {
+            handler.onEvent(event);
+        }
     }
 
     private static class ReplyPair<T extends AbstractChatReply> {
