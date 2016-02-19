@@ -32,7 +32,7 @@ public class BeamUser implements Serializable {
         @SerializedName("Global Mod") GLOBAL_MOD,
         @SerializedName("Founder") FOUNDER,
         @SerializedName("Staff") STAFF,
-        @SerializedName("Owner") Owner
+        @SerializedName("Owner") OWNER
     }
 
     public class Social implements Serializable {
