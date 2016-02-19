@@ -7,6 +7,7 @@ import pro.beam.api.BeamAPI;
 import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.resource.user.PasswordScore;
 import pro.beam.api.resource.user.validation.UserValidationException;
 import pro.beam.api.response.users.UserFollowsResponse;
 import pro.beam.api.response.users.UserSearchResponse;
@@ -128,6 +129,12 @@ public class UsersService extends AbstractHTTPService {
                         .put("id", user.id)
                         .put("code", confirmationToken)
                         .build()
+        );
+    }
+
+    public ListenableFuture<PasswordScore> scorePassword(String password) {
+        return this.post("passwordstr", PasswordScore.class, BeamHttpClient.getArgumentsBuilder()
+            .put("password", password).build()
         );
     }
 }
