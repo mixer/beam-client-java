@@ -70,6 +70,22 @@ public class BeamChatConnectable {
         this.connection.closeConnection(code, msg);
     }
 
+    public boolean isClosed() {
+        return connection.isClosed();
+    }
+
+    public boolean isClosing() {
+        return connection.isClosing();
+    }
+
+    public boolean isConnecting() {
+        return connection.isConnecting();
+    }
+
+    public boolean isOpen() {
+        return connection.isOpen();
+    }
+
     protected void notifyClose(int i, String s, boolean b) {
         if (DISCONNECT_MSG.equals(s)) {
             return;
