@@ -106,7 +106,7 @@ public class UsersService extends AbstractHTTPService {
         );
     }
 
-    public CheckedFuture<BeamUser, UserValidationException> register(String username, String password, String email) {
+    public CheckedFuture<BeamUser, BeamException> register(String username, String password, String email) {
         return new Users.RegistrationChecker().check(
             this.post(
                 "",

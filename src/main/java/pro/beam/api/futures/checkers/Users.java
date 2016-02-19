@@ -1,11 +1,11 @@
 package pro.beam.api.futures.checkers;
 
 import com.google.common.collect.ImmutableMap;
+import pro.beam.api.exceptions.BadRequest;
 import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.exceptions.user.*;
 import pro.beam.api.futures.SimpleFutureChecker;
 import pro.beam.api.resource.BeamUser;
-import pro.beam.api.resource.user.validation.UserValidationException;
 
 public class Users {
     private static final int WRONG_PASSWORD_RESPONSE = 401;
@@ -47,9 +47,11 @@ public class Users {
     }
 
     // TODO(taylor): expand to support custom validation errors when the API is standardized
-    public static class RegistrationChecker extends SimpleFutureChecker<BeamUser, UserValidationException> {
+    public static class RegistrationChecker extends SimpleFutureChecker<BeamUser, BeamException> {
         public RegistrationChecker() {
-            super(ImmutableMap.<Integer, Class<? extends UserValidationException>>of());
+            super(ImmutableMap.<Integer, Class<? extends BeamException>>of(
+                    BAD_REQUEST_CODE, BadRequest.class
+            ));
         }
     }
 }
