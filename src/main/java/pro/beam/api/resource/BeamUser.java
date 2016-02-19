@@ -24,14 +24,15 @@ public class BeamUser implements Serializable {
 
     public enum Role {
         @SerializedName("Banned") BANNED,
+        @SerializedName("Muted") MUTED,
         @SerializedName("User") USER,
         @SerializedName("Pro") PRO,
         @SerializedName("Subscriber") SUBSCRIBER,
         @SerializedName("Mod") MOD,
         @SerializedName("Global Mod") GLOBAL_MOD,
         @SerializedName("Admin") ADMIN,
-        @SerializedName("Developer") DEVELOPER,
-        @SerializedName("Owner") OWNER
+        @SerializedName("Staff") STAFF,
+        @SerializedName("Founder") FOUNDER
     }
 
     public class Social implements Serializable {
