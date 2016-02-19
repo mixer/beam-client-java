@@ -30,9 +30,9 @@ public class BeamUser implements Serializable {
         @SerializedName("Subscriber") SUBSCRIBER,
         @SerializedName("Mod") MOD,
         @SerializedName("Global Mod") GLOBAL_MOD,
-        @SerializedName("Admin") ADMIN,
+        @SerializedName("Founder") FOUNDER,
         @SerializedName("Staff") STAFF,
-        @SerializedName("Founder") FOUNDER
+        @SerializedName("Owner") Owner
     }
 
     public class Social implements Serializable {
