@@ -9,11 +9,13 @@ import pro.beam.api.services.AbstractBeamService;
 import pro.beam.api.services.ServiceManager;
 import pro.beam.api.services.impl.*;
 import pro.beam.api.services.impl.UsersService;
+import pro.beam.api.util.gson.DateAdapter;
 import pro.beam.api.util.gson.InetSocketAddressAdapter;
 import pro.beam.api.util.gson.URIAdapter;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.Date;
 import java.util.concurrent.Executors;
 
 public class BeamAPI {
@@ -34,7 +36,7 @@ public class BeamAPI {
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(InetSocketAddress.class, new InetSocketAddressAdapter())
                 .registerTypeAdapter(URI.class, new URIAdapter())
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .registerTypeAdapter(Date.class, DateAdapter.v1())
                 .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
