@@ -37,12 +37,21 @@ public class BeamHttpClient {
     protected final HttpClientContext context;
 
     private String userAgent;
+    private String oauthToken;
 
     public BeamHttpClient(BeamAPI beam) {
         this(beam, null, null);
     }
 
+    public BeamHttpClient(BeamAPI beam, String oauthToken) {
+        this(beam, null, null, oauthToken);
+    }
+
     public BeamHttpClient(BeamAPI beam, String httpUsername, String httpPassword) {
+        this(beam, httpUsername, httpPassword, null);
+    }
+
+    public BeamHttpClient(BeamAPI beam, String httpUsername, String httpPassword, String oauthToken) {
         this.beam = beam;
         this.cookieStore = new BasicCookieStore();
 
@@ -64,6 +73,10 @@ public class BeamHttpClient {
         }
 
         this.http = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
+
+        if (oauthToken != null) {
+            this.oauthToken = oauthToken;
+        }
     }
 
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
@@ -105,11 +118,17 @@ public class BeamHttpClient {
         RequestConfig.Builder config = RequestConfig.copy(RequestConfig.DEFAULT);
         config.setCookieSpec(CookieSpecs.BEST_MATCH);
 
-        return RequestBuilder.create(requestType.name())
+        RequestBuilder requestBuilder = RequestBuilder.create(requestType.name())
                              .setUri(uri)
                              .setConfig(config.build())
                              .setEntity(this.makeEntity(args))
-                             .setHeader("User-Agent", this.getUserAgent()).build();
+                             .setHeader("User-Agent", this.getUserAgent());
+
+        if (this.oauthToken != null) {
+            requestBuilder.addHeader("Authentication", "Bearer " + this.oauthToken);
+        }
+
+        return requestBuilder.build();
     }
 
     private HttpEntity makeEntity(Object... args) {
