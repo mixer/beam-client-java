@@ -125,7 +125,7 @@ public class BeamHttpClient {
                              .setHeader("User-Agent", this.getUserAgent());
 
         if (this.oauthToken != null) {
-            requestBuilder.addHeader("Authentication", "Bearer " + this.oauthToken);
+            requestBuilder.addHeader("Authorization", "Bearer " + this.oauthToken);
         }
 
         return requestBuilder.build();

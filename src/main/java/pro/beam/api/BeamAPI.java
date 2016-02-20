@@ -27,10 +27,22 @@ public class BeamAPI {
     protected final ServiceManager<AbstractBeamService> services;
 
     public BeamAPI() {
-        this(URI.create("https://beam.pro/api/v1/"), null, null);
+        this(null);
+    }
+
+    public BeamAPI(String oauthToken) {
+        this(URI.create("https://beam.pro/api/v1/"), oauthToken);
+    }
+
+    public BeamAPI(URI basePath, String oauthToken) {
+        this(basePath, null, null, oauthToken);
     }
 
     public BeamAPI(URI basePath, String httpUsername, String httpPassword) {
+        this(basePath, httpUsername, httpPassword, null);
+    }
+
+    public BeamAPI(URI basePath, String httpUsername, String httpPassword, String oauthToken) {
         this.basePath = basePath;
 
         this.gson = new GsonBuilder()
@@ -40,7 +52,7 @@ public class BeamAPI {
                 .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-        this.http = new BeamHttpClient(this, httpUsername, httpPassword);
+        this.http = new BeamHttpClient(this, httpUsername, httpPassword, oauthToken);
         this.services = new ServiceManager<>();
 
         this.register(new UsersService(this));
