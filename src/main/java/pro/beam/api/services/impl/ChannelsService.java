@@ -1,11 +1,15 @@
 package pro.beam.api.services.impl;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
+import pro.beam.api.exceptions.BeamException;
+import pro.beam.api.futures.checkers.Channels;
 import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
+import pro.beam.api.response.channels.ChannelStatusResponse;
 import pro.beam.api.response.channels.ShowChannelsResponse;
 import pro.beam.api.response.emotes.ChannelEmotesResponse;
 import pro.beam.api.services.AbstractHTTPService;
@@ -62,6 +66,16 @@ public class ChannelsService extends AbstractHTTPService {
 
     public ListenableFuture<BeamChannel> findOneDetailed(int id) {
         return this.get(String.format("%d/detailed", id), BeamChannel.class);
+    }
+
+    public CheckedFuture<ChannelStatusResponse, BeamException> findRelationship(BeamChannel channel, BeamUser user) {
+        return new Channels.StatusChecker(this.beam.gson).check(this.get(
+                String.format("%d/relationship", channel.id),
+                ChannelStatusResponse.class,
+                BeamHttpClient.getArgumentsBuilder()
+                        .put("user", String.valueOf(user.id))
+                    .build()
+        ));
     }
 
     public ListenableFuture<?> follow(BeamChannel channel, BeamUser follower) {
