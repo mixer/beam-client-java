@@ -21,8 +21,10 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
+import org.apache.http.util.EntityUtils;
 import pro.beam.api.BeamAPI;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -162,20 +164,20 @@ public class BeamHttpClient {
      */
     private <T> Callable<T> makeCallable(final HttpUriRequest request, final Class<T> type) {
         return new Callable<T>() {
-            @Override public T call() throws Exception {
+            @Override public T call() throws IOException, HttpBadResponseException {
                 BeamHttpClient self = BeamHttpClient.this;
 
-                String response;
-                if (self.context != null) {
-                    response = self.http.execute(request, new BasicResponseHandler(), self.context);
-                } else {
-                    response = self.http.execute(request, new BasicResponseHandler());
+                HttpResponse partialResponse = self.http.execute(request, self.context);
+                HttpCompleteResponse completeResponse = new HttpCompleteResponseHandler().handleResponse(partialResponse);
+
+                if (completeResponse.status.getStatusCode() >= 300) {
+                    throw new HttpBadResponseException(completeResponse);
                 }
 
                 // Allow a null response to be given back, such that we return a ListenableFuture
                 // with null.
                 if (type != null) {
-                    return self.beam.gson.fromJson(response, type);
+                    return self.beam.gson.fromJson(completeResponse.body(), type);
                 } else {
                     return null;
                 }
