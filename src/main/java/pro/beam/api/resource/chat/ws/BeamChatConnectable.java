@@ -67,7 +67,13 @@ public class BeamChatConnectable {
      * @param msg Websocket disconnect message
      */
     public void disconnect(int code, String msg) {
-        this.connection.closeConnection(code, msg);
+        synchronized (this.connectionLock) {
+            if (this.connection == null) {
+                return;
+            }
+
+            this.connection.closeConnection(code, msg);
+        }
     }
 
     public boolean isClosed() {
