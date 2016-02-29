@@ -64,7 +64,7 @@ public class DateAdapter extends TypeAdapter<Date> {
      * @throws IOException See above.
      */
     @Override public Date read(JsonReader r) throws IOException {
-        String str = r.nextString();
+        String str = r.nextString().replace("Z", "+0000");
 
         for (DateFormat format : this.formats) {
             try {
@@ -84,7 +84,7 @@ public class DateAdapter extends TypeAdapter<Date> {
      */
     public static DateAdapter v1() {
         DateFormat defaultFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        DateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        DateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
         return new DateAdapter(
                 ImmutableList.of(defaultFormat, newFormat),
