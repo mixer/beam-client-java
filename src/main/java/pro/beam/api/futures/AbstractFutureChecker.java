@@ -13,8 +13,7 @@ public abstract class AbstractFutureChecker<V, E extends Exception> {
             @Override public E apply(Exception e) {
                 Throwable cause = e.getCause();
                 if (!(cause instanceof HttpBadResponseException)) {
-                    cause.printStackTrace(); // TODO
-                    return null;
+                    return cause;
                 }
 
                 HttpBadResponseException hbre = (HttpBadResponseException) cause;
