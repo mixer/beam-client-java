@@ -1,9 +1,10 @@
 package pro.beam.api.futures.checkers;
 
 import com.google.common.collect.ImmutableMap;
-import pro.beam.api.exceptions.BadRequest;
+import com.google.gson.Gson;
 import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.exceptions.user.*;
+import pro.beam.api.futures.JojenFutureChecker;
 import pro.beam.api.futures.SimpleFutureChecker;
 import pro.beam.api.resource.BeamUser;
 
@@ -46,12 +47,9 @@ public class Users {
         }
     }
 
-    // TODO(taylor): expand to support custom validation errors when the API is standardized
-    public static class RegistrationChecker extends SimpleFutureChecker<BeamUser, BeamException> {
-        public RegistrationChecker() {
-            super(ImmutableMap.<Integer, Class<? extends BeamException>>of(
-                    BAD_REQUEST_CODE, BadRequest.class
-            ));
+    public static class RegistrationChecker extends JojenFutureChecker<BeamUser> {
+        public RegistrationChecker(Gson gson) {
+            super(gson);
         }
     }
 }

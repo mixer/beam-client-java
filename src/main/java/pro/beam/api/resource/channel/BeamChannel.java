@@ -5,7 +5,6 @@ import java.util.*;
 
 import com.google.gson.annotations.SerializedName;
 import pro.beam.api.resource.BeamUser;
-import pro.beam.api.resource.Timeable;
 
 public class BeamChannel implements Serializable {
     public int id;
@@ -36,7 +35,6 @@ public class BeamChannel implements Serializable {
     public BeamResource badge;
     public Type type;
     public Map<String, Object> preferences;
-    public Status status;
     @SerializedName("cache") public ArrayDeque<CachedMessage> messageCache;
     public BeamUser user;
 
@@ -48,16 +46,6 @@ public class BeamChannel implements Serializable {
         public String source;
         public int viewersCurrent;
         public int online;
-    }
-
-    public static class Status {
-        public ArrayList<String> roles;
-        public FollowsRecord follows;
-
-        public static class FollowsRecord extends Timeable {
-            public int user;
-            public int channel;
-        }
     }
 
     public static enum CostreamPreference {

@@ -1,6 +1,7 @@
 package pro.beam.api.futures;
 
 import com.google.common.collect.ImmutableMap;
+import pro.beam.api.http.HttpCompleteResponse;
 
 import java.util.Map;
 
@@ -11,9 +12,9 @@ public class SimpleFutureChecker<V, E extends Exception> extends AbstractFutureC
     }
 
     @Override
-    protected E getException(int statusCode) {
+    protected E getException(HttpCompleteResponse response) {
         try {
-            return this.exceptions.get(statusCode).newInstance();
+            return this.exceptions.get(response.status()).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;

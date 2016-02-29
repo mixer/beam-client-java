@@ -5,10 +5,10 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.exceptions.BeamException;
+import pro.beam.api.exceptions.validation.ValidationError;
 import pro.beam.api.http.BeamHttpClient;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.resource.user.PasswordScore;
-import pro.beam.api.resource.user.validation.UserValidationException;
 import pro.beam.api.response.users.UserFollowsResponse;
 import pro.beam.api.response.users.UserSearchResponse;
 import pro.beam.api.services.AbstractHTTPService;
@@ -107,8 +107,8 @@ public class UsersService extends AbstractHTTPService {
         );
     }
 
-    public CheckedFuture<BeamUser, BeamException> register(String username, String password, String email) {
-        return new Users.RegistrationChecker().check(
+    public CheckedFuture<BeamUser, ValidationError> register(String username, String password, String email) {
+        return new Users.RegistrationChecker(this.beam.gson).check(
             this.post(
                 "",
                 BeamUser.class,
