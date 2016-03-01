@@ -16,6 +16,7 @@ public class ChatService extends AbstractHTTPService {
         super(beam, "chats");
     }
 
+    @Deprecated
     public ListenableFuture<MessagesResponse> messages(BeamChannel channel, int start, int end, int limit) {
         return this.get(String.format("%d/message", channel.id), MessagesResponse.class, BeamHttpClient.getArgumentsBuilder()
                 .put("id", channel.id)

@@ -84,6 +84,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
      *
      * @param message The message to delete.
      */
+    @Deprecated
     public void delete(IncomingMessageData message) {
         String path = this.beam.basePath.resolve("chats/" + message.channel + "/message/" + message.id).toString();
         this.beam.http.delete(path, null);

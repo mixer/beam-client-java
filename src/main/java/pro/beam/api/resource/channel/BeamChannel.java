@@ -35,7 +35,7 @@ public class BeamChannel implements Serializable {
     public BeamResource badge;
     public Type type;
     public Map<String, Object> preferences;
-    @SerializedName("cache") public ArrayDeque<CachedMessage> messageCache;
+    @Deprecated @SerializedName("cache") public ArrayDeque<CachedMessage> messageCache;
     public BeamUser user;
 
     public static class Type implements Serializable {
