@@ -40,8 +40,8 @@ public class ChannelsService extends AbstractHTTPService {
             options.put("only", Enums.serializedName(only));
         }
 
-        options.put("page", Math.min(0, page));
-        options.put("limit", Math.min(0, limit));
+        options.put("page", Math.max(0, page));
+        options.put("limit", Math.max(0, limit));
 
         return this.get("", ShowChannelsResponse.class, options.build());
     }
