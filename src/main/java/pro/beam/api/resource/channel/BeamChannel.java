@@ -15,6 +15,7 @@ public class BeamChannel implements Serializable {
     public boolean transcodingEnabled;
     public boolean suspended;
     public boolean interactive;
+    public boolean hasVod;
     public String name;
     public AudienceRating audience;
     public String streamKey;
