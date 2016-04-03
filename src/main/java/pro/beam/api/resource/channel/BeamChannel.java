@@ -56,6 +56,8 @@ public class BeamChannel implements Serializable {
     }
 
     public static enum AudienceRating {
-        G, PG, PG13, R
+        @SerializedName("family") FAMILY,
+        @SerializedName("teen") TEEN,
+        @SerializedName("18+") ADULT
     }
 }
