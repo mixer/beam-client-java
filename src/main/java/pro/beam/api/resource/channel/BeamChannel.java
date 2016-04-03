@@ -51,7 +51,7 @@ public class BeamChannel implements Serializable {
 
     public static enum CostreamPreference {
         @SerializedName("all") ALL,
-        @SerializedName("following") FOLOWING,
+        @SerializedName("following") FOLLOWING,
         @SerializedName("none") NONE
     }
 
