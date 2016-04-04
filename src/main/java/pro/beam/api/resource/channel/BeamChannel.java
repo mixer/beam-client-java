@@ -51,11 +51,13 @@ public class BeamChannel implements Serializable {
 
     public static enum CostreamPreference {
         @SerializedName("all") ALL,
-        @SerializedName("following") FOLOWING,
+        @SerializedName("following") FOLLOWING,
         @SerializedName("none") NONE
     }
 
     public static enum AudienceRating {
-        G, PG, PG13, R
+        @SerializedName("family") FAMILY,
+        @SerializedName("teen") TEEN,
+        @SerializedName("18+") ADULT
     }
 }
