@@ -1,2 +1,4 @@
+*.iml
 target/
+
 src/main/java/pro/beam/api/Application.java
