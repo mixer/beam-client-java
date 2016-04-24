@@ -15,6 +15,7 @@ public class BeamUser implements Serializable {
     public int id;
     public BeamChannel channel;
     public int points;
+    public int experience;
     public int sparks;
     public Date resetTime;
     public Social social;
