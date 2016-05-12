@@ -30,6 +30,10 @@ public class MessageComponent {
         // Link-related
         public String url;
 
+        // Tag-related
+        public String username;
+        public int id;
+
         public static class Coords {
             public int x;
             public int y;
@@ -39,6 +43,7 @@ public class MessageComponent {
             @SerializedName("text")TEXT,
             @SerializedName("emoticon")EMOTICON,
             @SerializedName("link")LINK,
+            @SerializedName("tag")TAG,
         }
     }
 }
