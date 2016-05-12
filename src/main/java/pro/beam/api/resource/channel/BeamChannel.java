@@ -47,6 +47,7 @@ public class BeamChannel implements Serializable {
         public String source;
         public int viewersCurrent;
         public int online;
+        public String coverUrl;
     }
 
     public static enum CostreamPreference {
