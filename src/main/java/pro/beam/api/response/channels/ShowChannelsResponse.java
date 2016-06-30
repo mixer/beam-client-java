@@ -11,7 +11,7 @@ public class ShowChannelsResponse extends ArrayList<BeamChannel> {
         @SerializedName("featured") FEATURED,
         @SerializedName("partnered") PARTNERED,
         @SerializedName("name") NAME,
-        @SerializedName("viewers_total") VIEWERS_TOTAL,
+        @SerializedName("viewersTotal") VIEWERS_TOTAL,
         @SerializedName("followers") FOLLOWERS,
         @SerializedName("subscribers") SUBSCRIBERS,
         @SerializedName("interactive") INTERACTIVE;

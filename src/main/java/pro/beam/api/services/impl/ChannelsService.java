@@ -7,6 +7,7 @@ import pro.beam.api.BeamAPI;
 import pro.beam.api.exceptions.BeamException;
 import pro.beam.api.futures.checkers.Channels;
 import pro.beam.api.http.BeamHttpClient;
+import pro.beam.api.http.SortOrderMap;
 import pro.beam.api.resource.channel.BeamChannel;
 import pro.beam.api.resource.BeamUser;
 import pro.beam.api.response.channels.ChannelStatusResponse;
@@ -24,20 +25,13 @@ public class ChannelsService extends AbstractHTTPService {
         super(beam, "channels");
     }
 
-    public ListenableFuture<ShowChannelsResponse> show(Map<ShowChannelsResponse.Attributes, ShowChannelsResponse.Ordering> attributes,
-                                                       ShowChannelsResponse.Ordering only,
+    public ListenableFuture<ShowChannelsResponse> show(SortOrderMap<ShowChannelsResponse.Attributes, ShowChannelsResponse.Ordering> ordering,
                                                        int page,
                                                        int limit) {
         ImmutableMap.Builder<String, Object> options = BeamHttpClient.getArgumentsBuilder();
 
-        if (attributes != null) {
-            for (Map.Entry<ShowChannelsResponse.Attributes, ShowChannelsResponse.Ordering> entry : attributes.entrySet()) {
-                options.put(Enums.serializedName(entry.getKey()), Enums.serializedName(entry.getValue()));
-            }
-        }
-
-        if (only != null) {
-            options.put("only", Enums.serializedName(only));
+        if (ordering != null) {
+            options.put("order", ordering.build());
         }
 
         options.put("page", Math.max(0, page));
