@@ -11,6 +11,6 @@ public class SortOrderMapTest {
         map.put(ShowChannelsResponse.Attributes.VIEWERS_TOTAL, ShowChannelsResponse.Ordering.ASCENDING);
         map.put(ShowChannelsResponse.Attributes.FOLLOWERS, ShowChannelsResponse.Ordering.DESCENDING);
         String res = map.build();
-        Assert.assertEquals("followers:desc,viewersTotal:asc",res);
+        Assert.assertEquals("viewersTotal:asc,followers:desc",res);
     }
 }

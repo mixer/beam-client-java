@@ -4,10 +4,10 @@ import pro.beam.api.util.Enums;
 import pro.beam.api.util.StringUtil;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SortOrderMap<K,V> extends HashMap<Enum,Enum> {
+public class SortOrderMap<K,V> extends LinkedHashMap<Enum,Enum> {
     public String build() {
         String[] result = new String[this.size()];
         int i = 0;
