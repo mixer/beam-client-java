@@ -32,7 +32,7 @@ And secondly, add this project as a `dependency` in your `pom.xml`:
   <dependency>
     <groupId>pro.beam</groupId>
     <artifactId>api</artifactId>
-    <version>1.10.5-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```
