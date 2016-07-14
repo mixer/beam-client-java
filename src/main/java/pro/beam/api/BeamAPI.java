@@ -70,4 +70,7 @@ public class BeamAPI {
     public boolean register(AbstractBeamService service) {
         return this.services.register(service);
     }
+    public void setUserAgent(String agent) {
+        this.http.setUserAgent(agent);
+    }
 }
