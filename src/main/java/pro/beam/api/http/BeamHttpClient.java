@@ -225,6 +225,9 @@ public class BeamHttpClient {
 
         return this.userAgent;
     }
+    public void setUserAgent(String agent) {
+        this.userAgent = agent;
+    }
 
     public static ImmutableMap.Builder<String, Object> getArgumentsBuilder() {
         return new ImmutableMap.Builder<>();
