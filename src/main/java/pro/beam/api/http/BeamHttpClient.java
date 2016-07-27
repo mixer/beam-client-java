@@ -8,10 +8,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -21,7 +18,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
-import org.apache.http.util.EntityUtils;
 import pro.beam.api.BeamAPI;
 
 import java.io.IOException;
@@ -40,6 +36,9 @@ public class BeamHttpClient {
 
     private String userAgent;
     private String oauthToken;
+
+    private static final String CSRF_TOKEN_LOCATION = "x-csrf-token";
+    private String csrfToken;
 
     public BeamHttpClient(BeamAPI beam) {
         this(beam, null, null);
@@ -129,6 +128,9 @@ public class BeamHttpClient {
         if (this.oauthToken != null) {
             requestBuilder.addHeader("Authorization", "Bearer " + this.oauthToken);
         }
+        if (this.csrfToken != null) {
+            requestBuilder.addHeader(CSRF_TOKEN_LOCATION, this.csrfToken);
+        }
 
         return requestBuilder.build();
     }
@@ -170,6 +172,8 @@ public class BeamHttpClient {
                 HttpResponse partialResponse = self.http.execute(request, self.context);
                 HttpCompleteResponse completeResponse = new HttpCompleteResponseHandler().handleResponse(partialResponse);
 
+                self.handleCSRF(partialResponse);
+
                 if (completeResponse.status.getStatusCode() >= 300) {
                     throw new HttpBadResponseException(completeResponse);
                 }
@@ -183,6 +187,16 @@ public class BeamHttpClient {
                 }
             }
         };
+    }
+
+    /**
+     * Given a HTTP Response, check to see if a CSRF token is present, If it is we store this in the Client
+     * for future requests.
+     */
+    private void handleCSRF(HttpResponse response) {
+        if (response.containsHeader(CSRF_TOKEN_LOCATION)) {
+            this.csrfToken = response.getHeaders(CSRF_TOKEN_LOCATION)[0].getValue();
+        }
     }
 
     /**
