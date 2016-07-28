@@ -19,6 +19,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
 import pro.beam.api.BeamAPI;
+import pro.beam.api.resource.channel.BeamChannel;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -38,6 +39,7 @@ public class BeamHttpClient {
     private String oauthToken;
 
     public static final String CSRF_TOKEN_LOCATION = "x-csrf-token";
+    public static final int CSRF_CODE = 461;
     private String csrfToken;
 
     public BeamHttpClient(BeamAPI beam) {
@@ -172,25 +174,43 @@ public class BeamHttpClient {
         return new Callable<T>() {
             @Override public T call() throws IOException, HttpBadResponseException {
                 BeamHttpClient self = BeamHttpClient.this;
-
-                HttpResponse partialResponse = self.http.execute(request, self.context);
-                HttpCompleteResponse completeResponse = new HttpCompleteResponseHandler().handleResponse(partialResponse);
-
-                self.handleCSRF(partialResponse);
-
-                if (completeResponse.status.getStatusCode() >= 300) {
-                    throw new HttpBadResponseException(completeResponse);
+                try {
+                    return handleRequest(request, type);
+                } catch(HttpBadResponseException e) {
+                    if (e.response.status.getStatusCode() == CSRF_CODE) {
+                        return handleRequest(request, type);
+                    }
                 }
-
-                // Allow a null response to be given back, such that we return a ListenableFuture
-                // with null.
-                if (type != null) {
-                    return self.beam.gson.fromJson(completeResponse.body(), type);
-                } else {
-                    return null;
-                }
+                return null;
             }
         };
+    }
+
+    public <T> T handleRequest(HttpUriRequest request, Class<T> type) throws IOException, HttpBadResponseException {
+        HttpResponse partialResponse = this.makeRequest(request);
+        return this.handleResponse(partialResponse, type);
+    }
+
+    public HttpResponse makeRequest(HttpUriRequest request) throws IOException {
+        return this.http.execute(request, this.context);
+    }
+
+    public <T> T handleResponse(HttpResponse partialResponse, Class<T> type) throws IOException, HttpBadResponseException {
+        HttpCompleteResponse completeResponse = new HttpCompleteResponseHandler().handleResponse(partialResponse);
+
+        this.handleCSRF(partialResponse);
+
+        if (completeResponse.status.getStatusCode() >= 300) {
+            throw new HttpBadResponseException(completeResponse);
+        }
+
+        // Allow a null response to be given back, such that we return a ListenableFuture
+        // with null.
+        if (type != null) {
+            return this.beam.gson.fromJson(completeResponse.body(), type);
+        } else {
+            return null;
+        }
     }
 
     /**
