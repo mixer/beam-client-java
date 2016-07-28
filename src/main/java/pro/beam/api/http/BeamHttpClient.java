@@ -8,10 +8,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.*;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -21,7 +18,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
-import org.apache.http.util.EntityUtils;
 import pro.beam.api.BeamAPI;
 
 import java.io.IOException;
@@ -40,6 +36,10 @@ public class BeamHttpClient {
 
     private String userAgent;
     private String oauthToken;
+
+    public static final String CSRF_TOKEN_HEADER = "x-csrf-token";
+    public static final int CSRF_STATUS_CODE = 461;
+    private String csrfToken;
 
     public BeamHttpClient(BeamAPI beam) {
         this(beam, null, null);
@@ -74,11 +74,15 @@ public class BeamHttpClient {
             this.context = null;
         }
 
-        this.http = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
+        this.http = this.buildHttpClient();
 
         if (oauthToken != null) {
             this.oauthToken = oauthToken;
         }
+    }
+
+    protected HttpClient buildHttpClient() {
+        return HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
     }
 
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
@@ -129,6 +133,9 @@ public class BeamHttpClient {
         if (this.oauthToken != null) {
             requestBuilder.addHeader("Authorization", "Bearer " + this.oauthToken);
         }
+        if (this.csrfToken != null) {
+            requestBuilder.addHeader(CSRF_TOKEN_HEADER, this.csrfToken);
+        }
 
         return requestBuilder.build();
     }
@@ -166,23 +173,53 @@ public class BeamHttpClient {
         return new Callable<T>() {
             @Override public T call() throws IOException, HttpBadResponseException {
                 BeamHttpClient self = BeamHttpClient.this;
-
-                HttpResponse partialResponse = self.http.execute(request, self.context);
-                HttpCompleteResponse completeResponse = new HttpCompleteResponseHandler().handleResponse(partialResponse);
-
-                if (completeResponse.status.getStatusCode() >= 300) {
-                    throw new HttpBadResponseException(completeResponse);
-                }
-
-                // Allow a null response to be given back, such that we return a ListenableFuture
-                // with null.
-                if (type != null) {
-                    return self.beam.gson.fromJson(completeResponse.body(), type);
-                } else {
-                    return null;
+                try {
+                    return handleRequest(request, type);
+                } catch(HttpBadResponseException e) {
+                    if (e.response.status.getStatusCode() == CSRF_STATUS_CODE) {
+                        return handleRequest(request, type);
+                    }
+                    throw e;
                 }
             }
         };
+    }
+
+    public <T> T handleRequest(HttpUriRequest request, Class<T> type) throws IOException, HttpBadResponseException {
+        HttpResponse partialResponse = this.makeRequest(request);
+        return this.handleResponse(partialResponse, type);
+    }
+
+    public HttpResponse makeRequest(HttpUriRequest request) throws IOException {
+        return this.http.execute(request, this.context);
+    }
+
+    public <T> T handleResponse(HttpResponse partialResponse, Class<T> type) throws IOException, HttpBadResponseException {
+        HttpCompleteResponse completeResponse = new HttpCompleteResponseHandler().handleResponse(partialResponse);
+
+        this.handleCSRF(partialResponse);
+
+        if (completeResponse.status.getStatusCode() >= 300) {
+            throw new HttpBadResponseException(completeResponse);
+        }
+
+        // Allow a null response to be given back, such that we return a ListenableFuture
+        // with null.
+        if (type != null) {
+            return this.beam.gson.fromJson(completeResponse.body(), type);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Given a HTTP Response, check to see if a CSRF token is present, If it is we store this in the Client
+     * for future requests.
+     */
+    private void handleCSRF(HttpResponse response) {
+        if (response.containsHeader(CSRF_TOKEN_HEADER)) {
+            this.csrfToken = response.getHeaders(CSRF_TOKEN_HEADER)[0].getValue();
+        }
     }
 
     /**
@@ -231,5 +268,9 @@ public class BeamHttpClient {
 
     public static ImmutableMap.Builder<String, Object> getArgumentsBuilder() {
         return new ImmutableMap.Builder<>();
+    }
+
+    public String getCsrfToken() {
+        return csrfToken;
     }
 }
