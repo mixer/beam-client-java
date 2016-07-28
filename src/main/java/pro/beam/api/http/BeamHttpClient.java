@@ -179,9 +179,10 @@ public class BeamHttpClient {
                 } catch(HttpBadResponseException e) {
                     if (e.response.status.getStatusCode() == CSRF_CODE) {
                         return handleRequest(request, type);
+                    } else {
+                        throw e;
                     }
                 }
-                return null;
             }
         };
     }
