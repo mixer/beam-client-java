@@ -37,7 +37,7 @@ public class BeamHttpClient {
     private String userAgent;
     private String oauthToken;
 
-    private static final String CSRF_TOKEN_LOCATION = "x-csrf-token";
+    public static final String CSRF_TOKEN_LOCATION = "x-csrf-token";
     private String csrfToken;
 
     public BeamHttpClient(BeamAPI beam) {
@@ -73,11 +73,15 @@ public class BeamHttpClient {
             this.context = null;
         }
 
-        this.http = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
+        this.http = this.buildHttpClient();
 
         if (oauthToken != null) {
             this.oauthToken = oauthToken;
         }
+    }
+
+    protected HttpClient buildHttpClient() {
+        return HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
     }
 
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
@@ -245,5 +249,9 @@ public class BeamHttpClient {
 
     public static ImmutableMap.Builder<String, Object> getArgumentsBuilder() {
         return new ImmutableMap.Builder<>();
+    }
+
+    public String getCsrfToken() {
+        return csrfToken;
     }
 }
