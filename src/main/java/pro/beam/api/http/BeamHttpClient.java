@@ -19,7 +19,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
 import pro.beam.api.BeamAPI;
-import pro.beam.api.resource.channel.BeamChannel;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -38,8 +37,8 @@ public class BeamHttpClient {
     private String userAgent;
     private String oauthToken;
 
-    public static final String CSRF_TOKEN_LOCATION = "x-csrf-token";
-    public static final int CSRF_CODE = 461;
+    public static final String CSRF_TOKEN_HEADER = "x-csrf-token";
+    public static final int CSRF_STATUS_CODE = 461;
     private String csrfToken;
 
     public BeamHttpClient(BeamAPI beam) {
@@ -135,7 +134,7 @@ public class BeamHttpClient {
             requestBuilder.addHeader("Authorization", "Bearer " + this.oauthToken);
         }
         if (this.csrfToken != null) {
-            requestBuilder.addHeader(CSRF_TOKEN_LOCATION, this.csrfToken);
+            requestBuilder.addHeader(CSRF_TOKEN_HEADER, this.csrfToken);
         }
 
         return requestBuilder.build();
@@ -177,7 +176,7 @@ public class BeamHttpClient {
                 try {
                     return handleRequest(request, type);
                 } catch(HttpBadResponseException e) {
-                    if (e.response.status.getStatusCode() == CSRF_CODE) {
+                    if (e.response.status.getStatusCode() == CSRF_STATUS_CODE) {
                         return handleRequest(request, type);
                     }
                     throw e;
@@ -218,8 +217,8 @@ public class BeamHttpClient {
      * for future requests.
      */
     private void handleCSRF(HttpResponse response) {
-        if (response.containsHeader(CSRF_TOKEN_LOCATION)) {
-            this.csrfToken = response.getHeaders(CSRF_TOKEN_LOCATION)[0].getValue();
+        if (response.containsHeader(CSRF_TOKEN_HEADER)) {
+            this.csrfToken = response.getHeaders(CSRF_TOKEN_HEADER)[0].getValue();
         }
     }
 
