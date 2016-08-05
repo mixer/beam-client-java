@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.http.ws.BeamWebsocketClient;
@@ -97,7 +98,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
         try {
             // Parse out the generic JsonObject so we can pull out the ID element from it,
             //  since we cannot yet parse as a generic class.
-            JsonObject e = this.beam.gson.fromJson(s, JsonObject.class);
+            JsonObject e = new JsonParser().parse(s).getAsJsonObject();
             if (e.has("id")) {
                 int id = e.get("id").getAsInt();
 
