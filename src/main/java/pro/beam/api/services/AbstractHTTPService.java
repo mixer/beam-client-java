@@ -41,8 +41,10 @@ public abstract class AbstractHTTPService extends AbstractBeamService {
     }
 
     public String path(String relative) {
-        if (relative.length() > 0) {
-            relative = "/" + relative;
+        if (this.path != null && !this.path.isEmpty()) {
+            if (relative.length() > 0) {
+                relative = "/" + relative;
+            }
         }
 
         return this.beam.basePath.resolve(this.path + relative).toString();
