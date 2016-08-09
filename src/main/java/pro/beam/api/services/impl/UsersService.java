@@ -29,6 +29,8 @@ public class UsersService extends AbstractHTTPService {
         return this.post("current/refresh", BeamUser.class);
     }
 
+    public ListenableFuture<BeamUser> getCurrent() { return this.get("current", BeamUser.class); }
+
     /**
      * Login without two factor authentication
      * @param username The user's username

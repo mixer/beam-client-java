@@ -10,7 +10,7 @@ import pro.beam.api.services.AbstractHTTPService;
 
 public class TetrisService extends AbstractHTTPService {
     public TetrisService(BeamAPI beam) {
-        super(beam, "tetris");
+        super(beam, "interactive");
     }
 
     public CheckedFuture<RobotInfo, BeamException> getRobotCredentials(int channelId) {
