@@ -26,12 +26,14 @@ public class BeamAPI {
     public final ListeningExecutorService executor;
     protected final ServiceManager<AbstractBeamService> services;
 
+    private static final URI DEFAULT_BASE_PATH = URI.create("https://beam.pro/api/v1/");
+
     public BeamAPI() {
         this(null);
     }
 
     public BeamAPI(String oauthToken) {
-        this(URI.create("https://beam.pro/api/v1/"), oauthToken);
+        this(DEFAULT_BASE_PATH, oauthToken);
     }
 
     public BeamAPI(URI basePath, String oauthToken) {
@@ -43,7 +45,11 @@ public class BeamAPI {
     }
 
     public BeamAPI(URI basePath, String httpUsername, String httpPassword, String oauthToken) {
-        this.basePath = basePath;
+        if (basePath != null) {
+            this.basePath = basePath;
+        } else {
+            this.basePath = DEFAULT_BASE_PATH;
+        }
 
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(InetSocketAddress.class, new InetSocketAddressAdapter())
