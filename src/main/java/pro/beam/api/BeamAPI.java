@@ -61,6 +61,7 @@ public class BeamAPI {
         this.register(new ChannelsService(this));
         this.register(new TypesService(this));
         this.register(new TetrisService(this));
+        this.register(new JWTService(this));
     }
 
     public <T extends AbstractBeamService> T use(Class<T> service) {

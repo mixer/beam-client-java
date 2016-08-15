@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.gson.Gson;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -19,6 +20,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
 import pro.beam.api.BeamAPI;
+import pro.beam.api.resource.user.JSONWebToken;
+import pro.beam.api.services.impl.UsersService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +39,8 @@ public class BeamHttpClient {
 
     private String userAgent;
     private String oauthToken;
+
+    private JSONWebToken jwt;
 
     public static final String CSRF_TOKEN_HEADER = "x-csrf-token";
     public static final int CSRF_STATUS_CODE = 461;
@@ -133,6 +138,12 @@ public class BeamHttpClient {
         if (this.oauthToken != null) {
             requestBuilder.addHeader("Authorization", "Bearer " + this.oauthToken);
         }
+        if (this.jwt != null) {
+            if (this.jwt.hasExpired()) {
+                // todo(jamydev): Renew JWT grant
+            }
+            requestBuilder.addHeader("Authorization", "JWT " + this.jwt);
+        }
         if (this.csrfToken != null) {
             requestBuilder.addHeader(CSRF_TOKEN_HEADER, this.csrfToken);
         }
@@ -203,6 +214,8 @@ public class BeamHttpClient {
             throw new HttpBadResponseException(completeResponse);
         }
 
+        this.handleJWT(partialResponse);
+
         // Allow a null response to be given back, such that we return a ListenableFuture
         // with null.
         if (type != null) {
@@ -219,6 +232,25 @@ public class BeamHttpClient {
     private void handleCSRF(HttpResponse response) {
         if (response.containsHeader(CSRF_TOKEN_HEADER)) {
             this.csrfToken = response.getHeaders(CSRF_TOKEN_HEADER)[0].getValue();
+        }
+    }
+
+    /**
+     * Removes the current JWT from the client.
+     */
+    public void clearJWT() {
+        this.jwt = null;
+    }
+
+    /**
+     * Checks the response for an X-JWT header so we can parse it.
+     * @param partialResponse
+     */
+    private void handleJWT(HttpResponse partialResponse) {
+        Header[] jwtHeaders = partialResponse.getHeaders("X-JWT");
+        if (jwtHeaders.length > 0) {
+            Header jwtHeader = jwtHeaders[0];
+            this.jwt = this.beam.gson.fromJson(jwtHeader.getValue(), JSONWebToken.class);
         }
     }
 

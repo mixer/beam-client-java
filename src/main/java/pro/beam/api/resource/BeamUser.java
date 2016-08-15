@@ -41,5 +41,6 @@ public class BeamUser implements Serializable {
         public String facebook;
         public String twitter;
         public String youtube;
+        public String discord;
     }
 }
