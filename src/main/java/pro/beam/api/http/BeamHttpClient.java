@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -41,6 +42,7 @@ public class BeamHttpClient {
     private String oauthToken;
 
     private JSONWebToken jwt;
+    private String jwtString;
 
     public static final String CSRF_TOKEN_HEADER = "x-csrf-token";
     public static final int CSRF_STATUS_CODE = 461;
@@ -142,7 +144,7 @@ public class BeamHttpClient {
             if (this.jwt.hasExpired()) {
                 // todo(jamydev): Renew JWT grant
             }
-            requestBuilder.addHeader("Authorization", "JWT " + this.jwt);
+            requestBuilder.addHeader("Authorization", "JWT " + this.jwtString);
         }
         if (this.csrfToken != null) {
             requestBuilder.addHeader(CSRF_TOKEN_HEADER, this.csrfToken);
@@ -250,6 +252,7 @@ public class BeamHttpClient {
         Header[] jwtHeaders = partialResponse.getHeaders("X-JWT");
         if (jwtHeaders.length > 0) {
             Header jwtHeader = jwtHeaders[0];
+            this.jwtString = jwtHeader.getValue();
             this.jwt = this.beam.gson.fromJson(jwtHeader.getValue(), JSONWebToken.class);
         }
     }
@@ -304,5 +307,17 @@ public class BeamHttpClient {
 
     public String getCsrfToken() {
         return csrfToken;
+    }
+
+    public String getJWTString() {
+        return this.jwtString;
+    }
+
+    public Map<String, String> getDefaultSocketHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "JWT " + jwtString);
+        headers.put("User-Agent", getUserAgent());
+
+        return headers;
     }
 }
