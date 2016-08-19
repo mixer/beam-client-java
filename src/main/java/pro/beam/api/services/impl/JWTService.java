@@ -23,13 +23,13 @@ public class JWTService extends AbstractHTTPService {
      * Retrieve a JWT from the api. When passed in a BeamUser use this as the result.
      * @return
      */
-    public CheckedFuture<BeamUser, BeamException> authorize(final BeamUser beamUser) {
-        return new JWT.JWTFutureChecker<BeamUser>().check(Futures.transform(
+    public <T> CheckedFuture<T, BeamException> authorize(final T value) {
+        return new JWT.JWTFutureChecker<T>().check(Futures.transform(
             this.post("authorize", null, new Object()),
-            new AsyncFunction<Object, BeamUser>() {
+            new AsyncFunction<Object, T>() {
                 @Override
-                public ListenableFuture<BeamUser> apply(Object o) throws Exception {
-                    return Futures.immediateCheckedFuture(beamUser);
+                public ListenableFuture<T> apply(Object o) throws Exception {
+                    return Futures.immediateCheckedFuture(value);
                 }
             }
         ));
