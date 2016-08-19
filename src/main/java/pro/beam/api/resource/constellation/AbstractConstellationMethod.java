@@ -28,6 +28,6 @@ public abstract class AbstractConstellationMethod extends AbstractConstellationD
 
     protected static final Random ID_RANDOM = new Random();
     protected static int nextId() {
-        return ID_RANDOM.nextInt();
+        return Math.abs(ID_RANDOM.nextInt());
     }
 }

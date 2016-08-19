@@ -50,11 +50,11 @@ public class UsersService extends AbstractHTTPService {
      * @return
      */
     public CheckedFuture<BeamUser, BeamException> login(String username, String password) {
-        return (CheckedFuture<BeamUser, BeamException>) Futures.transform(new Users.TwoFactorFutureChecker().check(
+        return new Users.TwoFactorFutureChecker().check(Futures.transform(
                 this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
                         .put("username", username)
                         .put("password", password).build())
-        ), jwtHandler);
+        , jwtHandler));
     }
 
     /**
@@ -69,12 +69,12 @@ public class UsersService extends AbstractHTTPService {
         if (authCode.length() != 6) {
             throw new IllegalArgumentException("two factor authentication code have to be 6 digits (was " + authCode.length() + ")");
         } else {
-            return (CheckedFuture<BeamUser, BeamException>) Futures.transform(new Users.TwoFactorFutureChecker().check(
+            return new Users.TwoFactorFutureChecker().check(Futures.transform(
                 this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
                         .put("username", username)
                         .put("password", password)
                         .put("code", authCode).build())
-            ), jwtHandler);
+            , jwtHandler));
         }
     }
 

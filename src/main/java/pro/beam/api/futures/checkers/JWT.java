@@ -9,7 +9,7 @@ import pro.beam.api.resource.BeamUser;
 public class JWT {
     private static final int UNAUTHORIZED_RESPONSE = 401;
 
-    public static class JWTFutureChecker extends SimpleFutureChecker<Object, BeamException> {
+    public static class JWTFutureChecker<T> extends SimpleFutureChecker<T, BeamException> {
         public JWTFutureChecker() {
             super(ImmutableMap.<Integer, Class<? extends BeamException>>of(
                     UNAUTHORIZED_RESPONSE, Forbidden.class

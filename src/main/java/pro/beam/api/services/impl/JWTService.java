@@ -24,15 +24,14 @@ public class JWTService extends AbstractHTTPService {
      * @return
      */
     public CheckedFuture<BeamUser, BeamException> authorize(final BeamUser beamUser) {
-        return (CheckedFuture<BeamUser, BeamException>)
-            Futures.transform(
-                new JWT.JWTFutureChecker().check(this.post("authorize", null)),
-                new AsyncFunction<Object, BeamUser>() {
-                    @Override
-                    public ListenableFuture<BeamUser> apply(Object o) throws Exception {
-                        return Futures.immediateCheckedFuture(beamUser);
-                    }
+        return new JWT.JWTFutureChecker<BeamUser>().check(Futures.transform(
+            this.post("authorize", null, new Object()),
+            new AsyncFunction<Object, BeamUser>() {
+                @Override
+                public ListenableFuture<BeamUser> apply(Object o) throws Exception {
+                    return Futures.immediateCheckedFuture(beamUser);
                 }
-            );
+            }
+        ));
     }
 }

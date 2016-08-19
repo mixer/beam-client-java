@@ -220,7 +220,7 @@ public class BeamHttpClient {
 
         // Allow a null response to be given back, such that we return a ListenableFuture
         // with null.
-        if (type != null) {
+        if (type != null && completeResponse.body != null) {
             return this.beam.gson.fromJson(completeResponse.body(), type);
         } else {
             return null;
@@ -253,8 +253,21 @@ public class BeamHttpClient {
         if (jwtHeaders.length > 0) {
             Header jwtHeader = jwtHeaders[0];
             this.jwtString = jwtHeader.getValue();
-            this.jwt = this.beam.gson.fromJson(jwtHeader.getValue(), JSONWebToken.class);
+            this.jwt = parseJWTData(jwtHeader.getValue());
         }
+    }
+
+    /**
+     * Parses the actual JWT data out of the token.
+     * @param jwtValue
+     * @return
+     */
+    private JSONWebToken parseJWTData(String jwtValue) {
+        String[] parts = jwtValue.split(".");
+        if (parts.length != 3) {
+            return null;
+        }
+        return this.beam.gson.fromJson(parts[1], JSONWebToken.class);
     }
 
     /**
@@ -315,7 +328,9 @@ public class BeamHttpClient {
 
     public Map<String, String> getDefaultSocketHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "JWT " + jwtString);
+        if (this.jwt != null) {
+            headers.put("Authorization", "JWT " + jwtString);
+        }
         headers.put("User-Agent", getUserAgent());
 
         return headers;
