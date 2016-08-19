@@ -1,5 +1,7 @@
 package pro.beam.api.resource.constellation.ws;
 
+import org.java_websocket.framing.Framedata;
+import org.java_websocket.framing.FramedataImpl1;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.resource.constellation.AbstractConstellationEvent;
 import pro.beam.api.resource.constellation.BeamConstellation;
@@ -10,6 +12,8 @@ import pro.beam.api.resource.constellation.replies.ReplyHandler;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BeamConstellationConnectable {
     private static final SSLSocketFactory SSL_SOCKET_FACTORY = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -20,6 +24,8 @@ public class BeamConstellationConnectable {
 
     private final Object connectionLock = false;
     private BeamConstellationConnection connection;
+
+    private Timer pingTimer;
 
     public BeamConstellationConnectable(BeamAPI beam, BeamConstellation constellation) {
         this.beam = beam;
@@ -46,8 +52,35 @@ public class BeamConstellationConnectable {
             }
             this.connection = newConnection;
 
+            handlePing();
+
             return true;
         }
+    }
+
+    /**
+     * Handles the automatic ping to the socket.
+     */
+    private void handlePing() {
+        pingTimer = (new Timer());
+        pingTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (connection.isOpen()) {
+                    ping();
+                }
+            }
+        }, 30 * 1000);
+    }
+
+    /**
+     * Sends a ping to the websocket server.
+     */
+    private void ping()
+    {
+        FramedataImpl1 frame = new FramedataImpl1(Framedata.Opcode.PING);
+        frame.setFin(true);
+        connection.sendFrame(frame);
     }
 
     /**
@@ -70,6 +103,9 @@ public class BeamConstellationConnectable {
             }
 
             this.connection.closeConnection(code, msg);
+            if (pingTimer != null) {
+                pingTimer.cancel();
+            }
         }
     }
 

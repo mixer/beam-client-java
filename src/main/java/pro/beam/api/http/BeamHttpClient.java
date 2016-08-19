@@ -96,6 +96,12 @@ public class BeamHttpClient {
         return HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
     }
 
+    /**
+     * Called for each method. Used to do pre-flight checks, like renewing jwt's.
+     * @param callable
+     * @param <T>
+     * @return
+     */
     private <T> ListenableFuture<T> baseSubmit(final Callable<T> callable) {
         if (shouldRenewJWT()) {
             return Futures.transform(this.beam.use(JWTService.class).authorize(new Object()), new AsyncFunction<Object, T>() {
