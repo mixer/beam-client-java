@@ -6,9 +6,6 @@ import pro.beam.api.exceptions.Forbidden;
 import pro.beam.api.futures.SimpleFutureChecker;
 import pro.beam.api.resource.BeamUser;
 
-/**
- * Created by jamy on 09/08/16.
- */
 public class JWT {
     private static final int UNAUTHORIZED_RESPONSE = 401;
 
