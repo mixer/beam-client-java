@@ -42,7 +42,7 @@ public class BeamHttpClientTest {
         beamAPI = new BeamAPI();
         defaultHttpClient = mock(HttpClient.class);
 
-        // This is done because Mockito is not able to mock methods that are called within the class'
+        // This is done because Mockito is not able to mock oldmethods that are called within the class'
         // Constructor.
         class MockableBeamHttpClient extends BeamHttpClient {
             public MockableBeamHttpClient(BeamAPI beam) {

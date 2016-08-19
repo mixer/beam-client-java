@@ -1,4 +1,4 @@
-package pro.beam.api.resource.chat.ws;
+package pro.beam.api.resource.constellation.ws;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
@@ -8,34 +8,37 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.http.ws.BeamWebsocketClient;
-import pro.beam.api.resource.chat.*;
-import pro.beam.api.resource.chat.events.EventHandler;
-import pro.beam.api.resource.chat.events.data.IncomingMessageData;
-import pro.beam.api.resource.chat.replies.ReplyHandler;
+import pro.beam.api.resource.constellation.*;
+import pro.beam.api.resource.constellation.events.EventHandler;
+import pro.beam.api.resource.constellation.replies.ReplyHandler;
 
 import java.lang.reflect.ParameterizedType;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class BeamChatConnection extends BeamWebsocketClient {
-    protected final BeamChatConnectable producer;
-    protected final BeamChat chat;
+public class BeamConstellationConnection extends BeamWebsocketClient {
+    private static URI CONSTELLATION_ADDR = URI.create("wss://constellation.beam.pro");
+
+    protected final BeamConstellationConnectable producer;
+    protected final BeamConstellation constellation;
 
     protected final Map<Integer, ReplyPair> replyHandlers;
-    protected final Multimap<Class<? extends AbstractChatEvent>, EventHandler> eventHandlers;
+    protected final Multimap<Class<? extends AbstractConstellationEvent>, EventHandler> eventHandlers;
 
-    public BeamChatConnection(BeamChatConnectable producer, BeamAPI beam, BeamChat chat) {
-        super(beam, chat.endpoint());
+    public BeamConstellationConnection(BeamConstellationConnectable producer, BeamAPI beam, BeamConstellation constellation) {
+        super(beam, CONSTELLATION_ADDR, beam.http.getDefaultSocketHeaders());
         this.producer = producer;
 
-        this.chat = chat;
+
+        this.constellation = constellation;
 
         this.replyHandlers = Maps.newConcurrentMap();
         this.eventHandlers = HashMultimap.create();
     }
 
-    public void inherit(BeamChatConnection other) {
-        for (Map.Entry<Class<? extends AbstractChatEvent>, EventHandler> entry : other.eventHandlers.entries()) {
+    public void inherit(BeamConstellationConnection other) {
+        for (Map.Entry<Class<? extends AbstractConstellationEvent>, EventHandler> entry : other.eventHandlers.entries()) {
             this.eventHandlers.put(entry.getKey(), entry.getValue());
         }
 
@@ -44,7 +47,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
         }
     }
 
-    public <T extends AbstractChatEvent> boolean on(Class<T> eventType, EventHandler<T> handler) {
+    public <T extends AbstractConstellationEvent> boolean on(Class<T> eventType, EventHandler<T> handler) {
         return this.eventHandlers.put(eventType, handler);
     }
 
@@ -52,7 +55,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
      * Send sends a constellation method with no given response handler.
      * @param method The method to send.
      */
-    public void send(AbstractChatMethod method) {
+    public void send(AbstractConstellationMethod method) {
         this.send(method, null);
     }
 
@@ -64,7 +67,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
      * @param handler The reply handler.
      * @param <T> The type on which to bind the method and reply handler together with.
      */
-    public <T extends AbstractChatReply> void send(final AbstractChatMethod method, ReplyHandler<T> handler) {
+    public <T extends AbstractConstellationReply> void send(final AbstractConstellationMethod method, ReplyHandler<T> handler) {
         if (handler != null) {
             this.replyHandlers.put(method.id, ReplyPair.from(handler));
         }
@@ -72,23 +75,12 @@ public class BeamChatConnection extends BeamWebsocketClient {
         this.beam.executor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                byte[] data = BeamChatConnection.this.beam.gson.toJson(method).getBytes();
-                BeamChatConnection.this.send(data);
+                byte[] data = BeamConstellationConnection.this.beam.gson.toJson(method).getBytes();
+                BeamConstellationConnection.this.send(data);
 
                 return null;
             }
         });
-    }
-
-    /**
-     * Delete deletes a message by making an API call.
-     *
-     * @param message The message to delete.
-     */
-    @Deprecated
-    public void delete(IncomingMessageData message) {
-        String path = this.beam.basePath.resolve("chats/" + message.channel + "/message/" + message.id).toString();
-        this.beam.http.delete(path, null);
     }
 
     @Override
@@ -105,24 +97,18 @@ public class BeamChatConnection extends BeamWebsocketClient {
                 // Try and remove a reply-pair, execute the #onSuccess method if we find
                 // a matching reply-pair.
                 if ((replyPair = this.replyHandlers.remove(id)) != null) {
-                    Class<? extends AbstractChatDatagram> type = replyPair.type;
+                    Class<? extends AbstractConstellationDatagram> type = replyPair.type;
 
                     // Now that we have the type, we can appropriately parse out the value
                     // And call the #onSuccess method with the value.
-                    AbstractChatDatagram datagram = this.beam.gson.fromJson(s, type);
+                    AbstractConstellationDatagram datagram = this.beam.gson.fromJson(s, type);
                     replyPair.handler.onSuccess(type.cast(datagram));
                 }
             } else if (e.has("event")) {
-                // Handles cases of beam widgets (GiveawayBot) sending ChatMessage oldevents
-                if(e.getAsJsonObject("data").has("user_id") && e.getAsJsonObject("data").get("user_id").getAsInt() == -1) {
-                    Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
-                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
-                } else {
-                    // Default ChatMessage event handling
-                    String eventName = e.get("event").getAsString();
-                    Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
-                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
-                }
+                // Default ChatMessage event handling
+                String eventName = e.get("event").getAsString();
+                Class<? extends AbstractConstellationEvent> type = AbstractConstellationEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
+                this.dispatchEvent(this.beam.gson.fromJson(e, type));
             }
         } catch (JsonSyntaxException e) {
             // If an exception was called and we do have a reply handler to catch it,
@@ -139,19 +125,20 @@ public class BeamChatConnection extends BeamWebsocketClient {
         this.producer.notifyClose(i, s, b);
     }
 
-    private <T extends AbstractChatEvent> void dispatchEvent(T event) {
-        Class<? extends AbstractChatEvent> eventType = event.getClass();
+    private <T extends AbstractConstellationEvent> void dispatchEvent(T event) {
+        Class<? extends AbstractConstellationEvent> eventType = event.getClass();
 
         for (EventHandler handler : this.eventHandlers.get(eventType)) {
             handler.onEvent(event);
         }
     }
 
-    private static class ReplyPair<T extends AbstractChatReply> {
+
+    private static class ReplyPair<T extends AbstractConstellationReply> {
         public ReplyHandler<T> handler;
         public Class<T> type;
 
-        private static <T extends AbstractChatReply> ReplyPair<T> from(ReplyHandler<T> handler) {
+        private static <T extends AbstractConstellationReply> ReplyPair<T> from(ReplyHandler<T> handler) {
             ReplyPair<T> pair = new ReplyPair<>();
 
             pair.handler = handler;
