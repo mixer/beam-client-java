@@ -49,7 +49,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
     }
 
     /**
-     * Send sends a constellation method with no given response handler.
+     * Send sends a chat method with no given response handler.
      * @param method The method to send.
      */
     public void send(AbstractChatMethod method) {
@@ -57,8 +57,8 @@ public class BeamChatConnection extends BeamWebsocketClient {
     }
 
     /**
-     * Send sends a constellation method with a response handler that will be invoked when a response
-     * is received from the constellation server.
+     * Send sends a chat method with a response handler that will be invoked when a response
+     * is received from the chat server.
      *
      * @param method The method to send.
      * @param handler The reply handler.
@@ -113,7 +113,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
                     replyPair.handler.onSuccess(type.cast(datagram));
                 }
             } else if (e.has("event")) {
-                // Handles cases of beam widgets (GiveawayBot) sending ChatMessage oldevents
+                // Handles cases of beam widgets (GiveawayBot) sending ChatMessage events
                 if(e.getAsJsonObject("data").has("user_id") && e.getAsJsonObject("data").get("user_id").getAsInt() == -1) {
                     Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
                     this.dispatchEvent(this.beam.gson.fromJson(e, type));
