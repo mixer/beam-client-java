@@ -3,8 +3,11 @@ package pro.beam.api.http;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.AsyncFunction;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.gson.Gson;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -19,11 +22,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.*;
 import pro.beam.api.BeamAPI;
+import pro.beam.api.resource.user.JSONWebToken;
+import pro.beam.api.services.impl.JWTService;
+import pro.beam.api.services.impl.UsersService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -36,6 +43,10 @@ public class BeamHttpClient {
 
     private String userAgent;
     private String oauthToken;
+
+    private JSONWebToken jwt;
+    private String jwtString;
+    private boolean renewJwt;
 
     public static final String CSRF_TOKEN_HEADER = "x-csrf-token";
     public static final int CSRF_STATUS_CODE = 461;
@@ -85,25 +96,45 @@ public class BeamHttpClient {
         return HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
     }
 
+    /**
+     * Called for each method. Used to do pre-flight checks, like renewing jwt's.
+     * @param callable
+     * @param <T>
+     * @return
+     */
+    private <T> ListenableFuture<T> baseSubmit(final Callable<T> callable) {
+        if (shouldRenewJWT()) {
+            return Futures.transform(this.beam.use(JWTService.class).authorize(new Object()), new AsyncFunction<Object, T>() {
+                @Override
+                public ListenableFuture<T> apply(Object o) throws Exception {
+                    BeamHttpClient.this.renewJwt = false;
+                    return BeamHttpClient.this.executor().submit(callable);
+                }
+            });
+        }
+        return BeamHttpClient.this.executor().submit(callable);
+    }
+
+
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
-        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.GET,
-                                                                         this.buildFromRelativePath(path, args)), type));
+        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.GET,
+                this.buildFromRelativePath(path, args)), type));
     }
 
     public <T> ListenableFuture<T> post(String path, Class<T> type, Object... args) {
-        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.POST, path, args), type));
+        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.POST, path, args), type));
     }
 
     public <T> ListenableFuture<T> put(String path, Class<T> type, Object... args) {
-        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.PUT, path, args), type));
+        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.PUT, path, args), type));
     }
 
     public <T> ListenableFuture<T> patch(String path, Class<T> type, Object... args) {
-        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.PATCH, path, args), type));
+        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.PATCH, path, args), type));
     }
 
     public <T> ListenableFuture<T> delete(String path, Class<T> type, Object... args) {
-        return this.executor().submit(this.makeCallable(this.makeRequest(RequestType.DELETE, path, args), type));
+        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.DELETE, path, args), type));
     }
 
     private HttpUriRequest makeRequest(RequestType requestType, String path, Object... args) {
@@ -132,6 +163,9 @@ public class BeamHttpClient {
 
         if (this.oauthToken != null) {
             requestBuilder.addHeader("Authorization", "Bearer " + this.oauthToken);
+        }
+        if (this.jwt != null) {
+            requestBuilder.addHeader("Authorization", "JWT " + this.jwtString);
         }
         if (this.csrfToken != null) {
             requestBuilder.addHeader(CSRF_TOKEN_HEADER, this.csrfToken);
@@ -203,9 +237,11 @@ public class BeamHttpClient {
             throw new HttpBadResponseException(completeResponse);
         }
 
+        this.handleJWT(partialResponse);
+
         // Allow a null response to be given back, such that we return a ListenableFuture
         // with null.
-        if (type != null) {
+        if (type != null && completeResponse.body != null) {
             return this.beam.gson.fromJson(completeResponse.body(), type);
         } else {
             return null;
@@ -220,6 +256,52 @@ public class BeamHttpClient {
         if (response.containsHeader(CSRF_TOKEN_HEADER)) {
             this.csrfToken = response.getHeaders(CSRF_TOKEN_HEADER)[0].getValue();
         }
+    }
+
+    /**
+     * Removes the current JWT from the client.
+     */
+    public void clearJWT() {
+        this.jwt = null;
+    }
+
+    /**
+     * Checks the response for an X-JWT header so we can parse it.
+     * @param partialResponse
+     */
+    private void handleJWT(HttpResponse partialResponse) {
+        Header[] jwtHeaders = partialResponse.getHeaders("X-JWT");
+        if (jwtHeaders.length > 0) {
+            Header jwtHeader = jwtHeaders[0];
+            this.jwtString = jwtHeader.getValue();
+            this.jwt = parseJWTData(jwtHeader.getValue());
+        }
+    }
+
+    /**
+     * Returns if the jwt needs to be refreshed. If it should, set a boolean
+     * that makes sure it's only renewed by one request.
+     * @return
+     */
+    private boolean shouldRenewJWT() {
+        if (!this.renewJwt && this.jwt != null && this.jwt.hasExpired()) {
+            this.renewJwt = true;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Parses the actual JWT data out of the token.
+     * @param jwtValue
+     * @return
+     */
+    private JSONWebToken parseJWTData(String jwtValue) {
+        String[] parts = jwtValue.split(".");
+        if (parts.length != 3) {
+            return null;
+        }
+        return this.beam.gson.fromJson(parts[1], JSONWebToken.class);
     }
 
     /**
@@ -272,5 +354,19 @@ public class BeamHttpClient {
 
     public String getCsrfToken() {
         return csrfToken;
+    }
+
+    public String getJWTString() {
+        return this.jwtString;
+    }
+
+    public Map<String, String> getDefaultSocketHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        if (this.jwt != null) {
+            headers.put("Authorization", "JWT " + jwtString);
+        }
+        headers.put("User-Agent", getUserAgent());
+
+        return headers;
     }
 }

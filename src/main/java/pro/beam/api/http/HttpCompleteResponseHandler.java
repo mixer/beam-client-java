@@ -12,6 +12,10 @@ public class HttpCompleteResponseHandler implements ResponseHandler<HttpComplete
     @Override
     public HttpCompleteResponse handleResponse(HttpResponse response) throws IOException {
         StatusLine statusLine = response.getStatusLine();
+
+        if (statusLine.getStatusCode() == 204) {
+            return new HttpCompleteResponse(statusLine, null);
+        }
         HttpEntity entity = response.getEntity();
 
         return new HttpCompleteResponse(statusLine, EntityUtils.toString(entity));

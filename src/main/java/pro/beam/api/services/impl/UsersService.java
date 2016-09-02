@@ -1,7 +1,9 @@
 package pro.beam.api.services.impl;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.exceptions.BeamException;
@@ -32,17 +34,29 @@ public class UsersService extends AbstractHTTPService {
     public ListenableFuture<BeamUser> getCurrent() { return this.get("current", BeamUser.class); }
 
     /**
+     * This AsyncFunction requests a JWT after logging in.
+     */
+    private AsyncFunction<BeamUser, BeamUser> jwtHandler = new AsyncFunction<BeamUser, BeamUser>() {
+        @Override
+        public CheckedFuture<BeamUser, BeamException> apply(final BeamUser beamUser) throws Exception {
+            return UsersService.this.beam.use(JWTService.class).authorize(beamUser);
+        }
+    };
+
+
+
+    /**
      * Login without two factor authentication
      * @param username The user's username
      * @param password The user's password
      * @return
      */
     public CheckedFuture<BeamUser, BeamException> login(String username, String password) {
-        return new Users.TwoFactorFutureChecker().check(
-            this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
-                    .put("username", username)
-                    .put("password", password).build())
-        );
+        return new Users.TwoFactorFutureChecker().check(Futures.transform(
+                this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
+                        .put("username", username)
+                        .put("password", password).build())
+        , jwtHandler));
     }
 
     /**
@@ -57,16 +71,17 @@ public class UsersService extends AbstractHTTPService {
         if (authCode.length() != 6) {
             throw new IllegalArgumentException("two factor authentication code have to be 6 digits (was " + authCode.length() + ")");
         } else {
-            return new Users.TwoFactorFutureChecker().check(
+            return new Users.TwoFactorFutureChecker().check(Futures.transform(
                 this.post("login", BeamUser.class, new ImmutableMap.Builder<String, Object>()
                         .put("username", username)
                         .put("password", password)
                         .put("code", authCode).build())
-            );
+            , jwtHandler));
         }
     }
 
     public ListenableFuture<String> logout() {
+        this.http.clearJWT();
         return this.delete("current", null);
     }
 
