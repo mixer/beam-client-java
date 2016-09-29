@@ -33,7 +33,7 @@ public class BeamChannel implements Serializable {
     public int coverId;
     public int thumbnailId;
     public int badgeId;
-    public int tetrisGameId;
+    public int interactiveGameId;
     public BeamResource thumbnail;
     public BeamResource cover;
     public BeamResource badge;
