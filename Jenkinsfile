@@ -12,8 +12,11 @@ node {
         stage("Maven compile") {
         	sh 'mvn compile'
         }
-        stage("Maven test install") {
-        	sh 'mvn test install'
+        stage("Maven test") {
+        	sh 'mvn test'
+        }
+        stage("Maven install") {
+            sh 'mvn install -DskipTests=true'
         }
         if (env.GIT_BRANCH == "master") {
 	        stage("Maven deploy") {
