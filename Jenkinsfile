@@ -18,7 +18,7 @@ node {
         stage("Maven install") {
             sh 'mvn install -DskipTests=true'
         }
-        if (env.GIT_BRANCH == "master") {
+        if (env.BRANCH_NAME == "master") {
 	        stage("Maven deploy") {
 	            sh 'mvn deploy -DaltDeploymentRepository=beam-repo::default::https://maven.beam.pro/content/repositories/snapshots/'
 	        }
