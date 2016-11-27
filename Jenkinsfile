@@ -1,4 +1,5 @@
 node {
+	properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '30', artifactNumToKeepStr: '2', daysToKeepStr: '30', numToKeepStr: '2']]])
     try {
         env.PATH = "${tool 'Maven 3'}/bin:${env.PATH}"
 
