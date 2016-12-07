@@ -1,5 +1,7 @@
 package pro.beam.api.http;
 
+import com.auth0.jwt.internal.org.bouncycastle.util.encoders.Base64;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -7,7 +9,6 @@ import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.gson.Gson;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -24,7 +25,6 @@ import org.apache.http.impl.client.*;
 import pro.beam.api.BeamAPI;
 import pro.beam.api.resource.user.JSONWebToken;
 import pro.beam.api.services.impl.JWTService;
-import pro.beam.api.services.impl.UsersService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -44,6 +44,7 @@ public class BeamHttpClient {
     private String userAgent;
     private String oauthToken;
 
+    public static final String X_JWT_HEADER = "X-JWT";
     private JSONWebToken jwt;
     private String jwtString;
     private boolean renewJwt;
@@ -270,7 +271,7 @@ public class BeamHttpClient {
      * @param partialResponse
      */
     private void handleJWT(HttpResponse partialResponse) {
-        Header[] jwtHeaders = partialResponse.getHeaders("X-JWT");
+        Header[] jwtHeaders = partialResponse.getHeaders(X_JWT_HEADER);
         if (jwtHeaders.length > 0) {
             Header jwtHeader = jwtHeaders[0];
             this.jwtString = jwtHeader.getValue();
@@ -297,11 +298,14 @@ public class BeamHttpClient {
      * @return
      */
     private JSONWebToken parseJWTData(String jwtValue) {
-        String[] parts = jwtValue.split(".");
+        String[] parts = jwtValue.split("\\.");
         if (parts.length != 3) {
             return null;
         }
-        return this.beam.gson.fromJson(parts[1], JSONWebToken.class);
+
+        return this.beam.gson.fromJson(
+                new String(Base64.decode(parts[1])),
+                JSONWebToken.class);
     }
 
     /**
@@ -358,6 +362,10 @@ public class BeamHttpClient {
 
     public String getJWTString() {
         return this.jwtString;
+    }
+
+    public JSONWebToken getJwt() {
+        return this.jwt;
     }
 
     public Map<String, String> getDefaultSocketHeaders() {
