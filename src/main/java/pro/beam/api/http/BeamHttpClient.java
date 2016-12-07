@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class BeamHttpClient {
+    private static final String PROXY_HOST_PROP = "http.proxyHost";
+    private static final String PROXY_PORT_PROP = "http.proxyPort";
+
     public final CookieStore cookieStore;
     public final HttpClient http;
 
@@ -93,7 +96,16 @@ public class BeamHttpClient {
     }
 
     protected HttpClient buildHttpClient() {
-        return HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build();
+        String proxyHost = System.getProperty(PROXY_HOST_PROP);
+        String proxyPort = System.getProperty(PROXY_PORT_PROP);
+
+        HttpClientBuilder builder = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore);
+
+        if (proxyHost != null && proxyPort != null) {
+            builder.setProxy(new HttpHost(proxyHost, Integer.parseInt(proxyPort)));
+        }
+
+        return builder.build();
     }
 
     /**
