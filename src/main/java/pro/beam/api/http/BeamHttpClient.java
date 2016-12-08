@@ -1,7 +1,5 @@
 package pro.beam.api.http;
 
-import com.auth0.jwt.internal.org.bouncycastle.util.encoders.Base64;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -26,6 +24,7 @@ import pro.beam.api.BeamAPI;
 import pro.beam.api.resource.user.JSONWebToken;
 import pro.beam.api.services.impl.JWTService;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -304,7 +303,7 @@ public class BeamHttpClient {
         }
 
         return this.beam.gson.fromJson(
-                new String(Base64.decode(parts[1])),
+                new String(DatatypeConverter.parseBase64Binary(parts[1])),
                 JSONWebToken.class);
     }
 
