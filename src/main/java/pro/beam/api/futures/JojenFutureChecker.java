@@ -20,10 +20,10 @@ public class JojenFutureChecker<V> extends AbstractFutureChecker<V, ValidationEr
             return null;
         }
 
-        if (r == null || r.isEmpty()) {
+        if (r == null || r.details.isEmpty()) {
             return null;
         }
 
-        return new ValidationError(r);
+        return new ValidationError(r.details);
     }
 }
