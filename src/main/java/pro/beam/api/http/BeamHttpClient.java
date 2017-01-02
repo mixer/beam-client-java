@@ -315,7 +315,7 @@ public class BeamHttpClient {
         }
 
         return this.beam.gson.fromJson(
-                new String(BaseEncoding.base64().decode(parts[1])),
+                new String(BaseEncoding.base64Url().decode(parts[1])),
                 JSONWebToken.class);
     }
 
