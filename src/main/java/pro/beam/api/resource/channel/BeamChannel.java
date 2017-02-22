@@ -12,7 +12,7 @@ public class BeamChannel implements Serializable {
     public int id;
     public String token;
     public boolean online;
-    public int featured;
+    public boolean featured;
     public boolean partnered;
     public boolean transcodingEnabled;
     public boolean suspended;
