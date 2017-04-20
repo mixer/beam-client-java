@@ -62,6 +62,10 @@ public class BeamConstellationConnectable {
      * Handles the automatic ping to the socket.
      */
     private void handlePing() {
+        if (pingTimer != null) { 
+            pingTimer.cancel();
+        }
+
         pingTimer = (new Timer());
         pingTimer.schedule(new TimerTask() {
             @Override
