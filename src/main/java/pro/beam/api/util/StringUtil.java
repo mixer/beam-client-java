@@ -11,8 +11,8 @@ public class StringUtil {
      * @param separator
      */
     public static String join( Iterable<String> source, String separator ) {
-        Iterator<String> iterator = source.iterator();
-        if (source == null || !iterator.hasNext()) {
+        Iterator<String> iterator = null;
+        if(source == null || !(iterator = source.iterator()).hasNext()) {
             return "";
         }
         StringBuilder builder = new StringBuilder(iterator.next());
