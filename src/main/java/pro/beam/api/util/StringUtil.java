@@ -11,10 +11,17 @@ public class StringUtil {
      * @param separator
      */
     public static String join( Iterable<String> source, String separator ) {
-        Iterator<String> iterator = source.iterator();
-        if (source == null || !iterator.hasNext()) {
+
+        Iterator<String> iterator = null;
+        if(source == null) {
             return "";
         }
+        
+        iterator = source.iterator();
+        if(!(iterator.hasNext())) {
+            return "";
+        }
+
         StringBuilder builder = new StringBuilder(iterator.next());
         while (iterator.hasNext()) {
             builder.append(separator).append(iterator.next());
