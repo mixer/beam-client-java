@@ -42,6 +42,7 @@ public class TypesService extends AbstractHTTPService {
         if (only != null) arguments.put("only", Enums.serializedName(only));
         arguments.put("page", Math.max(0, page));
         arguments.put("limit", Math.min(50, limit));
+        arguments.put("noCount", 1);
         onlineRestriction.putParams(arguments);
 
         return this.get(id+"/channels", ShowChannelsResponse.class, arguments.build());
