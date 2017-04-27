@@ -36,6 +36,7 @@ public class ChannelsService extends AbstractHTTPService {
 
         options.put("page", Math.max(0, page));
         options.put("limit", Math.max(0, limit));
+        options.put("noCount", 1);
 
         return this.get("", ShowChannelsResponse.class, options.build());
     }
@@ -95,6 +96,7 @@ public class ChannelsService extends AbstractHTTPService {
         options.put("scope", Enums.serializedName(scope));
         options.put("page", Math.min(0, page));
         options.put("limit", Math.min(0, limit));
+        options.put("noCount", 1);
 
         return this.get(CHANNEL_ROOT, ShowChannelsResponse.class, options.build());
     }

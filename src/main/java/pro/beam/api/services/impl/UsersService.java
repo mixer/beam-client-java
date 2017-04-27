@@ -100,7 +100,8 @@ public class UsersService extends AbstractHTTPService {
                          UserFollowsResponse.class,
                          BeamHttpClient.getArgumentsBuilder()
                                  .put("page", Math.max(0, page))
-                                 .put("limit", Math.min(limit, 50)).build());
+                                 .put("limit", Math.min(limit, 50))
+                                 .put("noCount", 1).build());
     }
 
     public CheckedFuture<String, BeamException> forgotPassword(BeamUser user) {

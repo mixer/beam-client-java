@@ -34,6 +34,7 @@ public class ChatService extends AbstractHTTPService {
                     .put("id", channel.id)
                     .put("page", page)
                     .put("limit", limit)
+                    .put("noCount", 1)
                 .build()
         );
     }
@@ -47,6 +48,7 @@ public class ChatService extends AbstractHTTPService {
                     .put("limit", limit)
                     .put("id", channel.id)
                     .put("username", username)
+                    .put("noCount", 1)
                 .build()
         );
     }
