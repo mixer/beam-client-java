@@ -96,7 +96,7 @@ public class UsersService extends AbstractHTTPService {
     }
 
     public ListenableFuture<UserFollowsResponse> following(BeamUser user, int page, int limit) {
-        return this.post(user.id + "/follows",
+        return this.get(user.id + "/follows",
                          UserFollowsResponse.class,
                          BeamHttpClient.getArgumentsBuilder()
                                  .put("page", Math.max(0, page))
