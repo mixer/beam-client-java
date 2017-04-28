@@ -6,7 +6,7 @@
 
     <groupId>pro.beam</groupId>
     <artifactId>api</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
 
     <properties>
         <powermock.version>1.6.4</powermock.version>
