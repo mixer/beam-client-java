@@ -30,7 +30,7 @@ public class TypesService extends AbstractHTTPService {
 
         return this.get("", ShowSlugsRepsonse.class, params.build());
     }
-    
+ 
     public ListenableFuture<ShowChannelsResponse> channels(int id) {
         return this.channels(id, 0, 50, null, null, ShowSlugsRepsonse.OnlineRestriction.NONE, null);
     }
