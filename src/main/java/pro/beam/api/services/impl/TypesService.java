@@ -19,13 +19,18 @@ public class TypesService extends AbstractHTTPService {
 
     public ListenableFuture<ShowSlugsRepsonse> all(ShowSlugsRepsonse.OnlineRestriction onlineRestriction) {
         if (onlineRestriction == null) onlineRestriction = ShowSlugsRepsonse.OnlineRestriction.NONE;
+        return this.all(onlineRestriction, null);
+    }
 
-        ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
+    public ListenableFuture<ShowSlugsRepsonse> all(ShowSlugsRepsonse.OnlineRestriction onlineRestriction, ImmutableMap.Builder<String, Object> params) {
+        if (onlineRestriction == null) onlineRestriction = ShowSlugsRepsonse.OnlineRestriction.NONE;
+        if (params == null) params = ImmutableMap.builder();
+
         onlineRestriction.putParams(params);
 
         return this.get("", ShowSlugsRepsonse.class, params.build());
     }
-
+    
     public ListenableFuture<ShowChannelsResponse> channels(int id) {
         return this.channels(id, 0, 50, null, null, ShowSlugsRepsonse.OnlineRestriction.NONE, null);
     }
