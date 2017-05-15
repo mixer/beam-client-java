@@ -1,4 +1,4 @@
-package pro.beam.api.exceptions.tetris;
+package pro.beam.api.exceptions.interactive;
 
 import pro.beam.api.exceptions.BeamException;
 

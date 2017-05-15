@@ -1,4 +1,4 @@
-package pro.beam.api.resource.tetris;
+package pro.beam.api.resource.interactive;
 
 import java.net.URI;
 
