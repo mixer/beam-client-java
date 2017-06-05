@@ -1,4 +1,4 @@
-# mixer-java [![Build Status](https://travis-ci.org/WatchBeam/client-java.svg?branch=master)](https://travis-ci.org/WatchBeam/mixer-client-java) [![](https://badges.gitter.im/MCProHosting/mixer.png)](https://gitter.im/MCProHosting/mixer-dev)
+# mixer-java [![Build Status](https://travis-ci.org/WatchMixer/client-java.svg?branch=master)](https://travis-ci.org/WatchMixer/mixer-client-java) [![](https://badges.gitter.im/MCProHosting/mixer.png)](https://gitter.im/MCProHosting/mixer-dev)
 
 This is the official Java client for the [mixer.com](https://mixer.com) API.  It
 currently supports `v1` and is a work in progress.
@@ -11,10 +11,10 @@ That link contains the most up-to-date docs for this API client.
 
 ## Building
 
-We use [Maven](http://maven.apache.org/) to build Beam's Java client.  Once you have [Maven installed](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html), there are two easy steps to getting the
+We use [Maven](http://maven.apache.org/) to build Mixer's Java client.  Once you have [Maven installed](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html), there are two easy steps to getting the
 client in your classpath.
 
-First, add the [Beam repo](https://maven.mixer.com) to your `pom.xml` as a `<repository>` as follows:
+First, add the [Mixer repo](https://maven.mixer.com) to your `pom.xml` as a `<repository>` as follows:
 
 ```xml
 <repositories>
@@ -33,7 +33,6 @@ And secondly, add this project as a `dependency` in your `pom.xml`:
     <groupId>pro.mixer</groupId>
     <artifactId>api</artifactId>
     <version>5.0.0-SNAPSHOT</version>
-    <version>5.0.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```
@@ -44,11 +43,11 @@ classpath, and are set to get programming!
 ## Example:
 
 Here, an example of how to use the built-in Future callback system provided in
-Guava follows.  In this example, we'll construct the Beam API, and then get a
+Guava follows.  In this example, we'll construct the Mixer API, and then get a
 list of all channel IDs.
 
 ```java
-// Construct an instance of the Beam API such that we can query certain
+// Construct an instance of the Mixer API such that we can query certain
 // endpoints for data.
 MixerAPI mixer = new MixerAPI();
 
@@ -58,7 +57,7 @@ MixerAPI mixer = new MixerAPI();
 Futures.addCallback(mixer.use(UsersService.class).search("tta"), new ResponseHandler<UserSearchResponse>() {
     // Set up a handler for the response
     @Override public void onSuccess(UserSearchResponse response) {
-        for (BeamUser user : response) {
+        for (MixerUser user : response) {
             System.out.println(user.username);
         }
     }
