@@ -2,15 +2,15 @@ package com.mixer.api.services.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.mixer.api.BeamAPI;
+import com.mixer.api.MixerAPI;
 import com.mixer.api.response.channels.ShowChannelsResponse;
 import com.mixer.api.response.channels.ShowSlugsRepsonse;
 import com.mixer.api.services.AbstractHTTPService;
 import com.mixer.api.util.Enums;
 
 public class TypesService extends AbstractHTTPService {
-    public TypesService(BeamAPI beam) {
-        super(beam, "types");
+    public TypesService(MixerAPI mixer) {
+        super(mixer, "types");
     }
 
     public ListenableFuture<ShowSlugsRepsonse> all() {

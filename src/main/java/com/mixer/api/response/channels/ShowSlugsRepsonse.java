@@ -1,11 +1,11 @@
 package com.mixer.api.response.channels;
 
 import com.google.common.collect.ImmutableMap;
-import com.mixer.api.resource.channel.BeamChannel;
+import com.mixer.api.resource.channel.MixerChannel;
 
 import java.util.ArrayList;
 
-public class ShowSlugsRepsonse extends ArrayList<BeamChannel.Type> {
+public class ShowSlugsRepsonse extends ArrayList<MixerChannel.Type> {
     public static enum OnlineRestriction {
         ONLINE, OFFLINE, NONE;
 

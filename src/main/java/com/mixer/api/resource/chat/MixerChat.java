@@ -1,12 +1,12 @@
 package com.mixer.api.resource.chat;
 
-import com.mixer.api.BeamAPI;
-import com.mixer.api.resource.chat.ws.BeamChatConnectable;
+import com.mixer.api.MixerAPI;
+import com.mixer.api.resource.chat.ws.MixerChatConnectable;
 
 import java.net.URI;
 import java.util.Random;
 
-public class BeamChat {
+public class MixerChat {
     public String authkey;
     public String[] endpoints;
     public boolean linksAllowed;
@@ -14,8 +14,8 @@ public class BeamChat {
     public String role;
     public double slowchat;
 
-    public BeamChatConnectable connectable(BeamAPI beam) {
-        return new BeamChatConnectable(beam, this);
+    public MixerChatConnectable connectable(MixerAPI mixer) {
+        return new MixerChatConnectable(mixer, this);
     }
 
     public URI endpoint() {

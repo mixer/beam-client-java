@@ -2,7 +2,6 @@ package com.mixer.api.resource.constellation;
 
 import com.google.gson.annotations.SerializedName;
 import com.mixer.api.resource.constellation.events.LiveEvent;
-import pro.beam.api.resource.constellation.events.*;
 
 public abstract class AbstractConstellationEvent<T extends AbstractConstellationEvent.EventData> extends AbstractConstellationDatagram {
     public AbstractConstellationEvent() {

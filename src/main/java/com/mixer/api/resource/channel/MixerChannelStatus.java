@@ -1,13 +1,13 @@
 package com.mixer.api.resource.channel;
 
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.resource.MixerUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class BeamChannelStatus implements Serializable {
-    public ArrayList<BeamUser.Role> roles;
+public class MixerChannelStatus implements Serializable {
+    public ArrayList<MixerUser.Role> roles;
     public FollowsRecord follows;
 
     public static class FollowsRecord implements Serializable {

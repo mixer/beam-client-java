@@ -1,11 +1,11 @@
 package com.mixer.api.resource.chat;
 
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.resource.MixerUser;
 
 import java.util.List;
 
 public class OnlineChatUser {
     public String userName;
-    public List<BeamUser.Role> userRoles;
+    public List<MixerUser.Role> userRoles;
     public int userId;
 }

@@ -1,10 +1,10 @@
 package com.mixer.api.resource.constellation.ws;
 
-import com.mixer.api.BeamAPI;
+import com.mixer.api.MixerAPI;
 import com.mixer.api.resource.constellation.AbstractConstellationEvent;
 import com.mixer.api.resource.constellation.AbstractConstellationMethod;
 import com.mixer.api.resource.constellation.AbstractConstellationReply;
-import com.mixer.api.resource.constellation.BeamConstellation;
+import com.mixer.api.resource.constellation.MixerConstellation;
 import com.mixer.api.resource.constellation.events.EventHandler;
 import com.mixer.api.resource.constellation.replies.ReplyHandler;
 import org.java_websocket.framing.Framedata;
@@ -15,26 +15,26 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class BeamConstellationConnectable {
+public class MixerConstellationConnectable {
     private static final SSLSocketFactory SSL_SOCKET_FACTORY = (SSLSocketFactory) SSLSocketFactory.getDefault();
-    private static final String DISCONNECT_MSG = "BEAM_JAVA DISCONNECT";
+    private static final String DISCONNECT_MSG = "MIXER_JAVA DISCONNECT";
 
-    protected final BeamAPI beam;
-    protected final BeamConstellation constellation;
+    protected final MixerAPI mixer;
+    protected final MixerConstellation constellation;
 
     private final Object connectionLock = false;
-    private BeamConstellationConnection connection;
+    private MixerConstellationConnection connection;
 
     private Timer pingTimer;
 
-    public BeamConstellationConnectable(BeamAPI beam, BeamConstellation constellation) {
-        this.beam = beam;
+    public MixerConstellationConnectable(MixerAPI mixer, MixerConstellation constellation) {
+        this.mixer = mixer;
         this.constellation = constellation;
     }
 
     public boolean connect() {
         synchronized (this.connectionLock) {
-            BeamConstellationConnection newConnection = new BeamConstellationConnection(this, this.beam, this.constellation);
+            MixerConstellationConnection newConnection = new MixerConstellationConnection(this, this.mixer, this.constellation);
             if (this.connection != null) {
                 newConnection.inherit(this.connection);
             }

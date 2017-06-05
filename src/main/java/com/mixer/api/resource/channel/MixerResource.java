@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
-public class BeamResource implements Serializable {
+public class MixerResource implements Serializable {
     public int id;
     public HashMap<String, Object> meta;
     public int relid;

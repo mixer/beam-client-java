@@ -1,19 +1,19 @@
 package com.mixer.api.exceptions.validation;
 
 import com.google.common.collect.ImmutableList;
-import com.mixer.api.exceptions.BeamException;
-import com.mixer.api.resource.BeamValidationRuleViolation;
+import com.mixer.api.exceptions.MixerException;
+import com.mixer.api.resource.MixerValidationRuleViolation;
 
 import java.util.List;
 
-public class ValidationError extends BeamException {
-    protected final List<BeamValidationRuleViolation> violations;
+public class ValidationError extends MixerException {
+    protected final List<MixerValidationRuleViolation> violations;
 
-    public ValidationError(List<BeamValidationRuleViolation> violations) {
+    public ValidationError(List<MixerValidationRuleViolation> violations) {
         this.violations = violations;
     }
 
-    public List<BeamValidationRuleViolation> violations() {
+    public List<MixerValidationRuleViolation> violations() {
         return ImmutableList.copyOf(this.violations);
     }
 }

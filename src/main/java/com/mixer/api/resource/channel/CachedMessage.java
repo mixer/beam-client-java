@@ -1,7 +1,7 @@
 package com.mixer.api.resource.channel;
 
 import com.google.gson.annotations.SerializedName;
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.resource.MixerUser;
 import com.mixer.api.resource.chat.events.data.IncomingMessageData;
 import com.mixer.api.resource.chat.events.data.MessageComponent;
 
@@ -14,7 +14,7 @@ public class CachedMessage {
     public UUID id;
     @SerializedName("user_id") public int userId;
     @SerializedName("user_name") public String userName;
-    @SerializedName("user_roles") public List<BeamUser.Role> userRoles;
+    @SerializedName("user_roles") public List<MixerUser.Role> userRoles;
 
     public IncomingMessageData getMessage() {
         IncomingMessageData d = new IncomingMessageData();

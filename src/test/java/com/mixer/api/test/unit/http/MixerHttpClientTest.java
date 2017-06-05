@@ -2,9 +2,9 @@ package com.mixer.api.test.unit.http;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.mixer.api.BeamAPI;
-import com.mixer.api.http.BeamHttpClient;
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.MixerAPI;
+import com.mixer.api.http.MixerHttpClient;
+import com.mixer.api.resource.MixerUser;
 import com.mixer.api.resource.user.JSONWebToken;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,19 +23,19 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import static com.mixer.api.http.BeamHttpClient.CSRF_TOKEN_HEADER;
-import static com.mixer.api.http.BeamHttpClient.X_JWT_HEADER;
+import static com.mixer.api.http.MixerHttpClient.CSRF_TOKEN_HEADER;
+import static com.mixer.api.http.MixerHttpClient.X_JWT_HEADER;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class BeamHttpClientTest {
+public class MixerHttpClientTest {
     private HttpClient defaultHttpClient;
 
-    private BeamHttpClient beamHttpClient;
+    private MixerHttpClient mixerHttpClient;
 
-    private BeamAPI beamAPI;
+    private MixerAPI mixerAPI;
 
     @Before
     public void setup() {
@@ -44,14 +44,14 @@ public class BeamHttpClientTest {
 
     @Test
     public void itHandlesCSRF() {
-        beamAPI = new BeamAPI();
+        mixerAPI = new MixerAPI();
         defaultHttpClient = mock(HttpClient.class);
 
         // This is done because Mockito is not able to mock methods that are called within the class'
         // Constructor.
-        class MockableBeamHttpClient extends BeamHttpClient {
-            private MockableBeamHttpClient(BeamAPI beam) {
-                super(beam);
+        class MockableMixerHttpClient extends MixerHttpClient {
+            private MockableMixerHttpClient(MixerAPI mixer) {
+                super(mixer);
             }
 
             @Override
@@ -59,14 +59,14 @@ public class BeamHttpClientTest {
                 return defaultHttpClient;
             }
         }
-        beamHttpClient = new MockableBeamHttpClient(beamAPI);
+        mixerHttpClient = new MockableMixerHttpClient(mixerAPI);
 
 
-        HttpResponse csrfResponse = prepareResponse(461, "{\"error\":\"Invalid or missing CSRF header, see details here: <https://dev.beam.pro/rest.html#csrf>\",\"statusCode\":461}");
+        HttpResponse csrfResponse = prepareResponse(461, "{\"error\":\"Invalid or missing CSRF header, see details here: <https://dev.mixer.pro/rest.html#csrf>\",\"statusCode\":461}");
         csrfResponse.addHeader(new BasicHeader(CSRF_TOKEN_HEADER, "abc123"));
         csrfResponse.setEntity(mock(HttpEntity.class));
 
-        HttpResponse okResponse = prepareResponse(200, "{\"id\":314,\"userId\":344,\"token\":\"Beam\",\"online\":false,\"featured\":false,\"partnered\":false,\"transcodingProfileId\":1,\"suspended\":false,\"name\":\"Weekly Updates and more!\"}");
+        HttpResponse okResponse = prepareResponse(200, "{\"id\":314,\"userId\":344,\"token\":\"Mixer\",\"online\":false,\"featured\":false,\"partnered\":false,\"transcodingProfileId\":1,\"suspended\":false,\"name\":\"Weekly Updates and more!\"}");
         okResponse.addHeader(new BasicHeader(CSRF_TOKEN_HEADER, "abc123"));
 
         try {
@@ -78,10 +78,10 @@ public class BeamHttpClientTest {
             Assert.fail();
         }
 
-        Futures.addCallback(beamHttpClient.get("/channels/314", BeamUser.class, null), new FutureCallback<BeamUser>() {
+        Futures.addCallback(mixerHttpClient.get("/channels/314", MixerUser.class, null), new FutureCallback<MixerUser>() {
             @Override
-            public void onSuccess(BeamUser beamUser) {
-                Assert.assertEquals(beamHttpClient.getCsrfToken(), "abc123");
+            public void onSuccess(MixerUser mixerUser) {
+                Assert.assertEquals(mixerHttpClient.getCsrfToken(), "abc123");
             }
 
             @Override
@@ -105,7 +105,7 @@ public class BeamHttpClientTest {
 
     @Test
     public void itHandlesJWT() {
-        beamAPI = new BeamAPI();
+        mixerAPI = new MixerAPI();
         defaultHttpClient = mock(HttpClient.class);
 
         final String jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU3NDk5NSwiYnR5cCI6ImdyYW50IiwiZ3JvdXBzIjpbeyJpZCI6MSwibmFtZSI6IlVzZXIiLCJVc2VyR3JvdXAiOnsiZ3JvdXBJZCI6MSwidXNlcklkIjo1NzQ5OTV9fV0sImlhdCI6MTQ4MTE0NDQ0NywiZXhwIjoxNTEyNjgwNDQ3LCJpc3MiOiJCZWFtIiwianRpIjoiVGhpcyBpc24ndCBhIHJlYWwgc2Vzc2lvbi4ifQ==.HkL5xq-eivwCk5OgczgIu5s_NFFxdQAKH9Jfb906aT4";
@@ -117,7 +117,7 @@ public class BeamHttpClientTest {
         final JSONWebToken jwt = new JSONWebToken();
         jwt.exp = 1512680447L;
         jwt.iat = 1481144447L;
-        jwt.iss = "Beam";
+        jwt.iss = "Mixer";
         jwt.jti = "This isn't a real session.";
         jwt.sub = 574995L;
         jwt.btyp = "grant";
@@ -125,9 +125,9 @@ public class BeamHttpClientTest {
 
         // This is done because Mockito is not able to mock methods that are called within the class'
         // Constructor.
-        class MockableBeamHttpClient extends BeamHttpClient {
-            private MockableBeamHttpClient(BeamAPI beam) {
-                super(beam);
+        class MockableMixerHttpClient extends MixerHttpClient {
+            private MockableMixerHttpClient(MixerAPI mixer) {
+                super(mixer);
             }
 
             @Override
@@ -136,9 +136,9 @@ public class BeamHttpClientTest {
             }
         }
 
-        beamHttpClient = new MockableBeamHttpClient(beamAPI);
+        mixerHttpClient = new MockableMixerHttpClient(mixerAPI);
 
-        HttpResponse okResponse = prepareResponse(200, "{\"id\":314,\"userId\":344,\"token\":\"Beam\",\"online\":false,\"featured\":false,\"partnered\":false,\"transcodingProfileId\":1,\"suspended\":false,\"name\":\"Weekly Updates and more!\"}");
+        HttpResponse okResponse = prepareResponse(200, "{\"id\":314,\"userId\":344,\"token\":\"Mixer\",\"online\":false,\"featured\":false,\"partnered\":false,\"transcodingProfileId\":1,\"suspended\":false,\"name\":\"Weekly Updates and more!\"}");
         okResponse.addHeader(new BasicHeader(X_JWT_HEADER, jwtString));
 
         try {
@@ -147,11 +147,11 @@ public class BeamHttpClientTest {
             Assert.fail();
         }
 
-        Futures.addCallback(beamHttpClient.get("/channels/314", BeamUser.class, null), new FutureCallback<BeamUser>() {
+        Futures.addCallback(mixerHttpClient.get("/channels/314", MixerUser.class, null), new FutureCallback<MixerUser>() {
             @Override
-            public void onSuccess(BeamUser beamUser) {
-                Assert.assertEquals(beamHttpClient.getJWTString(), jwtString);
-                Assert.assertEquals(beamHttpClient.getJwt(), jwt);
+            public void onSuccess(MixerUser mixerUser) {
+                Assert.assertEquals(mixerHttpClient.getJWTString(), jwtString);
+                Assert.assertEquals(mixerHttpClient.getJwt(), jwt);
             }
 
             @Override

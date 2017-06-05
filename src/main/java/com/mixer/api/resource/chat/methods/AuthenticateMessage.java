@@ -1,11 +1,11 @@
 package com.mixer.api.resource.chat.methods;
 
-import com.mixer.api.resource.BeamUser;
-import com.mixer.api.resource.channel.BeamChannel;
+import com.mixer.api.resource.MixerUser;
+import com.mixer.api.resource.channel.MixerChannel;
 import com.mixer.api.resource.chat.AbstractChatMethod;
 
 public class AuthenticateMessage extends AbstractChatMethod {
-    public static AuthenticateMessage from(BeamChannel channel, BeamUser user, String authkey) {
+    public static AuthenticateMessage from(MixerChannel channel, MixerUser user, String authkey) {
         AuthenticateMessage am = new AuthenticateMessage();
         am.arguments = new Object[] {
             channel.id,

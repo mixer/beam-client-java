@@ -1,7 +1,7 @@
 package com.mixer.api.http.ws;
 
 import com.google.common.base.Joiner;
-import com.mixer.api.http.BeamHttpClient;
+import com.mixer.api.http.MixerHttpClient;
 import org.apache.http.cookie.Cookie;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_17;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CookieDraft_17 extends Draft_17 {
-    protected final BeamHttpClient httpClient;
+    protected final MixerHttpClient httpClient;
 
-    public CookieDraft_17(BeamHttpClient httpClient) {
+    public CookieDraft_17(MixerHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

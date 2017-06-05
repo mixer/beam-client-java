@@ -1,7 +1,7 @@
 package com.mixer.api.resource.chat.methods;
 
 import com.google.common.collect.ImmutableList;
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.resource.MixerUser;
 import com.mixer.api.resource.chat.AbstractChatMethod;
 
 import java.util.List;
@@ -12,10 +12,10 @@ public class WhisperMethod extends AbstractChatMethod {
     }
 
     public static class Builder {
-        protected BeamUser to;
+        protected MixerUser to;
         protected String message;
 
-        public Builder to(BeamUser u) {
+        public Builder to(MixerUser u) {
             this.to = u;
             return this;
         }

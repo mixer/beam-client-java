@@ -6,27 +6,26 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.mixer.api.BeamAPI;
-import com.mixer.api.http.ws.BeamWebsocketClient;
+import com.mixer.api.MixerAPI;
+import com.mixer.api.http.ws.MixerWebsocketClient;
 import com.mixer.api.resource.chat.*;
 import com.mixer.api.resource.chat.events.EventHandler;
 import com.mixer.api.resource.chat.events.data.IncomingMessageData;
 import com.mixer.api.resource.chat.replies.ReplyHandler;
-import pro.beam.api.resource.chat.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class BeamChatConnection extends BeamWebsocketClient {
-    protected final BeamChatConnectable producer;
-    protected final BeamChat chat;
+public class MixerChatConnection extends MixerWebsocketClient {
+    protected final MixerChatConnectable producer;
+    protected final MixerChat chat;
 
     protected final Map<Integer, ReplyPair> replyHandlers;
     protected final Multimap<Class<? extends AbstractChatEvent>, EventHandler> eventHandlers;
 
-    public BeamChatConnection(BeamChatConnectable producer, BeamAPI beam, BeamChat chat) {
-        super(beam, chat.endpoint());
+    public MixerChatConnection(MixerChatConnectable producer, MixerAPI mixer, MixerChat chat) {
+        super(mixer, chat.endpoint());
         this.producer = producer;
 
         this.chat = chat;
@@ -35,7 +34,7 @@ public class BeamChatConnection extends BeamWebsocketClient {
         this.eventHandlers = HashMultimap.create();
     }
 
-    public void inherit(BeamChatConnection other) {
+    public void inherit(MixerChatConnection other) {
         for (Map.Entry<Class<? extends AbstractChatEvent>, EventHandler> entry : other.eventHandlers.entries()) {
             this.eventHandlers.put(entry.getKey(), entry.getValue());
         }
@@ -70,11 +69,11 @@ public class BeamChatConnection extends BeamWebsocketClient {
             this.replyHandlers.put(method.id, ReplyPair.from(handler));
         }
 
-        this.beam.executor.submit(new Callable<Object>() {
+        this.mixer.executor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                byte[] data = BeamChatConnection.this.beam.gson.toJson(method).getBytes();
-                BeamChatConnection.this.send(data);
+                byte[] data = MixerChatConnection.this.mixer.gson.toJson(method).getBytes();
+                MixerChatConnection.this.send(data);
 
                 return null;
             }
@@ -88,8 +87,8 @@ public class BeamChatConnection extends BeamWebsocketClient {
      */
     @Deprecated
     public void delete(IncomingMessageData message) {
-        String path = this.beam.basePath.resolve("chats/" + message.channel + "/message/" + message.id).toString();
-        this.beam.http.delete(path, null);
+        String path = this.mixer.basePath.resolve("chats/" + message.channel + "/message/" + message.id).toString();
+        this.mixer.http.delete(path, null);
     }
 
     @Override
@@ -110,19 +109,19 @@ public class BeamChatConnection extends BeamWebsocketClient {
 
                     // Now that we have the type, we can appropriately parse out the value
                     // And call the #onSuccess method with the value.
-                    AbstractChatDatagram datagram = this.beam.gson.fromJson(s, type);
+                    AbstractChatDatagram datagram = this.mixer.gson.fromJson(s, type);
                     replyPair.handler.onSuccess(type.cast(datagram));
                 }
             } else if (e.has("event")) {
-                // Handles cases of beam widgets (GiveawayBot) sending ChatMessage events
+                // Handles cases of mixer widgets (GiveawayBot) sending ChatMessage events
                 if(e.getAsJsonObject("data").has("user_id") && e.getAsJsonObject("data").get("user_id").getAsInt() == -1) {
                     Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName("WidgetMessage").getCorrespondingClass();
-                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                    this.dispatchEvent(this.mixer.gson.fromJson(e, type));
                 } else {
                     // Default ChatMessage event handling
                     String eventName = e.get("event").getAsString();
                     Class<? extends AbstractChatEvent> type = AbstractChatEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
-                    this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                    this.dispatchEvent(this.mixer.gson.fromJson(e, type));
                 }
             }
         } catch (JsonSyntaxException e) {

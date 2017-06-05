@@ -6,7 +6,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.gson.annotations.SerializedName;
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.resource.MixerUser;
 import com.mixer.api.resource.chat.AbstractChatEvent;
 import com.mixer.api.resource.chat.events.data.MessageComponent.MessageTextComponent;
 
@@ -17,7 +17,7 @@ public class IncomingMessageData extends AbstractChatEvent.EventData {
     public String id;
     @SerializedName("user_name") public String userName;
     @SerializedName("user_id") public int userId;
-    @SerializedName("user_roles") public List<BeamUser.Role> userRoles;
+    @SerializedName("user_roles") public List<MixerUser.Role> userRoles;
     public MessageComponent message;
 
     @Deprecated()

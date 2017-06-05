@@ -84,7 +84,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.mixer.api.BeamAPI</mainClass>
+                            <mainClass>com.mixer.api.MixerAPI</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>

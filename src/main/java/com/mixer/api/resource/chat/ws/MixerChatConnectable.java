@@ -1,10 +1,10 @@
 package com.mixer.api.resource.chat.ws;
 
-import com.mixer.api.BeamAPI;
+import com.mixer.api.MixerAPI;
 import com.mixer.api.resource.chat.AbstractChatEvent;
 import com.mixer.api.resource.chat.AbstractChatMethod;
 import com.mixer.api.resource.chat.AbstractChatReply;
-import com.mixer.api.resource.chat.BeamChat;
+import com.mixer.api.resource.chat.MixerChat;
 import com.mixer.api.resource.chat.events.EventHandler;
 import com.mixer.api.resource.chat.events.data.IncomingMessageData;
 import com.mixer.api.resource.chat.methods.AuthenticateMessage;
@@ -13,25 +13,25 @@ import com.mixer.api.resource.chat.replies.ReplyHandler;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 
-public class BeamChatConnectable {
+public class MixerChatConnectable {
     private static final SSLSocketFactory SSL_SOCKET_FACTORY = (SSLSocketFactory) SSLSocketFactory.getDefault();
-    private static final String DISCONNECT_MSG = "BEAM_JAVA DISCONNECT";
+    private static final String DISCONNECT_MSG = "MIXER_JAVA DISCONNECT";
 
-    protected final BeamAPI beam;
-    protected final BeamChat chat;
+    protected final MixerAPI mixer;
+    protected final MixerChat chat;
 
     private final Object connectionLock = false;
-    private BeamChatConnection connection;
+    private MixerChatConnection connection;
     private AuthenticateMessage auth;
 
-    public BeamChatConnectable(BeamAPI beam, BeamChat chat) {
-        this.beam = beam;
+    public MixerChatConnectable(MixerAPI mixer, MixerChat chat) {
+        this.mixer = mixer;
         this.chat = chat;
     }
 
     public boolean connect() {
         synchronized (this.connectionLock) {
-            BeamChatConnection newConnection = new BeamChatConnection(this, this.beam, this.chat);
+            MixerChatConnection newConnection = new MixerChatConnection(this, this.mixer, this.chat);
             if (this.connection != null) {
                 newConnection.inherit(this.connection);
             }

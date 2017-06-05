@@ -1,4 +1,4 @@
 package com.mixer.api.exceptions;
 
-public class BadRequest extends BeamException {
+public class BadRequest extends MixerException {
 }

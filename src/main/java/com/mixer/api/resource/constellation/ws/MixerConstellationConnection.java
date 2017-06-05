@@ -6,29 +6,28 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.mixer.api.BeamAPI;
-import com.mixer.api.http.ws.BeamWebsocketClient;
+import com.mixer.api.MixerAPI;
+import com.mixer.api.http.ws.MixerWebsocketClient;
 import com.mixer.api.resource.constellation.*;
 import com.mixer.api.resource.constellation.events.EventHandler;
 import com.mixer.api.resource.constellation.replies.ReplyHandler;
-import pro.beam.api.resource.constellation.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class BeamConstellationConnection extends BeamWebsocketClient {
-    private static URI CONSTELLATION_ADDR = URI.create("wss://constellation.beam.pro");
+public class MixerConstellationConnection extends MixerWebsocketClient {
+    private static URI CONSTELLATION_ADDR = URI.create("wss://constellation.mixer.pro");
 
-    protected final BeamConstellationConnectable producer;
-    protected final BeamConstellation constellation;
+    protected final MixerConstellationConnectable producer;
+    protected final MixerConstellation constellation;
 
     protected final Map<Integer, ReplyPair> replyHandlers;
     protected final Multimap<Class<? extends AbstractConstellationEvent>, EventHandler> eventHandlers;
 
-    public BeamConstellationConnection(BeamConstellationConnectable producer, BeamAPI beam, BeamConstellation constellation) {
-        super(beam, CONSTELLATION_ADDR, beam.http.getDefaultSocketHeaders());
+    public MixerConstellationConnection(MixerConstellationConnectable producer, MixerAPI mixer, MixerConstellation constellation) {
+        super(mixer, CONSTELLATION_ADDR, mixer.http.getDefaultSocketHeaders());
         this.producer = producer;
 
 
@@ -38,7 +37,7 @@ public class BeamConstellationConnection extends BeamWebsocketClient {
         this.eventHandlers = HashMultimap.create();
     }
 
-    public void inherit(BeamConstellationConnection other) {
+    public void inherit(MixerConstellationConnection other) {
         for (Map.Entry<Class<? extends AbstractConstellationEvent>, EventHandler> entry : other.eventHandlers.entries()) {
             this.eventHandlers.put(entry.getKey(), entry.getValue());
         }
@@ -73,11 +72,11 @@ public class BeamConstellationConnection extends BeamWebsocketClient {
             this.replyHandlers.put(method.id, ReplyPair.from(handler));
         }
 
-        this.beam.executor.submit(new Callable<Object>() {
+        this.mixer.executor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                byte[] data = BeamConstellationConnection.this.beam.gson.toJson(method).getBytes();
-                BeamConstellationConnection.this.send(data);
+                byte[] data = MixerConstellationConnection.this.mixer.gson.toJson(method).getBytes();
+                MixerConstellationConnection.this.send(data);
 
                 return null;
             }
@@ -102,14 +101,14 @@ public class BeamConstellationConnection extends BeamWebsocketClient {
 
                     // Now that we have the type, we can appropriately parse out the value
                     // And call the #onSuccess method with the value.
-                    AbstractConstellationDatagram datagram = this.beam.gson.fromJson(s, type);
+                    AbstractConstellationDatagram datagram = this.mixer.gson.fromJson(s, type);
                     replyPair.handler.onSuccess(type.cast(datagram));
                 }
             } else if (e.has("event")) {
                 // Default ChatMessage event handling
                 String eventName = e.get("event").getAsString();
                 Class<? extends AbstractConstellationEvent> type = AbstractConstellationEvent.EventType.fromSerializedName(eventName).getCorrespondingClass();
-                this.dispatchEvent(this.beam.gson.fromJson(e, type));
+                this.dispatchEvent(this.mixer.gson.fromJson(e, type));
             }
         } catch (JsonSyntaxException e) {
             // If an exception was called and we do have a reply handler to catch it,

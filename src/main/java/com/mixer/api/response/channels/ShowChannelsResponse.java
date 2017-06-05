@@ -1,11 +1,11 @@
 package com.mixer.api.response.channels;
 
 import com.google.gson.annotations.SerializedName;
-import com.mixer.api.resource.channel.BeamChannel;
+import com.mixer.api.resource.channel.MixerChannel;
 
 import java.util.ArrayList;
 
-public class ShowChannelsResponse extends ArrayList<BeamChannel> {
+public class ShowChannelsResponse extends ArrayList<MixerChannel> {
     public static enum Attributes {
         @SerializedName("online") ONLINE,
         @SerializedName("featured") FEATURED,

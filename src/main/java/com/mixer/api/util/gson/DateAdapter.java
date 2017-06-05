@@ -72,11 +72,11 @@ public class DateAdapter extends TypeAdapter<Date> {
             } catch (ParseException ignored) {  }
         }
 
-        throw new IOException("beam: unable to parse date ("+str+")");
+        throw new IOException("mixer: unable to parse date ("+str+")");
     }
 
     /**
-     * Returns a DateAdapter that is compliant with the public V1 Beam API.
+     * Returns a DateAdapter that is compliant with the public V1 Mixer API.
      *
      * It uses a simple date format in the default, but ISO8601 as well.
      *

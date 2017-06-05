@@ -4,8 +4,8 @@ import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.mixer.api.BeamAPI;
-import com.mixer.api.exceptions.BeamException;
+import com.mixer.api.MixerAPI;
+import com.mixer.api.exceptions.MixerException;
 import com.mixer.api.futures.checkers.JWT;
 import com.mixer.api.services.AbstractHTTPService;
 
@@ -13,15 +13,15 @@ import com.mixer.api.services.AbstractHTTPService;
  * Implements a JWT service.
  */
 public class JWTService extends AbstractHTTPService {
-    public JWTService(BeamAPI beam) {
-        super(beam, "jwt");
+    public JWTService(MixerAPI mixer) {
+        super(mixer, "jwt");
     }
 
     /**
-     * Retrieve a JWT from the api. When passed in a BeamUser use this as the result.
+     * Retrieve a JWT from the api. When passed in a MixerUser use this as the result.
      * @return
      */
-    public <T> CheckedFuture<T, BeamException> authorize(final T value) {
+    public <T> CheckedFuture<T, MixerException> authorize(final T value) {
         return new JWT.JWTFutureChecker<T>().check(Futures.transform(
             this.post("authorize", null, new Object()),
             new AsyncFunction<Object, T>() {

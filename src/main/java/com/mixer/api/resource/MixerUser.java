@@ -1,18 +1,18 @@
 package com.mixer.api.resource;
 
 import com.google.gson.annotations.SerializedName;
-import com.mixer.api.resource.channel.BeamChannel;
-import com.mixer.api.resource.channel.BeamResource;
+import com.mixer.api.resource.channel.MixerChannel;
+import com.mixer.api.resource.channel.MixerResource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class BeamUser implements Serializable {
+public class MixerUser implements Serializable {
     public Date createdAt;
     public String email;
     public int id;
-    public BeamChannel channel;
+    public MixerChannel channel;
     public int points;
     public int experience;
     public int sparks;
@@ -21,7 +21,7 @@ public class BeamUser implements Serializable {
     public Date updatedAt;
     public String username;
     public boolean verified;
-    public ArrayList<BeamResource> avatars;
+    public ArrayList<MixerResource> avatars;
 
     public enum Role {
         @SerializedName("Banned") BANNED,

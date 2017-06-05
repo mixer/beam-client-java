@@ -1,14 +1,14 @@
 package com.mixer.api.resource.channel;
 
 import com.google.gson.annotations.SerializedName;
-import com.mixer.api.resource.BeamUser;
+import com.mixer.api.resource.MixerUser;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Map;
 
-public class BeamChannel implements Serializable {
+public class MixerChannel implements Serializable {
     public int id;
     public String token;
     public boolean online;
@@ -34,13 +34,13 @@ public class BeamChannel implements Serializable {
     public int thumbnailId;
     public int badgeId;
     public int interactiveGameId;
-    public BeamResource thumbnail;
-    public BeamResource cover;
-    public BeamResource badge;
+    public MixerResource thumbnail;
+    public MixerResource cover;
+    public MixerResource badge;
     public Type type;
     public Map<String, Object> preferences;
     @Deprecated @SerializedName("cache") public ArrayDeque<CachedMessage> messageCache;
-    public BeamUser user;
+    public MixerUser user;
 
     public static class Type implements Serializable {
         public int id;

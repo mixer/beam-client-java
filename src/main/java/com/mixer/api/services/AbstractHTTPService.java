@@ -1,18 +1,18 @@
 package com.mixer.api.services;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.mixer.api.BeamAPI;
-import com.mixer.api.http.BeamHttpClient;
+import com.mixer.api.MixerAPI;
+import com.mixer.api.http.MixerHttpClient;
 
 import java.util.Map;
 
-public abstract class AbstractHTTPService extends AbstractBeamService {
-    protected final BeamHttpClient http;
+public abstract class AbstractHTTPService extends AbstractMixerService {
+    protected final MixerHttpClient http;
     protected final String path;
 
-    public AbstractHTTPService(BeamAPI beam, String path) {
-        super(beam);
-        this.http = this.beam.http;
+    public AbstractHTTPService(MixerAPI mixer, String path) {
+        super(mixer);
+        this.http = this.mixer.http;
         this.path = path;
     }
 
@@ -47,6 +47,6 @@ public abstract class AbstractHTTPService extends AbstractBeamService {
             }
         }
 
-        return this.beam.basePath.resolve(this.path + relative).toString();
+        return this.mixer.basePath.resolve(this.path + relative).toString();
     }
 }
