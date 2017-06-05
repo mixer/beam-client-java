@@ -7,7 +7,7 @@ cache:
   - $HOME/.m2
 before_install: wget https://gist.githubusercontent.com/Doridian/01cb63301fe4d022f533bd221e227970/raw/0771d2c50808b295abfbabe266be7368c3273974/settings.xml
   -O settings.bin
-script: mvn deploy -DaltDeploymentRepository=deployment-repo-id::default::https://maven.beam.pro/content/repositories/snapshots/
+script: mvn deploy -DaltDeploymentRepository=deployment-repo-id::default::https://maven.mixer.com/content/repositories/snapshots/
   --settings settings.bin
 env:
   global:
