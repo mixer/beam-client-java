@@ -36,14 +36,6 @@ public class MixerAPI {
     }
 
     public MixerAPI(URI basePath, String oauthToken) {
-        this(basePath, null, null, oauthToken);
-    }
-
-    public MixerAPI(URI basePath, String httpUsername, String httpPassword) {
-        this(basePath, httpUsername, httpPassword, null);
-    }
-
-    public MixerAPI(URI basePath, String httpUsername, String httpPassword, String oauthToken) {
         if (basePath != null) {
             this.basePath = basePath;
         } else {
@@ -57,7 +49,7 @@ public class MixerAPI {
                 .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-        this.http = new MixerHttpClient(this, httpUsername, httpPassword, oauthToken);
+        this.http = new MixerHttpClient(this, oauthToken);
         this.services = new ServiceManager<>();
 
         this.register(new UsersService(this));

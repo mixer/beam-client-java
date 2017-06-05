@@ -9,7 +9,7 @@ import java.net.URI;
 
 public class AbstractHTTPServiceTest {
     @Test public void itFormatsRelativePathNames() {
-        MixerAPI mixer = new MixerAPI(URI.create("http://localhost:1337/api/v1/"), "username", "password");
+        MixerAPI mixer = new MixerAPI(URI.create("http://localhost:1337/api/v1/"), "oauthToken");
         AbstractHTTPService httpService = new SimpleHTTPService(mixer, "foo");
 
         String path = httpService.path("bar");
@@ -18,7 +18,7 @@ public class AbstractHTTPServiceTest {
     }
 
     @Test public void itRelativizesAbsolutePaths() {
-        MixerAPI mixer = new MixerAPI(URI.create("http://localhost:1337/api/v1/"), "username", "password");
+        MixerAPI mixer = new MixerAPI(URI.create("http://localhost:1337/api/v1/"), "oauthToken");
         AbstractHTTPService httpService = new SimpleHTTPService(mixer, "foo");
 
         String path = httpService.path("/bar");

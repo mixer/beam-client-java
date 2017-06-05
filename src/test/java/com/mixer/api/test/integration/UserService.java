@@ -16,7 +16,7 @@ public class UserService {
 
     @Test
     public void itAllowsUsToGetTheCurrentUser() throws ExecutionException, InterruptedException {
-        MixerAPI mixer = new MixerAPI(null, "Merlin", "sdfsdfds");
+        MixerAPI mixer = new MixerAPI(null, "oauthToken");
         MixerUser user = mixer.use(UsersService.class).getCurrent().get();
         Assert.assertEquals(user.username, "Merlin");
     }

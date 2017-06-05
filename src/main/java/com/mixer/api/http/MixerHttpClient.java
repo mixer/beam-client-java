@@ -15,23 +15,15 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
@@ -50,7 +42,6 @@ public class MixerHttpClient {
     public final HttpClient http;
 
     protected final MixerAPI mixer;
-    protected final HttpClientContext context;
 
     private String userAgent;
     private String oauthToken;
@@ -65,38 +56,12 @@ public class MixerHttpClient {
     private String csrfToken;
 
     public MixerHttpClient(MixerAPI mixer) {
-        this(mixer, null, null);
+        this(mixer, null);
     }
 
     public MixerHttpClient(MixerAPI mixer, String oauthToken) {
-        this(mixer, null, null, oauthToken);
-    }
-
-    public MixerHttpClient(MixerAPI mixer, String httpUsername, String httpPassword) {
-        this(mixer, httpUsername, httpPassword, null);
-    }
-
-    public MixerHttpClient(MixerAPI mixer, String httpUsername, String httpPassword, String oauthToken) {
         this.mixer = mixer;
         this.cookieStore = new BasicCookieStore();
-
-        if (httpUsername != null && httpPassword != null) {
-            this.context = HttpClientContext.create();
-
-            AuthCache ac = new BasicAuthCache();
-            ac.put(new HttpHost(this.mixer.basePath.getHost()), new BasicScheme());
-            this.context.setAuthCache(ac);
-
-            CredentialsProvider cp = new BasicCredentialsProvider();
-            cp.setCredentials(
-                    AuthScope.ANY,
-                    new UsernamePasswordCredentials(httpUsername, httpPassword)
-            );
-            this.context.setCredentialsProvider(cp);
-        } else {
-            this.context = null;
-        }
-
         this.http = this.buildHttpClient();
 
         if (oauthToken != null) {
@@ -246,7 +211,7 @@ public class MixerHttpClient {
     }
 
     public HttpResponse makeRequest(HttpUriRequest request) throws IOException {
-        return this.http.execute(request, this.context);
+        return this.http.execute(request);
     }
 
     public <T> T handleResponse(HttpResponse partialResponse, Class<T> type) throws IOException, HttpBadResponseException {

@@ -22,7 +22,7 @@ public class MixerAPITest {
     @Test
     public void itConstructsWithParameters() {
         URI basePath = URI.create("https://localhost:1337/api/v1/");
-        MixerAPI mixer = new MixerAPI(basePath, "my_username", "my_password");
+        MixerAPI mixer = new MixerAPI(basePath, "oauthToken");
 
         Assert.assertEquals(mixer.basePath, basePath);
     }
