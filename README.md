@@ -1,4 +1,4 @@
-# mixer-java [![Build Status](https://travis-ci.org/WatchMixer/client-java.svg?branch=master)](https://travis-ci.org/WatchMixer/mixer-client-java) [![](https://badges.gitter.im/MCProHosting/mixer.png)](https://gitter.im/MCProHosting/mixer-dev)
+# mixer-java [![Build Status](https://travis-ci.org/mixer/beam-client-java.svg?branch=master)](https://travis-ci.org/mixer/beam-client-java) [![](https://badges.gitter.im/mixer/mixer.png)](https://gitter.im/mixer/developers)
 
 This is the official Java client for the [mixer.com](https://mixer.com) API.  It
 currently supports `v1` and is a work in progress.
