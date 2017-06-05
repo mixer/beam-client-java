@@ -2,4 +2,4 @@
 *.iml
 target/
 
-src/main/java/pro/beam/api/Application.java
+src/main/java/com/mixer/api/Application.java
