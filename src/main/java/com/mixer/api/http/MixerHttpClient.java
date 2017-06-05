@@ -21,6 +21,7 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -42,6 +43,7 @@ public class MixerHttpClient {
     public final HttpClient http;
 
     protected final MixerAPI mixer;
+    protected final HttpClientContext context = null;
 
     private String userAgent;
     private String oauthToken;
@@ -211,7 +213,7 @@ public class MixerHttpClient {
     }
 
     public HttpResponse makeRequest(HttpUriRequest request) throws IOException {
-        return this.http.execute(request);
+        return this.http.execute(request, this.context);
     }
 
     public <T> T handleResponse(HttpResponse partialResponse, Class<T> type) throws IOException, HttpBadResponseException {
