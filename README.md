@@ -30,7 +30,7 @@ And secondly, add this project as a `dependency` in your `pom.xml`:
 ```xml
 <dependencies>
   <dependency>
-    <groupId>pro.mixer</groupId>
+    <groupId>com.mixer</groupId>
     <artifactId>api</artifactId>
     <version>5.0.0-SNAPSHOT</version>
   </dependency>
