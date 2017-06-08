@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pro.beam</groupId>
+    <groupId>com.mixer</groupId>
     <artifactId>api</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -16,58 +16,63 @@
     </licenses>
 
     <properties>
-        <powermock.version>1.6.4</powermock.version>
+        <guava.version>17.0</guava.version>
+        <httpclient.version>4.3.6</httpclient.version>
+        <java-jwt.version>2.2.0</java-jwt.version>
+        <gson.version>2.2.4</gson.version>
+        <java-websocket.version>1.3.1-SNAPSHOT</java-websocket.version>
+        <junit.version>4.11</junit.version>
+        <powermock.version>1.9.0-rc1</powermock.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>17.0</version>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.3.6</version>
+            <version>${httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>2.2.0</version>
+            <version>${java-jwt.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.2.4</version>
+            <version>${gson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
-            <version>1.3.1-SNAPSHOT</version>
+            <version>${java-websocket.version}</version>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.9.0-rc1</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <repositories>
         <repository>
-            <id>beam-releases</id>
-            <url>https://maven.beam.pro/content/repositories/releases/</url>
+            <id>mixer-releases</id>
+            <url>https://maven.mixer.com/content/repositories/releases/</url>
         </repository>
         <repository>
-            <id>beam-snapshots</id>
-            <url>https://maven.beam.pro/content/repositories/snapshots/</url>
+            <id>mixer-snapshots</id>
+            <url>https://maven.mixer.com/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -79,7 +84,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>pro.beam.api.BeamAPI</mainClass>
+                            <mainClass>com.mixer.api.MixerAPI</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
