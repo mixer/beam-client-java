@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class MixerConstellationConnection extends MixerWebsocketClient {
-    private static URI CONSTELLATION_ADDR = URI.create("wss://constellation.mixer.pro");
+    private static URI CONSTELLATION_ADDR = URI.create("wss://constellation.mixer.com");
 
     protected final MixerConstellationConnectable producer;
     protected final MixerConstellation constellation;
