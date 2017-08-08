@@ -1,5 +1,0 @@
-.idea
-*.iml
-target/
-
-src/main/java/com/mixer/api/Application.java
