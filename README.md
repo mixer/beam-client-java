@@ -6,7 +6,7 @@ currently supports `v1` and is a work in progress.
 ## Documentation
 
 Confused about a method's intent?  Not sure where to get a piece of information?
-Our [Javadocs](https://dev.mixer.com/java-doc/apidocs/) are the place to go!
+Our [Javadocs](https://mixer.github.io/beam-client-java/) are the place to go!
 That link contains the most up-to-date docs for this API client.
 
 ## Building
