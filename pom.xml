@@ -142,9 +142,7 @@
                 <inherited>true</inherited>
                 <configuration>
                     <checkoutDirectory>${scmPublish.checkoutDirectory}</checkoutDirectory>
-                    <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}
-                    </checkinComment>
-                    <!-- Plugins defaults to "target/staging" and since the distributionManagement section is a pain in the ass for site docs, this is easier -->
+                    <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}</checkinComment>
                     <content>${scm-publish.siteDocOuputDirectory}</content>
                     <skipDeletedFiles>true</skipDeletedFiles>
                     <pubScmUrl>${scm-publish.pubScmUrl}</pubScmUrl>
