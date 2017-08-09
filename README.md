@@ -63,3 +63,9 @@ Futures.addCallback(mixer.use(UsersService.class).search("tta"), new ResponseHan
     }
 });
 ```
+## Developing
+
+### Docs
+
+To build and publish the docs run:
+`mvn javadoc:javadoc scm-publish:publish-scm`
