@@ -23,6 +23,12 @@
         <java-websocket.version>1.3.1-SNAPSHOT</java-websocket.version>
         <junit.version>4.11</junit.version>
         <powermock.version>1.9.0-rc1</powermock.version>
+
+        <scm-publish.scmBranch>gh-pages</scm-publish.scmBranch>
+        <scm-publish.pubScmUrl>scm:git:git@github.com:mixer/beam-client-java.git</scm-publish.pubScmUrl>
+        <scm-publish.repoUrl>https://github.com/mixer/beam-client-java</scm-publish.repoUrl>
+
+        <scm-publish.siteDocOuputDirectory>${project.build.directory}/site/apidocs</scm-publish.siteDocOuputDirectory>
     </properties>
 
     <dependencies>
@@ -75,6 +81,12 @@
             <url>https://maven.mixer.com/content/repositories/snapshots/</url>
         </repository>
     </repositories>
+    <scm>
+        <connection>${scm-publish.pubScmUrl}</connection>
+        <url>${scm-publish.repoUrl}</url>
+        <developerConnection>${scm-publish.pubScmUrl}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <plugins>
@@ -122,6 +134,20 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>1.0</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <checkoutDirectory>${scmPublish.checkoutDirectory}</checkoutDirectory>
+                    <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}</checkinComment>
+                    <content>${scm-publish.siteDocOuputDirectory}</content>
+                    <skipDeletedFiles>true</skipDeletedFiles>
+                    <pubScmUrl>${scm-publish.pubScmUrl}</pubScmUrl>
+                    <scmBranch>${scm-publish.scmBranch}</scmBranch>
+                </configuration>
             </plugin>
         </plugins>
     </build>
