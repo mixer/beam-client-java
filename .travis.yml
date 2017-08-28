@@ -1,15 +1,7 @@
 sudo: false
 language: java
-jdk:
-- oraclejdk7
+jdk: oraclejdk7
 cache:
-  directories:
-  - $HOME/.m2
-before_install: wget https://gist.githubusercontent.com/Doridian/01cb63301fe4d022f533bd221e227970/raw/0771d2c50808b295abfbabe266be7368c3273974/settings.xml
-  -O settings.bin
-script: mvn deploy -DaltDeploymentRepository=deployment-repo-id::default::https://maven.mixer.com/content/repositories/snapshots/
-  --settings settings.bin
-env:
-  global:
-  - secure: bmVNXC9nLm9FRsksfdbSCqFq8PJbKznKyt3Ut2+2fjJhzVyHsaTd6n0ChsDC5wPfHq6G+b64c/lPDP8UH96clLoPKWtGlfjSp6w6+N85J3TxsLjDM0SCOs5iUGeFw3NfH0zrQXP+GVt2fV9LmiJ/ixitsj/d5Ec5LpMoZ7M2Hn3fLOUV6ycTgkguguv5oSbEw/5NWSKwUkL+yuTi95jspK+XRlqEcYDMXAxl6RNmLZZa6aoP6oWm3zeN5N8WPvxxKOsyBh7euZ3mnan01Pf8+nRhf8kB9zKum748HePlXGmA1ik90cHrQCVYNg1ld4FzXDkZNBcVivCOJ8TLHEjTC2J5KqgKmpSMs1UPjbbVQzGwB2Z3KsQ72X8ZnJkXmCBelaLPSwMjvZDLth82Z6CtGIcD07nWeO8oPNH5jW/gg0FQUpOCskbY6/OqeIMm2rCHnqgmdtONvVXfH5p7jdaYUBcxYetnvFB/3LxHpPl+uHp5tRnhRW+AKy/+WTdYQwtPwEcYev/OSVx4y6WPfZwU6ImlMI6a+k7GaipShog45MxZiCBCVc3VmcVtZTl8B/ggVS4EKPNAPkiyQONt6O7ksKvyWu55lpIrF+J4HFQYYP3xQaGrkg5BRAkvcAXzvLIsxErYZJqS63f5VNgEvKsvuaTtRAndHGIggKG7aJWEMCc=
-  - secure: IcPXPdQvdHdo0i08Brr8BYzuOwylhAaklFeEgMJVqEhbFcmfJck6Pw5k0GNmVuHvxPd+eCv8HRHzOJVIQdlPQCHudEWy13hJhgdyfTy7A3llNC1yx445MOW6IIqk31HBziMjbgHDy1Q9qGEvqmE4R0cB4HM98LW130li5Dak5vSE5o0mxzp4LxEROXaRWFY1rWPcYxPj21BH22PrriWgRytw5zBe47ufzNkgCUBZaz/kqTEU33JAIR/aE8qA2HJ3tkvAtPe908jqTPeVo/sP7vSGxsVpvbTgjkcNvFMP+7OFC0xUlV52kab2azp7GsuweebvQR6iCVvPhiKKHx640/amQLyxz42yZHXcmvJM3+WJkCkezKJ0Y2KPPx0FQIaCBycwt6QdMazqDWa5AeXFcBwkwbdJyeJ8pb5QdcS9mEHN2LRbINS71ajMqYzocTAZCZ8twXv9+KYpJc01lKUj6CLwtIsdTil0GCm8als9iqtaP0pee1rGyrP8kPlkV5okPHqF8mSGyW/44la+hNovzJuxxz0mML7QZJf4KZ0WWSCXyY1l5hsygcqdvuVesTMJMD5qiy92dBLhQJ8kncl9lRJQfw2HVMtBmJ8HnQ4HEme8MooXevPO7S4KyCvYzUK8wmYMb7Tw6Kvi6+rGcQisqjmw2ffV7uIPccMbLaUxdgM=
+  directories: $HOME/.m2
+script:
+ - if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" ]]; then mvn deploy --settings settings.xml; else mvn test; fi
