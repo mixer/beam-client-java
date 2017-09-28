@@ -6,12 +6,12 @@
 
     <groupId>com.mixer</groupId>
     <artifactId>api</artifactId>
-    <version>5.0.1-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://opensource.org/licenses/mit-license.php</url>
+            <url>https://github.com/mixer/beam-client-java/blob/master/LICENSE</url>
         </license>
     </licenses>
 
@@ -71,16 +71,21 @@
         </dependency>
     </dependencies>
 
-    <repositories>
+    <distributionManagement>
         <repository>
-            <id>mixer-releases</id>
+            <uniqueVersion>false</uniqueVersion>
+            <id>mixer-release</id>
             <url>https://maven.mixer.com/content/repositories/releases/</url>
+            <layout>default</layout>
         </repository>
-        <repository>
-            <id>mixer-snapshots</id>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>mixer-snapshot</id>
             <url>https://maven.mixer.com/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement>
+
     <scm>
         <connection>${scm-publish.pubScmUrl}</connection>
         <url>${scm-publish.repoUrl}</url>
@@ -157,7 +162,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>2.10.4</version>
                 <configuration>
                     <reportOutputDirectory>${project.basedir}/src/main</reportOutputDirectory>
                     <destDir>docs</destDir>

@@ -19,6 +19,10 @@ First, add the [Mixer repo](https://maven.mixer.com) to your `pom.xml` as a `<re
 ```xml
 <repositories>
   <repository>
+    <id>mixer-releases</id>
+    <url>https://maven.mixer.com/content/repositories/releases/</url>
+  </repository>
+  <repository>
     <id>mixer-snapshots</id>
     <url>https://maven.mixer.com/content/repositories/snapshots/</url>
   </repository>
@@ -32,7 +36,7 @@ And secondly, add this project as a `dependency` in your `pom.xml`:
   <dependency>
     <groupId>com.mixer</groupId>
     <artifactId>api</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.3-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```
