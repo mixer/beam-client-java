@@ -4,16 +4,16 @@ import com.google.common.base.Joiner;
 import com.mixer.api.http.MixerHttpClient;
 import org.apache.http.cookie.Cookie;
 import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshakeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CookieDraft_17 extends Draft_17 {
+public class CookieDraft_6455 extends Draft_6455 {
     protected final MixerHttpClient httpClient;
 
-    public CookieDraft_17(MixerHttpClient httpClient) {
+    public CookieDraft_6455(MixerHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -31,6 +31,6 @@ public class CookieDraft_17 extends Draft_17 {
 
     @Override
     public Draft copyInstance() {
-        return new CookieDraft_17(this.httpClient);
+        return new CookieDraft_6455(this.httpClient);
     }
 }

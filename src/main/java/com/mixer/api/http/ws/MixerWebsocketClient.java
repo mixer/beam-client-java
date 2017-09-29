@@ -11,13 +11,13 @@ public class MixerWebsocketClient extends WebSocketClient {
     protected final MixerAPI mixer;
 
     public MixerWebsocketClient(MixerAPI mixer, URI uri) {
-        super(uri, new CookieDraft_17(mixer.http));
+        super(uri, new CookieDraft_6455(mixer.http));
 
         this.mixer = mixer;
     }
 
     public MixerWebsocketClient(MixerAPI mixer, URI uri, Map<String, String> httpHeaders) {
-        super(uri, new CookieDraft_17(mixer.http), httpHeaders, 0);
+        super(uri, new CookieDraft_6455(mixer.http), httpHeaders, 0);
 
         this.mixer = mixer;
     }

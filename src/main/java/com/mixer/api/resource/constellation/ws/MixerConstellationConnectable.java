@@ -82,7 +82,7 @@ public class MixerConstellationConnectable {
      */
     private void ping()
     {
-        FramedataImpl1 frame = new FramedataImpl1(Framedata.Opcode.PING);
+        FramedataImpl1 frame = FramedataImpl1.get(Framedata.Opcode.PING);
         frame.setFin(true);
         connection.sendFrame(frame);
     }
