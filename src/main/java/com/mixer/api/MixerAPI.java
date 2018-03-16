@@ -27,15 +27,15 @@ public class MixerAPI {
 
     private static final URI DEFAULT_BASE_PATH = URI.create("https://mixer.com/api/v1/");
 
-    public MixerAPI() {
-        this(null);
+    public MixerAPI(String clientId) {
+        this(clientId, null);
     }
 
-    public MixerAPI(String oauthToken) {
-        this(DEFAULT_BASE_PATH, oauthToken);
+    public MixerAPI(String clientId, String oauthToken) {
+        this(clientId, DEFAULT_BASE_PATH, oauthToken);
     }
 
-    public MixerAPI(URI basePath, String oauthToken) {
+    public MixerAPI(String clientId, URI basePath, String oauthToken) {
         if (basePath != null) {
             this.basePath = basePath;
         } else {
@@ -49,7 +49,7 @@ public class MixerAPI {
                 .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-        this.http = new MixerHttpClient(this, oauthToken);
+        this.http = new MixerHttpClient(this, clientId, oauthToken);
         this.services = new ServiceManager<>();
 
         this.register(new UsersService(this));

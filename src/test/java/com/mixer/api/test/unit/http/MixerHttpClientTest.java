@@ -44,14 +44,14 @@ public class MixerHttpClientTest {
 
     @Test
     public void itHandlesCSRF() {
-        mixerAPI = new MixerAPI();
+        mixerAPI = new MixerAPI("clientId");
         defaultHttpClient = mock(HttpClient.class);
 
         // This is done because Mockito is not able to mock methods that are called within the class'
         // Constructor.
         class MockableMixerHttpClient extends MixerHttpClient {
             private MockableMixerHttpClient(MixerAPI mixer) {
-                super(mixer);
+                super(mixer, "clientId");
             }
 
             @Override
@@ -105,7 +105,7 @@ public class MixerHttpClientTest {
 
     @Test
     public void itHandlesJWT() {
-        mixerAPI = new MixerAPI();
+        mixerAPI = new MixerAPI("clientId");
         defaultHttpClient = mock(HttpClient.class);
 
         final String jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU3NDk5NSwiYnR5cCI6ImdyYW50IiwiZ3JvdXBzIjpbeyJpZCI6MSwibmFtZSI6IlVzZXIiLCJVc2VyR3JvdXAiOnsiZ3JvdXBJZCI6MSwidXNlcklkIjo1NzQ5OTV9fV0sImlhdCI6MTQ4MTE0NDQ0NywiZXhwIjoxNTEyNjgwNDQ3LCJpc3MiOiJCZWFtIiwianRpIjoiVGhpcyBpc24ndCBhIHJlYWwgc2Vzc2lvbi4ifQ==.HkL5xq-eivwCk5OgczgIu5s_NFFxdQAKH9Jfb906aT4";
@@ -127,7 +127,7 @@ public class MixerHttpClientTest {
         // Constructor.
         class MockableMixerHttpClient extends MixerHttpClient {
             private MockableMixerHttpClient(MixerAPI mixer) {
-                super(mixer);
+                super(mixer, "clientId");
             }
 
             @Override
