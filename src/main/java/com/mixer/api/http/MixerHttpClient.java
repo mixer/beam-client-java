@@ -47,6 +47,7 @@ public class MixerHttpClient {
 
     private String userAgent;
     private String oauthToken;
+    private String clientId;
 
     public static final String X_JWT_HEADER = "X-JWT";
     private JSONWebToken jwt;
@@ -57,11 +58,11 @@ public class MixerHttpClient {
     public static final int CSRF_STATUS_CODE = 461;
     private String csrfToken;
 
-    public MixerHttpClient(MixerAPI mixer) {
-        this(mixer, null);
+    public MixerHttpClient(MixerAPI mixer, String clientId) {
+        this(mixer, null, clientId);
     }
 
-    public MixerHttpClient(MixerAPI mixer, String oauthToken) {
+    public MixerHttpClient(MixerAPI mixer, String oauthToken, String clientId) {
         this.mixer = mixer;
         this.cookieStore = new BasicCookieStore();
         this.http = this.buildHttpClient();
@@ -69,6 +70,8 @@ public class MixerHttpClient {
         if (oauthToken != null) {
             this.oauthToken = oauthToken;
         }
+
+        this.clientId = clientId;
     }
 
     protected HttpClient buildHttpClient() {
@@ -105,8 +108,7 @@ public class MixerHttpClient {
 
 
     public <T> ListenableFuture<T> get(String path, Class<T> type, Map<String, Object> args) {
-        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.GET,
-                this.buildFromRelativePath(path, args)), type));
+        return this.baseSubmit(this.makeCallable(this.makeRequest(RequestType.GET, this.buildFromRelativePath(path, args)), type));
     }
 
     public <T> ListenableFuture<T> post(String path, Class<T> type, Object... args) {
@@ -154,6 +156,10 @@ public class MixerHttpClient {
         }
         if (this.jwt != null) {
             requestBuilder.addHeader("Authorization", "JWT " + this.jwtString);
+        }
+
+        if (this.oauthToken == null && this.jwt == null) {
+            requestBuilder.addHeader("Client-Id", clientId);
         }
         if (this.csrfToken != null) {
             requestBuilder.addHeader(CSRF_TOKEN_HEADER, this.csrfToken);

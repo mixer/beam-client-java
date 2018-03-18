@@ -11,7 +11,7 @@ import java.net.URI;
 public class MixerAPITest {
     @Test
     public void itConstructsWithoutParameters() {
-        MixerAPI mixer = new MixerAPI();
+        MixerAPI mixer = new MixerAPI("clientId");
 
         Assert.assertEquals(mixer.basePath, URI.create("https://mixer.com/api/v1/"));
         Assert.assertNotNull(mixer.gson);
@@ -22,14 +22,14 @@ public class MixerAPITest {
     @Test
     public void itConstructsWithParameters() {
         URI basePath = URI.create("https://localhost:1337/api/v1/");
-        MixerAPI mixer = new MixerAPI(basePath, "oauthToken");
+        MixerAPI mixer = new MixerAPI("clientId", basePath, "oauthToken");
 
         Assert.assertEquals(mixer.basePath, basePath);
     }
 
     @Test public void itDelegatesToTheServiceManager() {
         AbstractMixerService service = Mockito.mock(AbstractMixerService.class);
-        MixerAPI mixer = new MixerAPI();
+        MixerAPI mixer = new MixerAPI("clientId");
 
         mixer.register(service);
 
