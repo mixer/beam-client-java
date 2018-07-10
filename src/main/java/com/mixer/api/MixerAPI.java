@@ -49,7 +49,7 @@ public class MixerAPI {
                 .create();
 
         this.executor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-        this.http = new MixerHttpClient(this, clientId, oauthToken);
+        this.http = new MixerHttpClient(this, oauthToken, clientId);
         this.services = new ServiceManager<>();
 
         this.register(new UsersService(this));
