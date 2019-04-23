@@ -236,7 +236,9 @@ public class MixerHttpClient {
         // Allow a null response to be given back, such that we return a ListenableFuture
         // with null.
         if (type != null && completeResponse.body != null) {
-            return this.mixer.gson.fromJson(completeResponse.body(), type);
+        	String result = completeResponse.body;
+        	result = result.replaceAll("[+|-][0-1][0-9]:[0-5][0-9]", ".000Z");
+            return this.mixer.gson.fromJson(result, type);
         } else {
             return null;
         }
