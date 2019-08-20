@@ -11,7 +11,13 @@ import com.mixer.api.resource.chat.methods.AuthenticateMessage;
 import com.mixer.api.resource.chat.replies.ReplyHandler;
 
 import javax.net.ssl.SSLSocketFactory;
+
+import org.java_websocket.framing.Framedata;
+import org.java_websocket.framing.FramedataImpl1;
+
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MixerChatConnectable {
     private static final SSLSocketFactory SSL_SOCKET_FACTORY = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -23,7 +29,9 @@ public class MixerChatConnectable {
     private final Object connectionLock = false;
     private MixerChatConnection connection;
     private AuthenticateMessage auth;
-
+	
+    private Timer pingTimer;
+    
     public MixerChatConnectable(MixerAPI mixer, MixerChat chat) {
         this.mixer = mixer;
         this.chat = chat;
@@ -49,8 +57,39 @@ public class MixerChatConnectable {
             }
             this.connection = newConnection;
 
+            handlePing();
+
             return true;
         }
+    }
+	
+    /**
+     * Handles the automatic ping to the socket.
+     */
+    private void handlePing() {
+        if (pingTimer != null) { 
+            pingTimer.cancel();
+        }
+
+        pingTimer = (new Timer());
+        pingTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (connection.isOpen()) {
+                    ping();
+                }
+            }
+        }, 30 * 1000);
+    }
+
+    /**
+     * Sends a ping to the websocket server.
+     */
+    private void ping()
+    {
+        FramedataImpl1 frame = FramedataImpl1.get(Framedata.Opcode.PING);
+        frame.setFin(true);
+        connection.sendFrame(frame);
     }
 
     /**
@@ -73,6 +112,9 @@ public class MixerChatConnectable {
             }
 
             this.connection.closeConnection(code, msg);
+			if (pingTimer != null) {
+                pingTimer.cancel();
+            }
         }
     }
 
