@@ -13,6 +13,7 @@ import com.mixer.api.resource.channel.MixerChannel;
 import com.mixer.api.response.channels.ChannelStatusResponse;
 import com.mixer.api.response.channels.ShowChannelsResponse;
 import com.mixer.api.response.emotes.ChannelEmotesResponse;
+import com.mixer.api.response.users.UserFollowsResponse;
 import com.mixer.api.services.AbstractHTTPService;
 import com.mixer.api.util.Enums;
 
@@ -72,14 +73,14 @@ public class ChannelsService extends AbstractHTTPService {
         ));
     }
 
-    public ListenableFuture<?> follow(MixerChannel channel, MixerUser follower) {
+    public ListenableFuture<UserFollowsResponse> follow(MixerChannel channel, MixerUser follower) {
         ImmutableMap.Builder<String, Object> arguments = MixerHttpClient.getArgumentsBuilder();
         arguments.put("user", follower.id);
 
         return this.put(channel.id + "/follow", null, arguments.build());
     }
 
-    public ListenableFuture<?> unfollow(MixerChannel channel, MixerUser exFollower) {
+    public ListenableFuture<UserFollowsResponse> unfollow(MixerChannel channel, MixerUser exFollower) {
         ImmutableMap.Builder<String, Object> arguments = MixerHttpClient.getArgumentsBuilder();
         arguments.put("user", exFollower.id);
 
