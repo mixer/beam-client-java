@@ -14,17 +14,16 @@ That link contains the most up-to-date docs for this API client.
 We use [Maven](http://maven.apache.org/) to build Mixer's Java client.  Once you have [Maven installed](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html), there are two easy steps to getting the
 client in your classpath.
 
-First, add the [Mixer repo](https://maven.mixer.com) to your `pom.xml` as a `<repository>` as follows:
+Our Maven Artifacts are published to GitHub's Package Registry, so you'll need to set that up.
+
+First in your project, add the appropriate repository section to your `pom.xml` as a `<repository>` as follows:
 
 ```xml
 <repositories>
   <repository>
-    <id>mixer-releases</id>
-    <url>https://maven.mixer.com/content/repositories/releases/</url>
-  </repository>
-  <repository>
-    <id>mixer-snapshots</id>
-    <url>https://maven.mixer.com/content/repositories/snapshots/</url>
+    <id>github</id>
+    <name>GitHub Mixer Client Java Apache Maven Packages</name>
+    <url>https://maven.pkg.github.com/mixer/beam-client-java</url>
   </repository>
 </repositories>
 ```
@@ -36,10 +35,25 @@ And secondly, add this project as a `dependency` in your `pom.xml`:
   <dependency>
     <groupId>com.mixer</groupId>
     <artifactId>api</artifactId>
-    <version>5.0.4-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```
+
+The last thing you'll need to do is authenticate with GitHub's Package Registry as it currently does not support Anonymous Access. You can do this by adding some settings to your `~/.m2/settings.xml` file:
+- USERNAME should be your GitHub Username
+- Token should be a personal access token with the `read:packages` and `write:packages` scopes.
+```xml
+<servers>
+  <server>
+    <id>github</id>
+    <username>USERNAME</username>
+    <password>TOKEN</password>
+  </server>
+</servers>
+```
+
+You can read more about this process on [Github's Help page](https://help.github.com/en/github/managing-packages-with-github-package-registry/configuring-apache-maven-for-use-with-github-package-registry#authenticating-to-github-package-registry)
 
 Once these steps are completed, you should have the client on your
 classpath, and are set to get programming!
