@@ -9,9 +9,9 @@ Confused about a method's intent?  Not sure where to get a piece of information?
 Our [Javadocs](https://mixer.github.io/beam-client-java/) are the place to go!
 That link contains the most up-to-date docs for this API client.
 
-## Building
+## Including beam-client-java in your Project
 
-We use [Maven](http://maven.apache.org/) to build Mixer's Java client.  Once you have [Maven installed](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html), there are two easy steps to getting the
+We use [Maven](http://maven.apache.org/) to build Mixer's Java client.  Once you have [Maven installed](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html), there are a few steps to getting the
 client in your classpath.
 
 Our Maven Artifacts are published to GitHub's Package Registry, so you'll need to set that up.
