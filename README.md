@@ -42,7 +42,7 @@ And secondly, add this project as a `dependency` in your `pom.xml`:
 
 The last thing you'll need to do is authenticate with GitHub's Package Registry as it currently does not support Anonymous Access. You can do this by adding some settings to your `~/.m2/settings.xml` file:
 - USERNAME should be your GitHub Username
-- Token should be a personal access token with the `read:packages` and `write:packages` scopes.
+- Token should be a personal access token with the `read:packages` scope.
 ```xml
 <servers>
   <server>
