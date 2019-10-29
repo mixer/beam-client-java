@@ -73,16 +73,14 @@
 
     <distributionManagement>
         <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>mixer-release</id>
-            <url>https://maven.mixer.com/content/repositories/releases/</url>
-            <layout>default</layout>
+            <id>github</id>
+            <name>GitHub Mixer Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/mixer/beam-client-java</url>
         </repository>
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
-            <id>mixer-snapshot</id>
-            <url>https://maven.mixer.com/content/repositories/snapshots/</url>
-            <layout>default</layout>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/mixer/beam-client-java</url>
         </snapshotRepository>
     </distributionManagement>
 
