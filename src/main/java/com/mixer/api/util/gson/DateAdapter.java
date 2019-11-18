@@ -85,9 +85,10 @@ public class DateAdapter extends TypeAdapter<Date> {
     public static DateAdapter v1() {
         DateFormat defaultFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         DateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        DateFormat ISOFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
 
         return new DateAdapter(
-                ImmutableList.of(defaultFormat, newFormat),
+                ImmutableList.of(defaultFormat, newFormat, ISOFormat),
                 defaultFormat
         );
     }
