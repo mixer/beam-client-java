@@ -366,6 +366,12 @@ public class MixerHttpClient {
         if (this.jwt != null) {
             headers.put("Authorization", "JWT " + jwtString);
         }
+        if (this.clientId != null) {
+			headers.put("client-id", clientId);
+		}
+		if (this.clientId != null) {
+			headers.put("x-is-bot", "true");
+		}
         headers.put("User-Agent", getUserAgent());
 
         return headers;
