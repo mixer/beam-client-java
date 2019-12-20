@@ -87,7 +87,7 @@ public class MixerChatConnectable {
      */
     private void ping()
     {
-        FramedataImpl1 frame = FramedataImpl1.get(Framedata.Opcode.PING);
+        FramedataImpl1 frame = FramedataImpl1.get(Opcode.PING);
         frame.setFin(true);
         connection.sendFrame(frame);
     }
