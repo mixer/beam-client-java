@@ -11,6 +11,11 @@ import com.mixer.api.resource.chat.methods.AuthenticateMessage;
 import com.mixer.api.resource.chat.replies.ReplyHandler;
 
 import javax.net.ssl.SSLSocketFactory;
+
+import org.java_websocket.enums.Opcode;
+import org.java_websocket.framing.FramedataImpl1;
+
+
 import java.io.IOException;
 
 public class MixerChatConnectable {
@@ -82,10 +87,6 @@ public class MixerChatConnectable {
 
     public boolean isClosing() {
         return connection.isClosing();
-    }
-
-    public boolean isConnecting() {
-        return connection.isConnecting();
     }
 
     public boolean isOpen() {

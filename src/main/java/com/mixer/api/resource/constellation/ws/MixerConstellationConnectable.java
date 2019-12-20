@@ -7,7 +7,8 @@ import com.mixer.api.resource.constellation.AbstractConstellationReply;
 import com.mixer.api.resource.constellation.MixerConstellation;
 import com.mixer.api.resource.constellation.events.EventHandler;
 import com.mixer.api.resource.constellation.replies.ReplyHandler;
-import org.java_websocket.framing.Framedata;
+
+import org.java_websocket.enums.Opcode;
 import org.java_websocket.framing.FramedataImpl1;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -82,7 +83,7 @@ public class MixerConstellationConnectable {
      */
     private void ping()
     {
-        FramedataImpl1 frame = FramedataImpl1.get(Framedata.Opcode.PING);
+        FramedataImpl1 frame = FramedataImpl1.get(Opcode.PING);
         frame.setFin(true);
         connection.sendFrame(frame);
     }
@@ -119,10 +120,6 @@ public class MixerConstellationConnectable {
 
     public boolean isClosing() {
         return connection.isClosing();
-    }
-
-    public boolean isConnecting() {
-        return connection.isConnecting();
     }
 
     public boolean isOpen() {
