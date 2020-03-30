@@ -3,6 +3,8 @@ package com.mixer.api.resource.constellation.ws;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -122,6 +124,18 @@ public class MixerConstellationConnection extends MixerWebsocketClient {
     }
 
     @Override public void onClose(int i, String s, boolean b) {
+		Class<? extends AbstractConstellationEvent> type = AbstractConstellationEvent.EventType
+				.fromSerializedName("disconnect").getCorrespondingClass();
+		Gson gson = null;
+		gson = new GsonBuilder().create();
+		JsonObject obj = new JsonObject();
+		obj.addProperty("code", i);
+		obj.addProperty("reason", s);
+		obj.addProperty("remote", b);
+		JsonObject json = new JsonObject();
+		json.add("data", obj);
+		this.dispatchEvent(this.mixer.gson.fromJson(json, type));
+		this.close(i);
         this.producer.notifyClose(i, s, b);
     }
 
