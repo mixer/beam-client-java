@@ -21,6 +21,7 @@ public abstract class AbstractChatEvent<T extends AbstractChatEvent.EventData> e
         @SerializedName("Stats") STATS (StatusEvent.class),
         @SerializedName("UserJoin") USER_JOIN (UserJoinEvent.class),
         @SerializedName("UserLeave") USER_LEAVE (UserLeaveEvent.class),
+        @SerializedName("disconnect") DISCOUNNECT (ChatDisconnectEvent.class),
         @SerializedName("WelcomeEvent") WELCOME (WelcomeEvent.class);
 
         private final Class<? extends AbstractChatEvent> correspondingClass;
