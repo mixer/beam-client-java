@@ -135,6 +135,7 @@ public class MixerConstellationConnection extends MixerWebsocketClient {
 		JsonObject json = new JsonObject();
 		json.add("data", obj);
 		this.dispatchEvent(this.mixer.gson.fromJson(json, type));
+		this.close(i);
         this.producer.notifyClose(i, s, b);
     }
 

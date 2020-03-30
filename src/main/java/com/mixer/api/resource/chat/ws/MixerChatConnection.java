@@ -138,6 +138,7 @@ public class MixerChatConnection extends MixerWebsocketClient {
     }
 
     @Override public void onClose(int i, String s, boolean b) {
+    	this.close(i);
         this.producer.notifyClose(i, s, b);
     }
 
